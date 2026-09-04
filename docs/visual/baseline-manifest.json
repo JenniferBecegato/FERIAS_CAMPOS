@@ -1,0 +1,11 @@
+{
+  "reference": "Layout_Férias.jpeg",
+  "viewports": [
+    { "width": 1600, "height": 900, "scale": 1.0, "baseline": "dashboard-1600x900.png" },
+    { "width": 1366, "height": 768, "scale": 1.0, "baseline": "dashboard-1366x768.png" },
+    { "width": 1920, "height": 1080, "scale": 1.0, "baseline": "dashboard-1920x1080.png" }
+  ],
+  "pixelDifferencePercent": 1.5,
+  "geometryTolerancePx": 3,
+  "deltaEMean": 4
+}
