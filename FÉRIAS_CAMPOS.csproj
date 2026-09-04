@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup><OutputType>WinExe</OutputType><TargetFramework>net10.0-windows</TargetFramework><UseWPF>true</UseWPF><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings><RootNamespace>FeriasCampos</RootNamespace><AssemblyName>ControleFerias</AssemblyName></PropertyGroup>
+  <PropertyGroup><OutputType>WinExe</OutputType><TargetFramework>net9.0-windows</TargetFramework><UseWPF>true</UseWPF><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings><RootNamespace>FeriasCampos</RootNamespace><AssemblyName>ControleFerias</AssemblyName></PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Release'"><RuntimeIdentifier>win-x64</RuntimeIdentifier><SelfContained>true</SelfContained><PublishSingleFile>false</PublishSingleFile><PublishReadyToRun>false</PublishReadyToRun><DebugType>none</DebugType><DebugSymbols>false</DebugSymbols><PublishDir>$(MSBuildProjectDirectory)\bin\Release\publish\</PublishDir></PropertyGroup>
-  <ItemGroup><PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.11"/><PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.11"/></ItemGroup>
+  <ItemGroup><PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.11"/><PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.11"/></ItemGroup>
   <ItemGroup><Compile Remove="Properties\AssemblyInfo.cs;Tests\**\*.cs"/><EmbeddedResource Remove="Tests\**\*"/><None Remove="Tests\**\*"/></ItemGroup>
   <Target Name="CleanReleasePublishDirectory" BeforeTargets="PrepareForPublish" Condition="'$(Configuration)' == 'Release' and Exists('$(PublishDir)')"><RemoveDir Directories="$(PublishDir)"/></Target>
 </Project>
