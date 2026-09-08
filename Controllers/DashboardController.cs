@@ -37,12 +37,14 @@ public sealed class DashboardController(
     public Task<ResultadoValidacao> AgendarAsync(
         int id,
         IReadOnlyList<IntervaloFerias> intervalos,
-        int diasAbono)
+        int diasAbono,
+        int faltasNaoJustificadas)
     {
         return agenda.AgendarAsync(
             id,
             intervalos,
             diasAbono,
+            faltasNaoJustificadas,
             "Agendamento administrativo");
     }
 

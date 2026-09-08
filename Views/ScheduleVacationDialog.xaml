@@ -6,7 +6,10 @@
   <StackPanel><TextBlock Text="Agendar férias por períodos" FontSize="25" FontWeight="Bold"/><TextBlock Text="Monte até três parcelas e confirme todas de uma vez" Margin="0,4,0,0" Foreground="{StaticResource MutedBrush}"/></StackPanel>
   <Border Grid.Row="1" Background="#EDF6FF" CornerRadius="8" Padding="12,10" Margin="0,16,0,14"><Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock x:Name="EmployeeText" FontWeight="SemiBold" VerticalAlignment="Center"/><StackPanel Grid.Column="1" HorizontalAlignment="Right"><TextBlock x:Name="BalanceText" Foreground="#0878E8" FontWeight="Bold"/><TextBlock x:Name="SlotsText" FontSize="11" Foreground="{StaticResource MutedBrush}" HorizontalAlignment="Right"/></StackPanel></Grid></Border>
   <Grid Grid.Row="2"><Grid.ColumnDefinitions><ColumnDefinition Width="1.1*"/><ColumnDefinition Width="16"/><ColumnDefinition/><ColumnDefinition Width="16"/><ColumnDefinition Width="300"/></Grid.ColumnDefinitions>
-   <Border Style="{StaticResource Card}" Padding="18"><StackPanel>
+   <Border Style="{StaticResource Card}" Padding="18"><Grid>
+    <Grid.RowDefinitions><RowDefinition/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+    <StackPanel Margin="0,0,5,0">
     <TextBlock Text="Data de início" FontSize="13" FontWeight="SemiBold" Margin="0,0,0,6"/>
     <Calendar x:Name="RangeCalendar" SelectionMode="SingleDate" HorizontalAlignment="Center" SelectedDatesChanged="CalendarChanged"/>
     <Grid Margin="0,14,0,0"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="12"/><ColumnDefinition Width="120"/></Grid.ColumnDefinitions>
@@ -15,11 +18,17 @@
     </Grid>
     <Border Background="#EDF6FF" CornerRadius="7" Padding="10,7" Margin="0,10,0,0"><TextBlock x:Name="RangeCountText" Text="Informe o início e a quantidade de dias" Foreground="#0866C6" FontWeight="SemiBold" TextAlignment="Center"/></Border>
     <Grid Margin="0,14,0,0"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="90"/></Grid.ColumnDefinitions>
+     <StackPanel><TextBlock Text="Faltas não justificadas no período" FontWeight="SemiBold"/><TextBlock x:Name="AbsencesHelpText" FontSize="11" Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap"/></StackPanel>
+     <TextBox x:Name="UnjustifiedAbsencesTextBox" Grid.Column="1" Height="34" Padding="8,5" Text="0" HorizontalContentAlignment="Right" TextChanged="UnjustifiedAbsencesChanged" PreviewTextInput="UnjustifiedAbsencesPreviewTextInput"/>
+    </Grid>
+    <Grid Margin="0,14,0,0"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="90"/></Grid.ColumnDefinitions>
      <StackPanel><TextBlock Text="Abono pecuniário (venda)" FontWeight="SemiBold"/><TextBlock x:Name="AllowanceHelpText" FontSize="11" Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap"/></StackPanel>
      <TextBox x:Name="AllowanceDaysTextBox" Grid.Column="1" Height="34" Padding="8,5" Text="0" HorizontalContentAlignment="Right" TextChanged="AllowanceDaysChanged" PreviewTextInput="AllowanceDaysPreviewTextInput"/>
     </Grid>
-    <Button x:Name="AddOrUpdateButton" Content="Adicionar parcela" Margin="0,14,0,0" Background="#0878E8" Foreground="White" Click="AddOrUpdateClick" IsEnabled="False"/>
-   </StackPanel></Border>
+    </StackPanel>
+    </ScrollViewer>
+    <Button x:Name="AddOrUpdateButton" Grid.Row="1" Content="Adicionar parcela" Margin="0,14,0,0" Background="#0878E8" Foreground="White" Click="AddOrUpdateClick" IsEnabled="False"/>
+   </Grid></Border>
    <Border Grid.Column="2" Style="{StaticResource Card}" Padding="18"><Grid><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
     <TextBlock Text="Novas parcelas" FontSize="16" FontWeight="Bold"/>
     <ListBox x:Name="NewRangesList" Grid.Row="1" Margin="0,10" SelectionChanged="NewRangeSelected" DisplayMemberPath="Descricao"/>
@@ -37,6 +46,14 @@
       <TextBlock Style="{StaticResource DivisionRuleText}" Text="• Uma das parcelas deve possuir pelo menos 14 dias corridos."/>
       <TextBlock Style="{StaticResource DivisionRuleText}" Text="• Cada uma das demais parcelas deve possuir pelo menos 5 dias corridos."/>
       <TextBlock Style="{StaticResource DivisionRuleText}" Text="• A soma das parcelas e dos dias vendidos não pode ultrapassar o saldo disponível."/>
+      <Border Height="1" Background="#F5C66D" Margin="0,3,0,12"/>
+      <TextBlock Text="Faltas não justificadas" FontSize="14" FontWeight="Bold" Margin="0,0,0,8"/>
+      <TextBlock Style="{StaticResource DivisionRuleText}" Text="• Até 5 faltas: 30 dias de férias."/>
+      <TextBlock Style="{StaticResource DivisionRuleText}" Text="• De 6 a 14 faltas: 24 dias de férias."/>
+      <TextBlock Style="{StaticResource DivisionRuleText}" Text="• De 15 a 23 faltas: 18 dias de férias."/>
+      <TextBlock Style="{StaticResource DivisionRuleText}" Text="• De 24 a 32 faltas: 12 dias de férias."/>
+      <TextBlock Style="{StaticResource DivisionRuleText}" Text="• Mais de 32 faltas: sem direito a férias no período."/>
+      <TextBlock Style="{StaticResource DivisionRuleText}" Foreground="#5F6B7A" Text="Faltas justificadas não entram neste cálculo. A redução ocorre por faixas; não se desconta um dia de férias para cada falta."/>
       <Border Height="1" Background="#F5C66D" Margin="0,3,0,12"/>
       <TextBlock Text="Abono pecuniário" FontSize="14" FontWeight="Bold" Margin="0,0,0,8"/>
       <TextBlock Style="{StaticResource DivisionRuleText}" Text="• O empregado pode converter até 1/3 do direito em abono (venda)."/>

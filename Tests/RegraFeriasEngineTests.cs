@@ -6,6 +6,21 @@ namespace ControleFerias.Tests;
 
 public sealed class RegraFeriasEngineTests
 {
+    [Theory]
+    [InlineData(0, 30)]
+    [InlineData(5, 30)]
+    [InlineData(6, 24)]
+    [InlineData(14, 24)]
+    [InlineData(15, 18)]
+    [InlineData(23, 18)]
+    [InlineData(24, 12)]
+    [InlineData(32, 12)]
+    [InlineData(33, 0)]
+    public void Calcula_direito_por_faixas_da_clt(int faltas, int esperado)
+    {
+        Assert.Equal(esperado, RegraFaltasClt.CalcularDireito(30, faltas));
+    }
+
     [Fact]
     public void Limita_abono_a_um_terco_do_direito()
     {

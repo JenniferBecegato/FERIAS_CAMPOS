@@ -69,6 +69,13 @@ public partial class App : Application
 
         using var database = factory.CreateDbContext();
         database.Database.EnsureCreated();
+        var columns = database.Database.SqlQueryRaw<string>(
+            "SELECT name AS Value FROM pragma_table_info('Periodos')").ToList();
+        if (!columns.Contains("FaltasNaoJustificadas"))
+        {
+            database.Database.ExecuteSqlRaw(
+                "ALTER TABLE Periodos ADD COLUMN FaltasNaoJustificadas INTEGER NOT NULL DEFAULT 0");
+        }
         DbSeeder.Seed(database);
     }
 }

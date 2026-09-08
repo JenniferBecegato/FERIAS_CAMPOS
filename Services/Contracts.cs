@@ -23,6 +23,7 @@ public interface IAgendamentoService
         int periodoId,
         IReadOnlyList<IntervaloFerias> intervalos,
         int diasAbono,
+        int faltasNaoJustificadas,
         string motivo);
 }
 

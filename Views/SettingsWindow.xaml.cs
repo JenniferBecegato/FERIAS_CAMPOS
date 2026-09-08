@@ -15,6 +15,8 @@ public partial class SettingsWindow : Window
             configuracao.BloquearAgendamentoMenos30Dias;
         BlockWeeklyRestCheckBox.IsChecked =
             configuracao.BloquearInicioAntesRepousoSemanal;
+        DiscountAbsencesCheckBox.IsChecked =
+            configuracao.DescontarSaldoFeriasPorFaltasNaoJustificadas;
     }
 
     private void CancelClick(object sender, RoutedEventArgs e)
@@ -28,6 +30,8 @@ public partial class SettingsWindow : Window
             BlockNoticeCheckBox.IsChecked == true;
         _configuracao.BloquearInicioAntesRepousoSemanal =
             BlockWeeklyRestCheckBox.IsChecked == true;
+        _configuracao.DescontarSaldoFeriasPorFaltasNaoJustificadas =
+            DiscountAbsencesCheckBox.IsChecked == true;
         _configuracao.Salvar();
         DialogResult = true;
     }

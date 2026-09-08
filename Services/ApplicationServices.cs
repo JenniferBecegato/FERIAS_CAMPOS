@@ -157,6 +157,11 @@ public sealed class ColaboradorService(
             errors.Add("A admissão não pode estar no futuro.");
         }
 
+        if (employee.Unidade is not ("Washington Luiz" or "Gurgel"))
+        {
+            errors.Add("Selecione uma unidade válida.");
+        }
+
         if (employee.DireitoDias is < 1 or > 30)
         {
             errors.Add("O direito deve estar entre 1 e 30 dias.");
@@ -458,6 +463,7 @@ public sealed class AgendamentoService(
         int periodoId,
         IReadOnlyList<IntervaloFerias> intervalos,
         int diasAbono,
+        int faltasNaoJustificadas,
         string motivo)
     {
         await using var database = await databaseFactory.CreateDbContextAsync();
@@ -465,6 +471,34 @@ public sealed class AgendamentoService(
             .Include(item => item.Movimentacoes)
             .FirstAsync(item => item.Id == periodoId);
         var holidays = await database.Feriados.ToListAsync();
+        if (faltasNaoJustificadas < 0)
+        {
+            return new ResultadoValidacao(false,
+                ["A quantidade de faltas não justificadas não pode ser negativa."], []);
+        }
+
+        period.FaltasNaoJustificadas = faltasNaoJustificadas;
+        var ajusteAtual = RegraFaltasClt.ObterAjusteAtual(period);
+        var ajusteDesejado = configuracao.DescontarSaldoFeriasPorFaltasNaoJustificadas
+            ? RegraFaltasClt.CalcularDireito(period.DireitoDias, faltasNaoJustificadas) -
+              period.DireitoDias
+            : 0;
+        var movimentoAjuste = period.Movimentacoes.FirstOrDefault(item =>
+            item.Tipo == TipoMovimentacao.Ajuste &&
+            item.Motivo == RegraFaltasClt.MotivoAjuste);
+        if (movimentoAjuste is null && ajusteDesejado != 0)
+        {
+            period.Movimentacoes.Add(new MovimentacaoSaldo
+            {
+                Tipo = TipoMovimentacao.Ajuste,
+                Dias = ajusteDesejado,
+                Motivo = RegraFaltasClt.MotivoAjuste
+            });
+        }
+        else if (movimentoAjuste is not null && ajusteAtual != ajusteDesejado)
+        {
+            movimentoAjuste.Dias += ajusteDesejado - ajusteAtual;
+        }
         var result = rules.Validar(
             period,
             intervalos,

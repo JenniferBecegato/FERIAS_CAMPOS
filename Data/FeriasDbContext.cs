@@ -88,7 +88,7 @@ public static class DbSeeder
             Admissao = inicio.AddYears(-1),
             Cargo = "Colaborador",
             Setor = "Operações",
-            Unidade = "Matriz"
+            Unidade = "Washington Luiz"
         };
 
         colaborador.Periodos.Add(CreatePeriodo(index, inicio));

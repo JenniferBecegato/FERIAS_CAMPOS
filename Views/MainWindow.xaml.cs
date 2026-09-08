@@ -324,7 +324,6 @@ public partial class MainWindow : Window
     {
         InitialsText.Text = period.Colaborador.Iniciais;
         EmployeeText.Text = period.Colaborador.Nome;
-        CodeText.Text = $"Cód. {period.Colaborador.Matricula}";
         _updatingPeriodSelector = true;
         PeriodSelector.ItemsSource = _periodRows
             .Where(row => row.ColaboradorId == period.ColaboradorId)
@@ -385,6 +384,7 @@ public partial class MainWindow : Window
             _selectedPeriod,
             _configuracao.BloquearAgendamentoMenos30Dias,
             _configuracao.BloquearInicioAntesRepousoSemanal,
+            _configuracao.DescontarSaldoFeriasPorFaltasNaoJustificadas,
             feriados)
         {
             Owner = this
@@ -398,7 +398,8 @@ public partial class MainWindow : Window
         var result = await _controller.AgendarAsync(
             _selectedPeriod.Id,
             dialog.Intervalos,
-            dialog.DiasAbono);
+            dialog.DiasAbono,
+            dialog.FaltasNaoJustificadas);
 
         if (!result.Valido)
         {

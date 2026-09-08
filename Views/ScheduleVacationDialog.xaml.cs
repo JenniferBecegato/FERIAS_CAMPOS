@@ -3,16 +3,19 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using FeriasCampos.Models;
+using FeriasCampos.Services;
 
 namespace FeriasCampos.Views;
 
 public partial class ScheduleVacationDialog : Window
 {
-    private readonly int _saldoDisponivel;
+    private readonly int _saldoSemAjusteFaltas;
     private readonly int _vagasDisponiveis;
     private readonly bool _bloquearInicioAntesRepousoSemanal;
     private readonly IReadOnlyList<IntervaloItem> _existentes;
-    private readonly int _maximoAbono;
+    private readonly bool _descontarPorFaltas;
+    private readonly int _direitoOriginal;
+    private readonly int _vendidos;
     private readonly DateTime _vencimento;
     private readonly ObservableCollection<IntervaloItem> _novos = [];
     private bool _adjusting;
@@ -22,13 +25,17 @@ public partial class ScheduleVacationDialog : Window
         PeriodoAquisitivo periodo,
         bool bloquearAgendamentoMenos30Dias,
         bool bloquearInicioAntesRepousoSemanal,
+        bool descontarPorFaltas,
         IEnumerable<Feriado> feriados)
     {
         InitializeComponent();
         _bloquearInicioAntesRepousoSemanal = bloquearInicioAntesRepousoSemanal;
-        _saldoDisponivel = Math.Max(0, periodo.Saldo);
+        _descontarPorFaltas = descontarPorFaltas;
+        _direitoOriginal = periodo.DireitoDias;
+        _vendidos = periodo.Vendidos;
+        _saldoSemAjusteFaltas = Math.Max(0,
+            periodo.Saldo - RegraFaltasClt.ObterAjusteAtual(periodo));
         _vencimento = periodo.Vencimento.Date;
-        _maximoAbono = Math.Max(0, (periodo.DireitoDias / 3) - periodo.Vendidos);
         _existentes = periodo.Movimentacoes
             .Where(item => item.Tipo == TipoMovimentacao.Agendamento &&
                            item.Inicio is not null && item.Fim is not null)
@@ -41,14 +48,11 @@ public partial class ScheduleVacationDialog : Window
         EmployeeText.Text = periodo.Colaborador.Nome;
         ExistingRangesList.ItemsSource = _existentes;
         NewRangesList.ItemsSource = _novos;
-        AllowanceHelpText.Text =
-            $"Máximo disponível: {_maximoAbono} dia(s). O pedido do empregado deve ter sido feito no prazo legal.";
-        RulesPeriodLimitText.Text =
-            $"Para este período: até {_vagasDisponiveis} nova(s) parcela(s) e " +
-            $"até {_maximoAbono} dia(s) adicionais de abono.";
+        UnjustifiedAbsencesTextBox.Text = periodo.FaltasNaoJustificadas.ToString();
         RulesConfigurationText.Text =
             $"• Antecedência de 30 dias: {(bloquearAgendamentoMenos30Dias ? "bloqueada" : "permitida com aviso")}.\n" +
-            $"• Início antes do repouso semanal: {(bloquearInicioAntesRepousoSemanal ? "bloqueado" : "permitido com aviso")}.";
+            $"• Início antes do repouso semanal: {(bloquearInicioAntesRepousoSemanal ? "bloqueado" : "permitido com aviso")}.\n" +
+            $"• Desconto por faltas não justificadas: {(descontarPorFaltas ? "ligado" : "desligado")}.";
 
         var firstAllowed = new[]
         {
@@ -95,6 +99,15 @@ public partial class ScheduleVacationDialog : Window
                 : int.MaxValue;
         }
     }
+    public int FaltasNaoJustificadas =>
+        int.TryParse(UnjustifiedAbsencesTextBox.Text, out var value) ? value : 0;
+
+    private int DireitoAjustado => _descontarPorFaltas
+        ? RegraFaltasClt.CalcularDireito(_direitoOriginal, FaltasNaoJustificadas)
+        : _direitoOriginal;
+    private int SaldoDisponivel => Math.Max(0,
+        _saldoSemAjusteFaltas + DireitoAjustado - _direitoOriginal);
+    private int MaximoAbono => Math.Max(0, (DireitoAjustado / 3) - _vendidos);
 
     private void CalendarChanged(object sender, SelectionChangedEventArgs e)
     {
@@ -181,9 +194,9 @@ public partial class ScheduleVacationDialog : Window
         if (StartDatePicker.SelectedDate is not DateTime start ||
             !int.TryParse(VacationDaysTextBox.Text, out var days) || days <= 0)
             return false;
-        if (days > _saldoDisponivel)
+        if (days > SaldoDisponivel)
         {
-            ValidationText.Text = $"O período possui somente {_saldoDisponivel} dias disponíveis.";
+            ValidationText.Text = $"O período possui somente {SaldoDisponivel} dias disponíveis.";
             return false;
         }
         requested = new IntervaloFerias(start.Date, start.Date.AddDays(days - 1));
@@ -217,11 +230,11 @@ public partial class ScheduleVacationDialog : Window
 
     private string? ValidatePlan(IReadOnlyList<IntervaloFerias> newRanges)
     {
-        if (DiasAbono > _maximoAbono)
-            return $"O abono pecuniário está limitado a {_maximoAbono} dia(s).";
+        if (DiasAbono > MaximoAbono)
+            return $"O abono pecuniário está limitado a {MaximoAbono} dia(s).";
 
         var newDays = newRanges.Sum(item => item.Dias);
-        if ((long)newDays + DiasAbono > _saldoDisponivel)
+        if ((long)newDays + DiasAbono > SaldoDisponivel)
             return "A soma das parcelas e do abono excede o saldo disponível.";
 
         var allRanges = _existentes.Select(item => item.Intervalo)
@@ -230,7 +243,7 @@ public partial class ScheduleVacationDialog : Window
             return "O limite de três parcelas já foi atingido.";
         if (allRanges.Count > 1 && !allRanges.Any(item => item.Dias >= 14))
         {
-            var remainingBalance = _saldoDisponivel - newDays - DiasAbono;
+            var remainingBalance = SaldoDisponivel - newDays - DiasAbono;
             var remainingSlots = 3 - allRanges.Count;
             if (remainingBalance < 14 || remainingSlots < 1)
                 return "A divisão precisa conter uma parcela de pelo menos 14 dias.";
@@ -277,11 +290,19 @@ public partial class ScheduleVacationDialog : Window
     private void RefreshSummary()
     {
         var used = _novos.Sum(item => item.Intervalo.Dias);
-        var remaining = (long)_saldoDisponivel - used - DiasAbono;
+        var remaining = (long)SaldoDisponivel - used - DiasAbono;
         BalanceText.Text = $"{Math.Max(0, remaining)} dias restantes";
         SlotsText.Text = $"{_vagasDisponiveis - _novos.Count} parcela(s) disponível(is)";
         SummaryText.Text =
             $"{_novos.Count} parcela(s) • {used} dias de descanso • {DiasAbono} vendidos";
+        AllowanceHelpText.Text =
+            $"Máximo legal: {MaximoAbono} dia(s). O pedido do empregado deve ter sido feito no prazo legal.";
+        AbsencesHelpText.Text = _descontarPorFaltas
+            ? $"Regra CLT ligada: direito do período em {DireitoAjustado} dia(s)."
+            : "Regra CLT desligada: registro sem desconto no saldo.";
+        RulesPeriodLimitText.Text =
+            $"Para este período: até {_vagasDisponiveis} nova(s) parcela(s) e " +
+            $"até {MaximoAbono} dia(s) adicionais de abono.";
         ConfirmButton.IsEnabled = _novos.Count > 0 &&
             ValidatePlan(_novos.Select(item => item.Intervalo).ToList()) is null;
     }
@@ -303,12 +324,31 @@ public partial class ScheduleVacationDialog : Window
         }
 
         var days = DiasAbono;
-        if (days > _maximoAbono)
-            ValidationText.Text = $"O abono pecuniário está limitado a {_maximoAbono} dia(s).";
-        else if ((long)days + _novos.Sum(item => item.Intervalo.Dias) > _saldoDisponivel)
+        if (days > MaximoAbono)
+            ValidationText.Text = $"O abono pecuniário está limitado a {MaximoAbono} dia(s).";
+        else if ((long)days + _novos.Sum(item => item.Intervalo.Dias) > SaldoDisponivel)
             ValidationText.Text = "A soma das férias e do abono excede o saldo disponível.";
         else
             ValidationText.Text = string.Empty;
+        RefreshSummary();
+        EvaluateDraft();
+    }
+
+    private void UnjustifiedAbsencesPreviewTextInput(object sender, TextCompositionEventArgs e)
+    {
+        e.Handled = e.Text.Any(character => !char.IsDigit(character));
+    }
+
+    private void UnjustifiedAbsencesChanged(object sender, TextChangedEventArgs e)
+    {
+        if (!IsInitialized) return;
+        var digits = new string(UnjustifiedAbsencesTextBox.Text.Where(char.IsDigit).ToArray());
+        if (digits != UnjustifiedAbsencesTextBox.Text)
+        {
+            UnjustifiedAbsencesTextBox.Text = string.IsNullOrEmpty(digits) ? "0" : digits;
+            UnjustifiedAbsencesTextBox.CaretIndex = UnjustifiedAbsencesTextBox.Text.Length;
+            return;
+        }
         RefreshSummary();
         EvaluateDraft();
     }

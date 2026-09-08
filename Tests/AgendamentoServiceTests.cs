@@ -10,12 +10,50 @@ namespace ControleFerias.Tests;
 public sealed class AgendamentoServiceTests
 {
     [Fact]
+    public async Task Registra_faltas_e_reduz_saldo_quando_configurado()
+    {
+        await using var fixture = await Fixture.CreateAsync();
+        var result = await fixture.Service.AgendarAsync(fixture.PeriodId,
+            [new(new DateTime(2027, 1, 4), new DateTime(2027, 1, 17))],
+            0, 6, "Teste com faltas");
+
+        await using var database = fixture.Factory.CreateDbContext();
+        var period = await database.Periodos.Include(item => item.Movimentacoes)
+            .SingleAsync(item => item.Id == fixture.PeriodId,
+                TestContext.Current.CancellationToken);
+        Assert.True(result.Valido);
+        Assert.Equal(6, period.FaltasNaoJustificadas);
+        Assert.Equal(10, period.Saldo);
+        Assert.Contains(period.Movimentacoes, item =>
+            item.Tipo == TipoMovimentacao.Ajuste && item.Dias == -6);
+    }
+
+    [Fact]
+    public async Task Registra_faltas_sem_reduzir_saldo_quando_desligado()
+    {
+        await using var fixture = await Fixture.CreateAsync(false);
+        var result = await fixture.Service.AgendarAsync(fixture.PeriodId,
+            [new(new DateTime(2027, 1, 4), new DateTime(2027, 1, 17))],
+            0, 6, "Teste sem desconto");
+
+        await using var database = fixture.Factory.CreateDbContext();
+        var period = await database.Periodos.Include(item => item.Movimentacoes)
+            .SingleAsync(item => item.Id == fixture.PeriodId,
+                TestContext.Current.CancellationToken);
+        Assert.True(result.Valido);
+        Assert.Equal(6, period.FaltasNaoJustificadas);
+        Assert.Equal(16, period.Saldo);
+        Assert.DoesNotContain(period.Movimentacoes, item =>
+            item.Tipo == TipoMovimentacao.Ajuste);
+    }
+
+    [Fact]
     public async Task Salva_abono_e_descanso_na_mesma_operacao()
     {
         await using var fixture = await Fixture.CreateAsync();
         var result = await fixture.Service.AgendarAsync(fixture.PeriodId,
             [new(new DateTime(2027, 1, 4), new DateTime(2027, 1, 23))],
-            10, "Teste com abono");
+            10, 0, "Teste com abono");
 
         await using var database = fixture.Factory.CreateDbContext();
         var period = await database.Periodos.Include(item => item.Movimentacoes)
@@ -37,7 +75,7 @@ public sealed class AgendamentoServiceTests
             new(new DateTime(2027, 1, 4), new DateTime(2027, 1, 17)),
             new(new DateTime(2027, 2, 1), new DateTime(2027, 2, 8)),
             new(new DateTime(2027, 3, 1), new DateTime(2027, 3, 8))
-        ], 0, "Teste em lote");
+        ], 0, 0, "Teste em lote");
 
         await using var database = fixture.Factory.CreateDbContext();
         var period = await database.Periodos.Include(item => item.Movimentacoes)
@@ -58,7 +96,7 @@ public sealed class AgendamentoServiceTests
         [
             new(new DateTime(2027, 1, 4), new DateTime(2027, 1, 17)),
             new(new DateTime(2027, 1, 10), new DateTime(2027, 1, 18))
-        ], 0, "Teste inválido");
+        ], 0, 0, "Teste inválido");
 
         await using var database = fixture.Factory.CreateDbContext();
         Assert.False(result.Valido);
@@ -84,7 +122,7 @@ public sealed class AgendamentoServiceTests
         public AgendamentoService Service { get; }
         public int PeriodId { get; }
 
-        public static async Task<Fixture> CreateAsync()
+        public static async Task<Fixture> CreateAsync(bool descontarPorFaltas = true)
         {
             var connection = new SqliteConnection("Data Source=:memory:");
             await connection.OpenAsync();
@@ -113,7 +151,10 @@ public sealed class AgendamentoServiceTests
             await database.SaveChangesAsync();
 
             var service = new AgendamentoService(factory, new RegraFeriasEngine(),
-                new TestConfiguration());
+                new TestConfiguration
+                {
+                    DescontarSaldoFeriasPorFaltasNaoJustificadas = descontarPorFaltas
+                });
             return new Fixture(connection, factory, service, period.Id);
         }
 
@@ -130,6 +171,7 @@ public sealed class AgendamentoServiceTests
     {
         public bool BloquearAgendamentoMenos30Dias { get; set; }
         public bool BloquearInicioAntesRepousoSemanal { get; set; } = true;
+        public bool DescontarSaldoFeriasPorFaltasNaoJustificadas { get; set; } = true;
         public void Salvar() { }
     }
 }

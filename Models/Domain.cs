@@ -69,6 +69,7 @@ public sealed class PeriodoAquisitivo
     public DateTime Fim { get; set; }
     public DateTime Vencimento { get; set; }
     public int DireitoDias { get; set; } = 30;
+    public int FaltasNaoJustificadas { get; set; }
     public StatusPeriodo Status { get; set; }
     public List<MovimentacaoSaldo> Movimentacoes { get; set; } = [];
 

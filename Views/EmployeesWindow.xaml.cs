@@ -46,7 +46,7 @@ public partial class EmployeesWindow : Window
             AdmissionPicker.SelectedDate ?? DateTime.MaxValue,
             string.Empty,
             string.Empty,
-            string.Empty,
+            UnitBox.SelectedValue?.ToString() ?? string.Empty,
             30);
 
         var result = await _controller.CadastrarColaboradorAsync(newEmployee);
@@ -73,5 +73,6 @@ public partial class EmployeesWindow : Window
         NameBox.Clear();
         CpfBox.Clear();
         AdmissionPicker.SelectedDate = null;
+        UnitBox.SelectedIndex = 0;
     }
 }
