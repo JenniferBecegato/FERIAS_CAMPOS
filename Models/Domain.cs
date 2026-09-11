@@ -5,16 +5,11 @@ namespace FeriasCampos.Models;
 
 public enum StatusPeriodo
 {
-    EmAquisicao,
-    Disponivel,
-    Programado,
-    Parcial,
-    Completo,
-    Atencao,
-    Urgente,
-    Vencido,
-    Suspenso,
-    Perdido
+    EmAquisicao = 0,
+    Disponivel = 1,
+    Parcial = 3,
+    Completo = 4,
+    Vencido = 7
 }
 
 public enum TipoMovimentacao
@@ -41,13 +36,8 @@ public sealed class Colaborador
     [MaxLength(14)]
     public string Cpf { get; set; } = string.Empty;
 
-    [MaxLength(30)]
-    public string Matricula { get; set; } = string.Empty;
 
     public DateTime Admissao { get; set; }
-    public bool Ativo { get; set; } = true;
-    public string Cargo { get; set; } = string.Empty;
-    public string Setor { get; set; } = string.Empty;
     public string Unidade { get; set; } = string.Empty;
     public List<PeriodoAquisitivo> Periodos { get; set; } = [];
 
@@ -109,8 +99,21 @@ public sealed class MovimentacaoSaldo
 public sealed class Feriado
 {
     public int Id { get; set; }
-    public DateTime Data { get; set; }
-    public string Descricao { get; set; } = string.Empty;
+    public string Nome { get; set; } = string.Empty;
+    public int Dia { get; set; }
+    public int Mes { get; set; }
+
+    [NotMapped]
+    public string NomeMes
+    {
+        get
+        {
+            var culture = System.Globalization.CultureInfo.GetCultureInfo("pt-BR");
+            return Mes is >= 1 and <= 12
+                ? culture.TextInfo.ToTitleCase(culture.DateTimeFormat.GetMonthName(Mes))
+                : string.Empty;
+        }
+    }
 }
 
 public sealed record ResultadoValidacao(
@@ -156,9 +159,6 @@ public sealed record FeriasAgendaItem(
 public sealed record NovoColaboradorDto(
     string Nome,
     string Cpf,
-    string Matricula,
     DateTime Admissao,
-    string Cargo,
-    string Setor,
     string Unidade,
     int DireitoDias);

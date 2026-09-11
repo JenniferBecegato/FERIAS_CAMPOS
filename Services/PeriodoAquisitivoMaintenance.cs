@@ -6,7 +6,7 @@ public static class PeriodoAquisitivoMaintenance
 {
     public static int Atualizar(Colaborador colaborador, DateTime dataReferencia)
     {
-        if (!colaborador.Ativo || colaborador.Periodos.Count == 0)
+        if (colaborador.Periodos.Count == 0)
         {
             return 0;
         }

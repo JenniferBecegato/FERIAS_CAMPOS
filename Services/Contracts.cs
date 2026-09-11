@@ -9,6 +9,8 @@ public interface IColaboradorService
     Task<IReadOnlyList<Colaborador>> ListarAsync();
     Task<IReadOnlyList<FeriasAgendaItem>> ListarAgendaAsync();
     Task<ResultadoValidacao> CadastrarAsync(NovoColaboradorDto novo);
+    Task<ResultadoValidacao> AlterarAsync(int id, NovoColaboradorDto dados);
+    Task<ResultadoValidacao> ExcluirAsync(int id);
 }
 
 public interface IPeriodoService
@@ -40,6 +42,8 @@ public interface IRegraFeriasEngine
 
 public interface IMovimentacaoService
 {
+    Task<ResultadoValidacao> RegistrarFolgaAsync(int periodoId, int dias, string motivo);
+
     Task RegistrarAsync(
         int periodoId,
         TipoMovimentacao tipo,

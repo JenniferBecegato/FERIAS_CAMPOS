@@ -12,4 +12,4 @@
 | Bloqueado | opacidade 55%, tooltip com motivo |
 | Validação | erro bloqueante ou aviso laranja confirmável |
 
-Status de período: Completo/verde, Parcial/azul, Atenção/laranja e Urgente/vermelho. No calendário, intervalo selecionado usa azul, início/fim usam azul primário, conflito usa hachura vermelha e data legalmente vedada permanece desabilitada com explicação.
+Status de período: Completo/verde, Parcial/azul, Em aquisição/azul, Disponível/azul e Vencido/vermelho. No calendário, intervalo selecionado usa azul, início/fim usam azul primário, conflito usa hachura vermelha e data legalmente vedada permanece desabilitada com explicação.

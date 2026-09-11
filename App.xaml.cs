@@ -2,6 +2,7 @@ using System.IO;
 using System.Windows;
 using FeriasCampos.Controllers;
 using FeriasCampos.Data;
+using FeriasCampos.Models;
 using FeriasCampos.Services;
 using FeriasCampos.Views;
 using Microsoft.EntityFrameworkCore;
@@ -51,6 +52,7 @@ public partial class App : Application
 
         services.AddSingleton<IConfiguracaoService>(
             new ConfiguracaoService(dataDirectory));
+        services.AddSingleton<IFeriadoService, FeriadoService>();
         services.AddSingleton<IRegraFeriasEngine, RegraFeriasEngine>();
         services.AddSingleton<IAgendamentoService, AgendamentoService>();
         services.AddSingleton<IColaboradorService, ColaboradorService>();
@@ -68,7 +70,9 @@ public partial class App : Application
         var factory = services.GetRequiredService<IDbContextFactory<FeriasDbContext>>();
 
         using var database = factory.CreateDbContext();
-        database.Database.EnsureCreated();
+        var databaseCreated = database.Database.EnsureCreated();
+        ColaboradorSchemaMaintenance.Atualizar(database);
+        FeriadoSchemaMaintenance.Atualizar(database);
         var columns = database.Database.SqlQueryRaw<string>(
             "SELECT name AS Value FROM pragma_table_info('Periodos')").ToList();
         if (!columns.Contains("FaltasNaoJustificadas"))
@@ -76,6 +80,23 @@ public partial class App : Application
             database.Database.ExecuteSqlRaw(
                 "ALTER TABLE Periodos ADD COLUMN FaltasNaoJustificadas INTEGER NOT NULL DEFAULT 0");
         }
-        DbSeeder.Seed(database);
+        if (databaseCreated)
+        {
+            DbSeeder.Seed(database);
+        }
+        var periodosLegados = database.Periodos.Include(p => p.Movimentacoes)
+            .Where(p => p.Status != StatusPeriodo.EmAquisicao && p.Status != StatusPeriodo.Disponivel &&
+                        p.Status != StatusPeriodo.Parcial && p.Status != StatusPeriodo.Completo &&
+                        p.Status != StatusPeriodo.Vencido).ToList();
+        foreach (var periodo in periodosLegados)
+        {
+            periodo.Status = periodo.Saldo <= 0 ? StatusPeriodo.Completo
+                : periodo.Vencimento.Date < DateTime.Today ? StatusPeriodo.Vencido
+                : periodo.Fim.Date >= DateTime.Today ? StatusPeriodo.EmAquisicao
+                : periodo.Saldo < periodo.DireitoDias ? StatusPeriodo.Parcial
+                : StatusPeriodo.Disponivel;
+        }
+        if (periodosLegados.Count > 0)
+            database.SaveChanges();
     }
 }

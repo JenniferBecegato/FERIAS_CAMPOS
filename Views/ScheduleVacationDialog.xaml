@@ -1,67 +1,68 @@
-<Window x:Class="FeriasCampos.Views.ScheduleVacationDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="Agendar férias por períodos" Width="1140" Height="780" MinWidth="1060" MinHeight="720" WindowStartupLocation="CenterOwner" Background="#F8FAFC">
+<Window x:Class="FeriasCampos.Views.ScheduleVacationDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:texts="clr-namespace:FeriasCampos.Properties" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Icon="{StaticResource travelIcon}" Title="{x:Static texts:ScreenTexts.ScheduleVacationDialog_AgendarFeriasPorPeriodos}" Width="1140" Height="780" MinWidth="1060" MinHeight="720" WindowStartupLocation="CenterOwner" Background="#F8FAFC">
  <Window.Resources>
   <Style x:Key="DivisionRuleText" TargetType="TextBlock"><Setter Property="TextWrapping" Value="Wrap"/><Setter Property="LineHeight" Value="19"/><Setter Property="Margin" Value="0,0,0,9"/><Setter Property="FontSize" Value="12"/></Style>
  </Window.Resources>
  <Grid Margin="26"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-  <StackPanel><TextBlock Text="Agendar férias por períodos" FontSize="25" FontWeight="Bold"/><TextBlock Text="Monte até três parcelas e confirme todas de uma vez" Margin="0,4,0,0" Foreground="{StaticResource MutedBrush}"/></StackPanel>
+  <StackPanel><StackPanel Orientation="Horizontal"><Image Source="{StaticResource travelIcon}" Width="30" Height="30" Margin="0,0,10,0"/><TextBlock Text="{x:Static texts:ScreenTexts.ScheduleVacationDialog_AgendarFeriasPorPeriodos}" FontSize="25" FontWeight="Bold" VerticalAlignment="Center"/></StackPanel><TextBlock Text="{x:Static texts:ScreenTexts.ScheduleVacationDialog_MonteAteTresParcelasEConfirmeTodasDe}" Margin="0,4,0,0" Foreground="{StaticResource MutedBrush}"/></StackPanel>
   <Border Grid.Row="1" Background="#EDF6FF" CornerRadius="8" Padding="12,10" Margin="0,16,0,14"><Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock x:Name="EmployeeText" FontWeight="SemiBold" VerticalAlignment="Center"/><StackPanel Grid.Column="1" HorizontalAlignment="Right"><TextBlock x:Name="BalanceText" Foreground="#0878E8" FontWeight="Bold"/><TextBlock x:Name="SlotsText" FontSize="11" Foreground="{StaticResource MutedBrush}" HorizontalAlignment="Right"/></StackPanel></Grid></Border>
   <Grid Grid.Row="2"><Grid.ColumnDefinitions><ColumnDefinition Width="1.1*"/><ColumnDefinition Width="16"/><ColumnDefinition/><ColumnDefinition Width="16"/><ColumnDefinition Width="300"/></Grid.ColumnDefinitions>
    <Border Style="{StaticResource Card}" Padding="18"><Grid>
     <Grid.RowDefinitions><RowDefinition/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
     <StackPanel Margin="0,0,5,0">
-    <TextBlock Text="Data de início" FontSize="13" FontWeight="SemiBold" Margin="0,0,0,6"/>
+    <Border Background="#EDF6FF" CornerRadius="7" Padding="10" Margin="0,0,0,12"><StackPanel><TextBlock x:Name="AvailableDatesText" FontWeight="SemiBold" Foreground="#0866C6" TextWrapping="Wrap"/><TextBlock x:Name="VacationDeadlineText" FontSize="11" Margin="0,5,0,0" TextWrapping="Wrap"/></StackPanel></Border>
+    <TextBlock Text="{x:Static texts:ScreenTexts.ScheduleVacationDialog_DataDeInicio}" FontSize="13" FontWeight="SemiBold" Margin="0,0,0,6"/>
     <Calendar x:Name="RangeCalendar" SelectionMode="SingleDate" HorizontalAlignment="Center" SelectedDatesChanged="CalendarChanged"/>
     <Grid Margin="0,14,0,0"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="12"/><ColumnDefinition Width="120"/></Grid.ColumnDefinitions>
-     <StackPanel><TextBlock Text="Data inicial" FontSize="12" Foreground="{StaticResource MutedBrush}"/><DatePicker x:Name="StartDatePicker" SelectedDateChanged="StartDateChanged"/></StackPanel>
-     <StackPanel Grid.Column="2"><TextBlock Text="Quantidade de dias" FontSize="12" Foreground="{StaticResource MutedBrush}"/><TextBox x:Name="VacationDaysTextBox" Height="26" Padding="7,3" HorizontalContentAlignment="Right" TextChanged="VacationDaysChanged" PreviewTextInput="VacationDaysPreviewTextInput"/></StackPanel>
+     <StackPanel><TextBlock Text="{x:Static texts:ScreenTexts.ScheduleVacationDialog_DataInicial}" FontSize="12" Foreground="{StaticResource MutedBrush}"/><DatePicker x:Name="StartDatePicker" SelectedDateChanged="StartDateChanged"/></StackPanel>
+     <StackPanel Grid.Column="2"><TextBlock Text="{x:Static texts:ScreenTexts.ScheduleVacationDialog_QuantidadeDeDias}" FontSize="12" Foreground="{StaticResource MutedBrush}"/><TextBox x:Name="VacationDaysTextBox" Height="26" Padding="7,3" HorizontalContentAlignment="Right" TextChanged="VacationDaysChanged" PreviewTextInput="VacationDaysPreviewTextInput"/></StackPanel>
     </Grid>
-    <Border Background="#EDF6FF" CornerRadius="7" Padding="10,7" Margin="0,10,0,0"><TextBlock x:Name="RangeCountText" Text="Informe o início e a quantidade de dias" Foreground="#0866C6" FontWeight="SemiBold" TextAlignment="Center"/></Border>
+    <Border Background="#EDF6FF" CornerRadius="7" Padding="10,7" Margin="0,10,0,0"><TextBlock x:Name="RangeCountText" Text="{x:Static texts:ScreenTexts.ScheduleVacationDialog_InformeOInicioEAQuantidadeDeDias}" Foreground="#0866C6" FontWeight="SemiBold" TextAlignment="Center"/></Border>
     <Grid Margin="0,14,0,0"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="90"/></Grid.ColumnDefinitions>
-     <StackPanel><TextBlock Text="Faltas não justificadas no período" FontWeight="SemiBold"/><TextBlock x:Name="AbsencesHelpText" FontSize="11" Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap"/></StackPanel>
+     <StackPanel><TextBlock Text="{x:Static texts:ScreenTexts.ScheduleVacationDialog_FaltasNaoJustificadasNoPeriodo}" FontWeight="SemiBold"/><TextBlock x:Name="AbsencesHelpText" FontSize="11" Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap"/></StackPanel>
      <TextBox x:Name="UnjustifiedAbsencesTextBox" Grid.Column="1" Height="34" Padding="8,5" Text="0" HorizontalContentAlignment="Right" TextChanged="UnjustifiedAbsencesChanged" PreviewTextInput="UnjustifiedAbsencesPreviewTextInput"/>
     </Grid>
     <Grid Margin="0,14,0,0"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="90"/></Grid.ColumnDefinitions>
-     <StackPanel><TextBlock Text="Abono pecuniário (venda)" FontWeight="SemiBold"/><TextBlock x:Name="AllowanceHelpText" FontSize="11" Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap"/></StackPanel>
+     <StackPanel><TextBlock Text="{x:Static texts:ScreenTexts.ScheduleVacationDialog_AbonoPecuniarioVenda}" FontWeight="SemiBold"/><TextBlock x:Name="AllowanceHelpText" FontSize="11" Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap"/></StackPanel>
      <TextBox x:Name="AllowanceDaysTextBox" Grid.Column="1" Height="34" Padding="8,5" Text="0" HorizontalContentAlignment="Right" TextChanged="AllowanceDaysChanged" PreviewTextInput="AllowanceDaysPreviewTextInput"/>
     </Grid>
     </StackPanel>
     </ScrollViewer>
-    <Button x:Name="AddOrUpdateButton" Grid.Row="1" Content="Adicionar parcela" Margin="0,14,0,0" Background="#0878E8" Foreground="White" Click="AddOrUpdateClick" IsEnabled="False"/>
+    <Button x:Name="AddOrUpdateButton" Grid.Row="1" Content="{x:Static texts:ScreenTexts.ScheduleVacationDialog_AdicionarParcela}" Margin="0,14,0,0" Background="#0878E8" Foreground="White" Click="AddOrUpdateClick" IsEnabled="False"/>
    </Grid></Border>
    <Border Grid.Column="2" Style="{StaticResource Card}" Padding="18"><Grid><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-    <TextBlock Text="Novas parcelas" FontSize="16" FontWeight="Bold"/>
+    <TextBlock Text="{x:Static texts:ScreenTexts.ScheduleVacationDialog_NovasParcelas}" FontSize="16" FontWeight="Bold"/>
     <ListBox x:Name="NewRangesList" Grid.Row="1" Margin="0,10" SelectionChanged="NewRangeSelected" DisplayMemberPath="Descricao"/>
-    <Button Grid.Row="2" Content="Remover selecionada" Click="RemoveClick"/>
-    <TextBlock Grid.Row="3" Text="Parcelas já agendadas" FontSize="14" FontWeight="Bold" Margin="0,18,0,0"/>
+    <Button Grid.Row="2" Content="{x:Static texts:ScreenTexts.ScheduleVacationDialog_RemoverSelecionada}" Click="RemoveClick"/>
+    <TextBlock Grid.Row="3" Text="{x:Static texts:ScreenTexts.ScheduleVacationDialog_ParcelasJaAgendadas}" FontSize="14" FontWeight="Bold" Margin="0,18,0,0"/>
     <ListBox x:Name="ExistingRangesList" Grid.Row="4" Margin="0,8,0,0" IsHitTestVisible="False" DisplayMemberPath="Descricao"/>
     <TextBlock x:Name="SummaryText" Grid.Row="5" FontWeight="SemiBold" Margin="0,12,0,0"/>
    </Grid></Border>
    <Border Grid.Column="4" Style="{StaticResource Card}" Padding="18" Background="#FFFCF5" BorderBrush="#F5C66D">
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
      <StackPanel>
-      <TextBlock Text="Regras da divisão" FontSize="17" FontWeight="Bold" Margin="0,0,0,4"/>
-      <TextBlock Text="Férias individuais — CLT" Foreground="#A35A00" FontSize="12" Margin="0,0,0,14"/>
-      <TextBlock Style="{StaticResource DivisionRuleText}" Text="• As férias podem ser divididas em até 3 parcelas, com concordância do empregado."/>
-      <TextBlock Style="{StaticResource DivisionRuleText}" Text="• Uma das parcelas deve possuir pelo menos 14 dias corridos."/>
-      <TextBlock Style="{StaticResource DivisionRuleText}" Text="• Cada uma das demais parcelas deve possuir pelo menos 5 dias corridos."/>
-      <TextBlock Style="{StaticResource DivisionRuleText}" Text="• A soma das parcelas e dos dias vendidos não pode ultrapassar o saldo disponível."/>
+      <TextBlock Text="{x:Static texts:ScreenTexts.ScheduleVacationDialog_RegrasDaDivisao}" FontSize="17" FontWeight="Bold" Margin="0,0,0,4"/>
+      <TextBlock Text="{x:Static texts:ScreenTexts.ScheduleVacationDialog_FeriasIndividuaisCLT}" Foreground="#A35A00" FontSize="12" Margin="0,0,0,14"/>
+      <TextBlock Style="{StaticResource DivisionRuleText}" Text="{x:Static texts:ScreenTexts.ScheduleVacationDialog_AsFeriasPodemSerDivididasEmAte3}"/>
+      <TextBlock Style="{StaticResource DivisionRuleText}" Text="{x:Static texts:ScreenTexts.ScheduleVacationDialog_UmaDasParcelasDevePossuirPeloMenos14}"/>
+      <TextBlock Style="{StaticResource DivisionRuleText}" Text="{x:Static texts:ScreenTexts.ScheduleVacationDialog_CadaUmaDasDemaisParcelasDevePossuirPelo}"/>
+      <TextBlock Style="{StaticResource DivisionRuleText}" Text="{x:Static texts:ScreenTexts.ScheduleVacationDialog_ASomaDasParcelasEDosDiasVendidos}"/>
       <Border Height="1" Background="#F5C66D" Margin="0,3,0,12"/>
-      <TextBlock Text="Faltas não justificadas" FontSize="14" FontWeight="Bold" Margin="0,0,0,8"/>
-      <TextBlock Style="{StaticResource DivisionRuleText}" Text="• Até 5 faltas: 30 dias de férias."/>
-      <TextBlock Style="{StaticResource DivisionRuleText}" Text="• De 6 a 14 faltas: 24 dias de férias."/>
-      <TextBlock Style="{StaticResource DivisionRuleText}" Text="• De 15 a 23 faltas: 18 dias de férias."/>
-      <TextBlock Style="{StaticResource DivisionRuleText}" Text="• De 24 a 32 faltas: 12 dias de férias."/>
-      <TextBlock Style="{StaticResource DivisionRuleText}" Text="• Mais de 32 faltas: sem direito a férias no período."/>
-      <TextBlock Style="{StaticResource DivisionRuleText}" Foreground="#5F6B7A" Text="Faltas justificadas não entram neste cálculo. A redução ocorre por faixas; não se desconta um dia de férias para cada falta."/>
+      <TextBlock Text="{x:Static texts:ScreenTexts.ScheduleVacationDialog_FaltasNaoJustificadas}" FontSize="14" FontWeight="Bold" Margin="0,0,0,8"/>
+      <TextBlock Style="{StaticResource DivisionRuleText}" Text="{x:Static texts:ScreenTexts.ScheduleVacationDialog_Ate5Faltas30DiasDeFerias}"/>
+      <TextBlock Style="{StaticResource DivisionRuleText}" Text="{x:Static texts:ScreenTexts.ScheduleVacationDialog_De6A14Faltas24DiasDe}"/>
+      <TextBlock Style="{StaticResource DivisionRuleText}" Text="{x:Static texts:ScreenTexts.ScheduleVacationDialog_De15A23Faltas18DiasDe}"/>
+      <TextBlock Style="{StaticResource DivisionRuleText}" Text="{x:Static texts:ScreenTexts.ScheduleVacationDialog_De24A32Faltas12DiasDe}"/>
+      <TextBlock Style="{StaticResource DivisionRuleText}" Text="{x:Static texts:ScreenTexts.ScheduleVacationDialog_MaisDe32FaltasSemDireitoAFerias}"/>
+      <TextBlock Style="{StaticResource DivisionRuleText}" Foreground="#5F6B7A" Text="{x:Static texts:ScreenTexts.ScheduleVacationDialog_FaltasJustificadasNaoEntramNesteCalculoAReducao}"/>
       <Border Height="1" Background="#F5C66D" Margin="0,3,0,12"/>
-      <TextBlock Text="Abono pecuniário" FontSize="14" FontWeight="Bold" Margin="0,0,0,8"/>
-      <TextBlock Style="{StaticResource DivisionRuleText}" Text="• O empregado pode converter até 1/3 do direito em abono (venda)."/>
-      <TextBlock Style="{StaticResource DivisionRuleText}" Text="• O pedido deve partir do empregado e ser feito até 15 dias antes do fim do período aquisitivo."/>
+      <TextBlock Text="{x:Static texts:ScreenTexts.ScheduleVacationDialog_AbonoPecuniario}" FontSize="14" FontWeight="Bold" Margin="0,0,0,8"/>
+      <TextBlock Style="{StaticResource DivisionRuleText}" Text="{x:Static texts:ScreenTexts.ScheduleVacationDialog_OEmpregadoPodeConverterAte13Do}"/>
+      <TextBlock Style="{StaticResource DivisionRuleText}" Text="{x:Static texts:ScreenTexts.ScheduleVacationDialog_OPedidoDevePartirDoEmpregadoESer}"/>
       <Border Height="1" Background="#F5C66D" Margin="0,3,0,12"/>
-      <TextBlock Text="Datas" FontSize="14" FontWeight="Bold" Margin="0,0,0,8"/>
-      <TextBlock Style="{StaticResource DivisionRuleText}" Text="• Todas as parcelas devem terminar dentro do período concessivo."/>
-      <TextBlock Style="{StaticResource DivisionRuleText}" Text="• O início não pode ocorrer nos 2 dias anteriores a feriado ou repouso semanal, quando o bloqueio estiver habilitado."/>
+      <TextBlock Text="{x:Static texts:ScreenTexts.ScheduleVacationDialog_Datas}" FontSize="14" FontWeight="Bold" Margin="0,0,0,8"/>
+      <TextBlock Style="{StaticResource DivisionRuleText}" Text="{x:Static texts:ScreenTexts.ScheduleVacationDialog_TodasAsParcelasDevemTerminarDentroDoPeriodo}"/>
+      <TextBlock Style="{StaticResource DivisionRuleText}" Text="{x:Static texts:ScreenTexts.ScheduleVacationDialog_OInicioNaoPodeOcorrerNos2Dias}"/>
       <TextBlock x:Name="RulesConfigurationText" Style="{StaticResource DivisionRuleText}" Foreground="#5F6B7A"/>
       <Border Background="#FFF3D6" CornerRadius="7" Padding="10" Margin="0,4,0,0">
        <TextBlock x:Name="RulesPeriodLimitText" TextWrapping="Wrap" FontWeight="SemiBold" Foreground="#8A4D00"/>
@@ -71,6 +72,6 @@
    </Border>
   </Grid>
   <Border Grid.Row="3" Background="White" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,14"><TextBlock x:Name="ValidationText" Foreground="#C6283A" TextWrapping="Wrap"/></Border>
-  <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right"><Button Content="Cancelar" Click="CancelClick" Margin="0,0,8,0"/><Button x:Name="ConfirmButton" Content="Confirmar parcelas" Click="ConfirmClick" Background="#0878E8" Foreground="White" IsEnabled="False"/></StackPanel>
+  <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right"><Button Content="{x:Static texts:ScreenTexts.ScheduleVacationDialog_Cancelar}" Click="CancelClick" Margin="0,0,8,0"/><Button x:Name="ConfirmButton" Content="{x:Static texts:ScreenTexts.ScheduleVacationDialog_ConfirmarParcelas}" Click="ConfirmClick" Background="#0878E8" Foreground="White" IsEnabled="False"/></StackPanel>
  </Grid>
 </Window>

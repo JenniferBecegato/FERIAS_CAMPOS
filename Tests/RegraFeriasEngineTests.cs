@@ -171,8 +171,8 @@ public sealed class RegraFeriasEngineTests
         {
             new Feriado
             {
-                Data = new DateTime(2027, 1, 6),
-                Descricao = "Feriado"
+                Dia = 6, Mes = 1,
+                Nome = "Feriado"
             }
         };
 

@@ -1,3 +1,4 @@
+using FeriasCampos.Properties;
 using System.Windows;
 using FeriasCampos.Controllers;
 using FeriasCampos.Models;
@@ -7,6 +8,8 @@ namespace FeriasCampos.Views;
 public partial class EmployeesWindow : Window
 {
     private readonly DashboardController _controller;
+    private Colaborador? _editing;
+    private bool _busy;
 
     public EmployeesWindow(DashboardController controller)
     {
@@ -24,6 +27,25 @@ public partial class EmployeesWindow : Window
 
     private void NewClick(object sender, RoutedEventArgs e)
     {
+        ClearForm();
+        ShowForm();
+    }
+
+    private void EditClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is not FrameworkElement { DataContext: Colaborador employee }) return;
+        ClearForm();
+        _editing = employee;
+        FormTitle.Text = ScreenTexts.EmployeesWindow_AlterarColaborador;
+        NameBox.Text = employee.Nome;
+        CpfBox.Text = employee.Cpf;
+        AdmissionPicker.SelectedDate = employee.Admissao;
+        UnitBox.SelectedValue = employee.Unidade;
+        ShowForm();
+    }
+
+    private void ShowForm()
+    {
         FormColumn.Width = new GridLength(370);
         FormPanel.Visibility = Visibility.Visible;
         NameBox.Focus();
@@ -34,42 +56,94 @@ public partial class EmployeesWindow : Window
         FormPanel.Visibility = Visibility.Collapsed;
         FormColumn.Width = new GridLength(0);
         ErrorText.Text = string.Empty;
+        ClearForm();
     }
 
     private async void SaveClick(object sender, RoutedEventArgs e)
     {
-        var cpfDigits = new string(CpfBox.Text.Where(char.IsDigit).ToArray());
-        var newEmployee = new NovoColaboradorDto(
-            NameBox.Text,
-            CpfBox.Text,
-            $"AUTO-{cpfDigits}",
-            AdmissionPicker.SelectedDate ?? DateTime.MaxValue,
-            string.Empty,
-            string.Empty,
-            UnitBox.SelectedValue?.ToString() ?? string.Empty,
-            30);
-
-        var result = await _controller.CadastrarColaboradorAsync(newEmployee);
-        if (!result.Valido)
+        if (_busy) return;
+        _busy = true;
+        RootPanel.IsEnabled = false;
+        try
         {
-            ErrorText.Text = string.Join(Environment.NewLine, result.Erros);
-            return;
+            var editing = _editing;
+            var newEmployee = new NovoColaboradorDto(
+                NameBox.Text,
+                CpfBox.Text,
+                AdmissionPicker.SelectedDate ?? DateTime.MaxValue,
+                UnitBox.SelectedValue?.ToString() ?? string.Empty,
+                30);
+
+            var result = editing is null
+                ? await _controller.CadastrarColaboradorAsync(newEmployee)
+                : await _controller.AlterarColaboradorAsync(editing.Id, newEmployee);
+            if (!result.Valido)
+            {
+                ErrorText.Text = string.Join(Environment.NewLine, result.Erros);
+                return;
+            }
+
+            Changed = true;
+            await LoadEmployeesAsync();
+            ClearForm();
+            CancelClick(sender, e);
+
+            MessageBox.Show(
+                editing is null ? ScreenTexts.EmployeesWindow_ColaboradorCadastradoComSucesso : ScreenTexts.EmployeesWindow_ColaboradorAlteradoComSucesso,
+                ScreenTexts.EmployeesWindow_Colaboradores,
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
         }
+        catch (Exception)
+        {
+            ErrorText.Text = ScreenTexts.EmployeesWindow_NaoFoiPossivelConcluirAOperacaoFecheE;
+        }
+        finally
+        {
+            _busy = false;
+            RootPanel.IsEnabled = true;
+        }
+    }
 
-        Changed = true;
-        await LoadEmployeesAsync();
-        ClearForm();
-        CancelClick(sender, e);
-
-        MessageBox.Show(
-            "Colaborador cadastrado com sucesso.",
-            "Colaboradores",
-            MessageBoxButton.OK,
-            MessageBoxImage.Information);
+    private async void DeleteClick(object sender, RoutedEventArgs e)
+    {
+        if (_busy || sender is not FrameworkElement { DataContext: Colaborador employee }) return;
+        if (MessageBox.Show(this,
+                string.Format(ScreenTexts.EmployeesWindow_ExcluirOColaboradorTodosOsPeriodosDeFerias, employee.Nome),
+                ScreenTexts.EmployeesWindow_ExcluirColaborador, MessageBoxButton.YesNo, MessageBoxImage.Warning,
+                MessageBoxResult.No) != MessageBoxResult.Yes) return;
+        _busy = true;
+        RootPanel.IsEnabled = false;
+        try
+        {
+            var result = await _controller.ExcluirColaboradorAsync(employee.Id);
+            if (!result.Valido)
+            {
+                MessageBox.Show(this, string.Join(Environment.NewLine, result.Erros), ScreenTexts.EmployeesWindow_Colaboradores,
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            Changed = true;
+            if (_editing?.Id == employee.Id) CancelClick(sender, e);
+            await LoadEmployeesAsync();
+        }
+        catch (Exception)
+        {
+            MessageBox.Show(this, ScreenTexts.EmployeesWindow_NaoFoiPossivelConcluirAOperacaoFecheE,
+                ScreenTexts.EmployeesWindow_Colaboradores, MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        finally
+        {
+            _busy = false;
+            RootPanel.IsEnabled = true;
+        }
     }
 
     private void ClearForm()
     {
+        _editing = null;
+        FormTitle.Text = ScreenTexts.EmployeesWindow_NovoColaborador2;
+        ErrorText.Text = string.Empty;
         NameBox.Clear();
         CpfBox.Clear();
         AdmissionPicker.SelectedDate = null;

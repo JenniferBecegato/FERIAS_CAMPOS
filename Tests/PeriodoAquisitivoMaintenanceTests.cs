@@ -31,7 +31,7 @@ public sealed class PeriodoAquisitivoMaintenanceTests
 
     private static Colaborador CreateEmployee()
     {
-        var employee = new Colaborador { Ativo = true };
+        var employee = new Colaborador();
         var period = new PeriodoAquisitivo
         {
             Inicio = new DateTime(2024, 3, 1),

@@ -1,5 +1,14 @@
 <Application x:Class="FeriasCampos.App" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" ShutdownMode="OnMainWindowClose">
   <Application.Resources>
+    <BitmapImage x:Key="programIcon" UriSource="pack://application:,,,/Resource/program.ico"/>
+    <BitmapImage x:Key="homeIcon" UriSource="pack://application:,,,/Resource/home.ico"/>
+    <BitmapImage x:Key="dashboardIcon" UriSource="pack://application:,,,/Resource/dashboard.ico"/>
+    <BitmapImage x:Key="personIcon" UriSource="pack://application:,,,/Resource/person.ico"/>
+    <BitmapImage x:Key="importIcon" UriSource="pack://application:,,,/Resource/import.ico"/>
+    <BitmapImage x:Key="travelIcon" UriSource="pack://application:,,,/Resource/travel.ico"/>
+    <BitmapImage x:Key="summerIcon" UriSource="pack://application:,,,/Resource/summer.png"/>
+    <BitmapImage x:Key="rulesIcon" UriSource="pack://application:,,,/Resource/rules.ico"/>
+    <BitmapImage x:Key="settingsIcon" UriSource="pack://application:,,,/Resource/settings.ico"/>
     <SolidColorBrush x:Key="InkBrush" Color="#10213E"/><SolidColorBrush x:Key="MutedBrush" Color="#5F6B7A"/><SolidColorBrush x:Key="PrimaryBrush" Color="#0878E8"/><SolidColorBrush x:Key="BorderBrush" Color="#E4E9F0"/>
     <Style TargetType="TextBlock"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="Foreground" Value="{StaticResource InkBrush}"/></Style>
     <Style TargetType="Button"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="Cursor" Value="Hand"/><Setter Property="Padding" Value="14,9"/><Setter Property="Background" Value="White"/><Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/><Setter Property="BorderThickness" Value="1"/></Style>

@@ -1,3 +1,4 @@
+using FeriasCampos.Properties;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -17,6 +18,7 @@ public partial class ScheduleVacationDialog : Window
     private readonly int _direitoOriginal;
     private readonly int _vendidos;
     private readonly DateTime _vencimento;
+    private readonly bool _hasAvailableDates;
     private readonly ObservableCollection<IntervaloItem> _novos = [];
     private bool _adjusting;
     private IntervaloItem? _editing;
@@ -50,9 +52,9 @@ public partial class ScheduleVacationDialog : Window
         NewRangesList.ItemsSource = _novos;
         UnjustifiedAbsencesTextBox.Text = periodo.FaltasNaoJustificadas.ToString();
         RulesConfigurationText.Text =
-            $"• Antecedência de 30 dias: {(bloquearAgendamentoMenos30Dias ? "bloqueada" : "permitida com aviso")}.\n" +
-            $"• Início antes do repouso semanal: {(bloquearInicioAntesRepousoSemanal ? "bloqueado" : "permitido com aviso")}.\n" +
-            $"• Desconto por faltas não justificadas: {(descontarPorFaltas ? "ligado" : "desligado")}.";
+            string.Format(ScreenTexts.ScheduleVacationDialog_AntecedenciaDe30Dias, (bloquearAgendamentoMenos30Dias ? ScreenTexts.ScheduleVacationDialog_Bloqueada : ScreenTexts.ScheduleVacationDialog_PermitidaComAviso)) +
+            string.Format(ScreenTexts.ScheduleVacationDialog_InicioAntesDoRepousoSemanal, (bloquearInicioAntesRepousoSemanal ? ScreenTexts.ScheduleVacationDialog_Bloqueado : ScreenTexts.ScheduleVacationDialog_PermitidoComAviso)) +
+            string.Format(ScreenTexts.ScheduleVacationDialog_DescontoPorFaltasNaoJustificadas, (descontarPorFaltas ? ScreenTexts.ScheduleVacationDialog_Ligado : ScreenTexts.ScheduleVacationDialog_Desligado));
 
         var firstAllowed = new[]
         {
@@ -60,16 +62,24 @@ public partial class ScheduleVacationDialog : Window
             periodo.Fim.Date.AddDays(1),
             bloquearAgendamentoMenos30Dias ? DateTime.Today.AddDays(30) : DateTime.Today
         }.Max();
-        RangeCalendar.DisplayDateStart = firstAllowed;
-        RangeCalendar.DisplayDateEnd = periodo.Vencimento.Date;
-        StartDatePicker.DisplayDateStart = firstAllowed;
-        StartDatePicker.DisplayDateEnd = periodo.Vencimento.Date;
-        if (firstAllowed <= periodo.Vencimento.Date) RangeCalendar.DisplayDate = firstAllowed;
+        _hasAvailableDates = firstAllowed <= _vencimento;
+        AvailableDatesText.Text = _hasAvailableDates
+            ? string.Format(ScreenTexts.ScheduleVacationDialog_DatasDisponiveisParaFeriasA, firstAllowed, _vencimento)
+            : ScreenTexts.ScheduleVacationDialog_SemDatasDisponiveisParaAgendamentoNestePeriodo;
+        VacationDeadlineText.Text = string.Format(ScreenTexts.ScheduleVacationDialog_TodasAsParcelasDevemTerminarAte, _vencimento);
+        RangeCalendar.IsEnabled = _hasAvailableDates;
+        StartDatePicker.IsEnabled = _hasAvailableDates;
+        VacationDaysTextBox.IsEnabled = _hasAvailableDates;
+        if (_hasAvailableDates)
+        {
+            RangeCalendar.DisplayDateStart = firstAllowed;
+            RangeCalendar.DisplayDateEnd = _vencimento;
+            StartDatePicker.DisplayDateStart = firstAllowed;
+            StartDatePicker.DisplayDateEnd = _vencimento;
+            RangeCalendar.DisplayDate = firstAllowed;
+        }
 
-        var forbiddenStarts = feriados
-            .SelectMany(item => new[] { item.Data.Date.AddDays(-2), item.Data.Date.AddDays(-1) })
-            .Where(day => day >= firstAllowed && day <= periodo.Vencimento.Date)
-            .ToHashSet();
+        var forbiddenStarts = CalendarioFeriados.IniciosProibidos(firstAllowed, periodo.Vencimento.Date, feriados);
         if (bloquearInicioAntesRepousoSemanal)
         {
             for (var day = firstAllowed; day <= periodo.Vencimento.Date; day = day.AddDays(1))
@@ -151,13 +161,13 @@ public partial class ScheduleVacationDialog : Window
     {
         if (!TryGetDraft(out var requested))
         {
-            RangeCountText.Text = "Informe o início e a quantidade de dias";
+            RangeCountText.Text = ScreenTexts.ScheduleVacationDialog_InformeOInicioEAQuantidadeDeDias;
             AddOrUpdateButton.IsEnabled = false;
             return;
         }
 
         RangeCountText.Text =
-            $"{requested.Dias} dia(s) corrido(s) • término em {requested.Fim:dd/MM/yyyy}";
+            string.Format(ScreenTexts.ScheduleVacationDialog_DiaSCorridoSTerminoEm, requested.Dias, requested.Fim);
         var error = ValidateCandidate(requested);
         ValidationText.Text = error ?? string.Empty;
         AddOrUpdateButton.IsEnabled = error is null;
@@ -172,7 +182,7 @@ public partial class ScheduleVacationDialog : Window
         {
             if (_novos.Count >= _vagasDisponiveis)
             {
-                ValidationText.Text = "O limite de três parcelas já foi atingido.";
+                ValidationText.Text = ScreenTexts.ScheduleVacationDialog_OLimiteDeTresParcelasJaFoiAtingido;
                 return;
             }
             _novos.Add(new IntervaloItem(requested));
@@ -191,12 +201,13 @@ public partial class ScheduleVacationDialog : Window
     private bool TryGetDraft(out IntervaloFerias requested)
     {
         requested = null!;
+        if (!_hasAvailableDates) return false;
         if (StartDatePicker.SelectedDate is not DateTime start ||
             !int.TryParse(VacationDaysTextBox.Text, out var days) || days <= 0)
             return false;
         if (days > SaldoDisponivel)
         {
-            ValidationText.Text = $"O período possui somente {SaldoDisponivel} dias disponíveis.";
+            ValidationText.Text = string.Format(ScreenTexts.ScheduleVacationDialog_OPeriodoPossuiSomenteDiasDisponiveis, SaldoDisponivel);
             return false;
         }
         requested = new IntervaloFerias(start.Date, start.Date.AddDays(days - 1));
@@ -206,23 +217,23 @@ public partial class ScheduleVacationDialog : Window
     private string? ValidateCandidate(IntervaloFerias requested)
     {
         if (requested.Dias < 5)
-            return "Uma parcela deve possuir pelo menos 5 dias corridos.";
+            return ScreenTexts.ScheduleVacationDialog_UmaParcelaDevePossuirPeloMenos5Dias;
         if (requested.Fim > _vencimento)
-            return $"A parcela deve terminar até {_vencimento:dd/MM/yyyy}.";
+            return string.Format(ScreenTexts.ScheduleVacationDialog_AParcelaDeveTerminarAte, _vencimento);
         if (_bloquearInicioAntesRepousoSemanal &&
             requested.Inicio.DayOfWeek is DayOfWeek.Friday or DayOfWeek.Saturday)
-            return "A parcela não pode iniciar na sexta-feira ou no sábado, antes do repouso semanal.";
+            return ScreenTexts.ScheduleVacationDialog_AParcelaNaoPodeIniciarNaSextaFeira;
 
         var otherNewRanges = _novos
             .Where(item => item != _editing)
             .Select(item => item.Intervalo)
             .ToList();
         if (_editing is null && otherNewRanges.Count >= _vagasDisponiveis)
-            return "O limite de três parcelas já foi atingido.";
+            return ScreenTexts.ScheduleVacationDialog_OLimiteDeTresParcelasJaFoiAtingido;
         if (otherNewRanges.Any(item => Overlaps(item, requested)))
-            return "As novas parcelas não podem se sobrepor.";
+            return ScreenTexts.ScheduleVacationDialog_AsNovasParcelasNaoPodemSeSobrepor;
         if (_existentes.Any(item => Overlaps(item.Intervalo, requested)))
-            return "A parcela se sobrepõe a férias já agendadas.";
+            return ScreenTexts.ScheduleVacationDialog_AParcelaSeSobrepoeAFeriasJaAgendadas;
 
         otherNewRanges.Add(requested);
         return ValidatePlan(otherNewRanges);
@@ -231,22 +242,22 @@ public partial class ScheduleVacationDialog : Window
     private string? ValidatePlan(IReadOnlyList<IntervaloFerias> newRanges)
     {
         if (DiasAbono > MaximoAbono)
-            return $"O abono pecuniário está limitado a {MaximoAbono} dia(s).";
+            return string.Format(ScreenTexts.ScheduleVacationDialog_OAbonoPecuniarioEstaLimitadoADiaS, MaximoAbono);
 
         var newDays = newRanges.Sum(item => item.Dias);
         if ((long)newDays + DiasAbono > SaldoDisponivel)
-            return "A soma das parcelas e do abono excede o saldo disponível.";
+            return ScreenTexts.ScheduleVacationDialog_ASomaDasParcelasEDoAbonoExcede;
 
         var allRanges = _existentes.Select(item => item.Intervalo)
             .Concat(newRanges).ToList();
         if (allRanges.Count > 3)
-            return "O limite de três parcelas já foi atingido.";
+            return ScreenTexts.ScheduleVacationDialog_OLimiteDeTresParcelasJaFoiAtingido;
         if (allRanges.Count > 1 && !allRanges.Any(item => item.Dias >= 14))
         {
             var remainingBalance = SaldoDisponivel - newDays - DiasAbono;
             var remainingSlots = 3 - allRanges.Count;
             if (remainingBalance < 14 || remainingSlots < 1)
-                return "A divisão precisa conter uma parcela de pelo menos 14 dias.";
+                return ScreenTexts.ScheduleVacationDialog_ADivisaoPrecisaConterUmaParcelaDePelo;
         }
         return null;
     }
@@ -255,7 +266,7 @@ public partial class ScheduleVacationDialog : Window
     {
         if (NewRangesList.SelectedItem is not IntervaloItem item) return;
         _editing = item;
-        AddOrUpdateButton.Content = "Atualizar parcela";
+        AddOrUpdateButton.Content = ScreenTexts.ScheduleVacationDialog_AtualizarParcela;
         _adjusting = true;
         StartDatePicker.SelectedDate = item.Intervalo.Inicio;
         RangeCalendar.SelectedDate = item.Intervalo.Inicio;
@@ -281,9 +292,9 @@ public partial class ScheduleVacationDialog : Window
         StartDatePicker.SelectedDate = null;
         VacationDaysTextBox.Text = string.Empty;
         _adjusting = false;
-        AddOrUpdateButton.Content = "Adicionar parcela";
+        AddOrUpdateButton.Content = ScreenTexts.ScheduleVacationDialog_AdicionarParcela;
         AddOrUpdateButton.IsEnabled = false;
-        RangeCountText.Text = "Informe o início e a quantidade de dias";
+        RangeCountText.Text = ScreenTexts.ScheduleVacationDialog_InformeOInicioEAQuantidadeDeDias;
         ValidationText.Text = string.Empty;
     }
 
@@ -291,19 +302,19 @@ public partial class ScheduleVacationDialog : Window
     {
         var used = _novos.Sum(item => item.Intervalo.Dias);
         var remaining = (long)SaldoDisponivel - used - DiasAbono;
-        BalanceText.Text = $"{Math.Max(0, remaining)} dias restantes";
-        SlotsText.Text = $"{_vagasDisponiveis - _novos.Count} parcela(s) disponível(is)";
+        BalanceText.Text = string.Format(ScreenTexts.ScheduleVacationDialog_DiasRestantes, Math.Max(0, remaining));
+        SlotsText.Text = string.Format(ScreenTexts.ScheduleVacationDialog_ParcelaSDisponivelIs, _vagasDisponiveis - _novos.Count);
         SummaryText.Text =
-            $"{_novos.Count} parcela(s) • {used} dias de descanso • {DiasAbono} vendidos";
+            string.Format(ScreenTexts.ScheduleVacationDialog_ParcelaSDiasDeDescansoVendidos, _novos.Count, used, DiasAbono);
         AllowanceHelpText.Text =
-            $"Máximo legal: {MaximoAbono} dia(s). O pedido do empregado deve ter sido feito no prazo legal.";
+            string.Format(ScreenTexts.ScheduleVacationDialog_MaximoLegalDiaSOPedidoDoEmpregado, MaximoAbono);
         AbsencesHelpText.Text = _descontarPorFaltas
-            ? $"Regra CLT ligada: direito do período em {DireitoAjustado} dia(s)."
-            : "Regra CLT desligada: registro sem desconto no saldo.";
+            ? string.Format(ScreenTexts.ScheduleVacationDialog_RegraCLTLigadaDireitoDoPeriodoEmDia, DireitoAjustado)
+            : ScreenTexts.ScheduleVacationDialog_RegraCLTDesligadaRegistroSemDescontoNoSaldo;
         RulesPeriodLimitText.Text =
-            $"Para este período: até {_vagasDisponiveis} nova(s) parcela(s) e " +
-            $"até {MaximoAbono} dia(s) adicionais de abono.";
-        ConfirmButton.IsEnabled = _novos.Count > 0 &&
+            string.Format(ScreenTexts.ScheduleVacationDialog_ParaEstePeriodoAteNovaSParcelaS, _vagasDisponiveis) +
+            string.Format(ScreenTexts.ScheduleVacationDialog_AteDiaSAdicionaisDeAbono, MaximoAbono);
+        ConfirmButton.IsEnabled = _hasAvailableDates && _novos.Count > 0 &&
             ValidatePlan(_novos.Select(item => item.Intervalo).ToList()) is null;
     }
 
@@ -325,9 +336,9 @@ public partial class ScheduleVacationDialog : Window
 
         var days = DiasAbono;
         if (days > MaximoAbono)
-            ValidationText.Text = $"O abono pecuniário está limitado a {MaximoAbono} dia(s).";
+            ValidationText.Text = string.Format(ScreenTexts.ScheduleVacationDialog_OAbonoPecuniarioEstaLimitadoADiaS, MaximoAbono);
         else if ((long)days + _novos.Sum(item => item.Intervalo.Dias) > SaldoDisponivel)
-            ValidationText.Text = "A soma das férias e do abono excede o saldo disponível.";
+            ValidationText.Text = ScreenTexts.ScheduleVacationDialog_ASomaDasFeriasEDoAbonoExcede;
         else
             ValidationText.Text = string.Empty;
         RefreshSummary();
@@ -362,6 +373,6 @@ public partial class ScheduleVacationDialog : Window
     private sealed record IntervaloItem(IntervaloFerias Intervalo)
     {
         public string Descricao =>
-            $"{Intervalo.Inicio:dd/MM/yyyy} a {Intervalo.Fim:dd/MM/yyyy} • {Intervalo.Dias} dias";
+            string.Format(ScreenTexts.ScheduleVacationDialog_ADias, Intervalo.Inicio, Intervalo.Fim, Intervalo.Dias);
     }
 }

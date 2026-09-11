@@ -1,3 +1,4 @@
+using FeriasCampos.Properties;
 using System.IO;
 using System.Text;
 using FeriasCampos.Data;
@@ -15,7 +16,6 @@ public sealed class ColaboradorService(
         var employees = await database.Colaboradores
             .Include(colaborador => colaborador.Periodos)
             .ThenInclude(periodo => periodo.Movimentacoes)
-            .Where(colaborador => colaborador.Ativo)
             .ToListAsync();
 
         if (employees.Sum(employee =>
@@ -42,7 +42,7 @@ public sealed class ColaboradorService(
 
         var rows = periods.Select(ToRow).ToList();
         var totalEmployees = await database.Colaboradores
-            .CountAsync(colaborador => colaborador.Ativo);
+            .CountAsync();
 
         return new DashboardDto(
             totalEmployees,
@@ -99,21 +99,68 @@ public sealed class ColaboradorService(
     {
         var errors = ValidateNewEmployee(novo);
         var cpf = OnlyDigits(novo.Cpf);
-        var registration = novo.Matricula.Trim();
 
         await using var database = await databaseFactory.CreateDbContextAsync();
-        await AddDuplicateErrorsAsync(database, cpf, registration, errors);
+        await AddDuplicateErrorsAsync(database, cpf, errors);
 
         if (errors.Count > 0)
         {
             return new ResultadoValidacao(false, errors, []);
         }
 
-        var employee = CreateEmployee(novo, cpf, registration);
+        var employee = CreateEmployee(novo, cpf);
         database.Colaboradores.Add(employee);
         await database.SaveChangesAsync();
 
         return new ResultadoValidacao(true, [], []);
+    }
+
+    public async Task<ResultadoValidacao> AlterarAsync(int id, NovoColaboradorDto dados)
+    {
+        await using var database = await databaseFactory.CreateDbContextAsync();
+        var employee = await database.Colaboradores.Include(c => c.Periodos)
+            .ThenInclude(p => p.Movimentacoes).SingleOrDefaultAsync(c => c.Id == id);
+        if (employee is null)
+            return new(false, [ScreenTexts.EmployeesWindow_ColaboradorNaoEncontrado], []);
+
+        var errors = ValidateNewEmployee(dados);
+        var cpf = OnlyDigits(dados.Cpf);
+        await AddDuplicateErrorsAsync(database, cpf, errors, id);
+        var admissionChanged = employee.Admissao.Date != dados.Admissao.Date;
+        if (admissionChanged && employee.Periodos.Any(p => p.FaltasNaoJustificadas != 0 ||
+                p.Movimentacoes.Any(m => m.Tipo != TipoMovimentacao.Aquisicao)))
+            errors.Add(ScreenTexts.EmployeesWindow_AAdmissaoNaoPodeSerAlteradaPorqueHa);
+        if (errors.Count > 0)
+            return new(false, errors, []);
+
+        if (admissionChanged)
+        {
+            var direito = employee.Periodos.OrderBy(p => p.Inicio).FirstOrDefault()?.DireitoDias ?? 30;
+            database.Movimentacoes.RemoveRange(employee.Periodos.SelectMany(p => p.Movimentacoes));
+            database.Periodos.RemoveRange(employee.Periodos);
+            employee.Periodos = CreateEmployee(dados with { DireitoDias = direito }, cpf).Periodos;
+            PeriodoAquisitivoMaintenance.Atualizar(employee, DateTime.Today);
+        }
+        employee.Nome = dados.Nome.Trim();
+        employee.Cpf = cpf;
+        employee.Admissao = dados.Admissao.Date;
+        employee.Unidade = dados.Unidade.Trim();
+        await database.SaveChangesAsync();
+        return new(true, [], []);
+    }
+
+    public async Task<ResultadoValidacao> ExcluirAsync(int id)
+    {
+        await using var database = await databaseFactory.CreateDbContextAsync();
+        var employee = await database.Colaboradores.Include(c => c.Periodos)
+            .ThenInclude(p => p.Movimentacoes).SingleOrDefaultAsync(c => c.Id == id);
+        if (employee is null)
+            return new(false, [ScreenTexts.EmployeesWindow_ColaboradorNaoEncontrado], []);
+        database.Movimentacoes.RemoveRange(employee.Periodos.SelectMany(p => p.Movimentacoes));
+        database.Periodos.RemoveRange(employee.Periodos);
+        database.Colaboradores.Remove(employee);
+        await database.SaveChangesAsync();
+        return new(true, [], []);
     }
 
     private static PeriodoRow ToRow(PeriodoAquisitivo period)
@@ -123,7 +170,7 @@ public sealed class ColaboradorService(
             period.ColaboradorId,
             period.Colaborador.Iniciais,
             period.Colaborador.Nome,
-            $"{period.Inicio:dd/MM/yyyy} a\n{period.Fim:dd/MM/yyyy}",
+            string.Format(ScreenTexts.EmployeesWindow_PeriodoConcessivo, period.Fim.Date.AddDays(1), period.Vencimento),
             period.Vencimento.ToString("dd/MM/yyyy"),
             period.DireitoDias,
             period.Agendados,
@@ -139,32 +186,28 @@ public sealed class ColaboradorService(
 
         if (string.IsNullOrWhiteSpace(employee.Nome) || employee.Nome.Trim().Length < 3)
         {
-            errors.Add("Informe o nome completo.");
+            errors.Add(ScreenTexts.EmployeesWindow_InformeONomeCompleto);
         }
 
         if (OnlyDigits(employee.Cpf).Length != 11)
         {
-            errors.Add("O CPF deve possuir 11 dígitos.");
+            errors.Add(ScreenTexts.EmployeesWindow_OCPFDevePossuir11Digitos);
         }
 
-        if (string.IsNullOrWhiteSpace(employee.Matricula))
-        {
-            errors.Add("Informe a matrícula.");
-        }
 
         if (employee.Admissao.Date > DateTime.Today)
         {
-            errors.Add("A admissão não pode estar no futuro.");
+            errors.Add(ScreenTexts.EmployeesWindow_AAdmissaoNaoPodeEstarNoFuturo);
         }
 
         if (employee.Unidade is not ("Washington Luiz" or "Gurgel"))
         {
-            errors.Add("Selecione uma unidade válida.");
+            errors.Add(ScreenTexts.EmployeesWindow_SelecioneUmaUnidadeValida);
         }
 
         if (employee.DireitoDias is < 1 or > 30)
         {
-            errors.Add("O direito deve estar entre 1 e 30 dias.");
+            errors.Add(ScreenTexts.EmployeesWindow_ODireitoDeveEstarEntre1E30);
         }
 
         return errors;
@@ -173,35 +216,26 @@ public sealed class ColaboradorService(
     private static async Task AddDuplicateErrorsAsync(
         FeriasDbContext database,
         string cpf,
-        string registration,
-        ICollection<string> errors)
+        ICollection<string> errors,
+        int? excludedId = null)
     {
-        if (await database.Colaboradores.AnyAsync(employee => employee.Cpf == cpf))
+        if (await database.Colaboradores.AnyAsync(employee => employee.Id != excludedId && employee.Cpf == cpf))
         {
-            errors.Add("Já existe um colaborador com este CPF.");
+            errors.Add(ScreenTexts.EmployeesWindow_JaExisteUmColaboradorComEsteCPF);
         }
 
-        if (await database.Colaboradores.AnyAsync(employee =>
-            employee.Matricula == registration))
-        {
-            errors.Add("Já existe um colaborador com esta matrícula.");
-        }
     }
 
     private static Colaborador CreateEmployee(
         NovoColaboradorDto source,
-        string cpf,
-        string registration)
+        string cpf)
     {
         var admissionDate = source.Admissao.Date;
         var employee = new Colaborador
         {
             Nome = source.Nome.Trim(),
             Cpf = cpf,
-            Matricula = registration,
             Admissao = admissionDate,
-            Cargo = source.Cargo.Trim(),
-            Setor = source.Setor.Trim(),
             Unidade = source.Unidade.Trim()
         };
 
@@ -220,7 +254,7 @@ public sealed class ColaboradorService(
         {
             Tipo = TipoMovimentacao.Aquisicao,
             Dias = source.DireitoDias,
-            Motivo = "Saldo inicial criado no cadastro"
+            Motivo = ScreenTexts.EmployeesWindow_SaldoInicialCriadoNoCadastro
         });
 
         employee.Periodos.Add(period);
@@ -236,13 +270,13 @@ public sealed class ColaboradorService(
     {
         if (period.Saldo > 0 && period.Vencimento.Date < DateTime.Today)
         {
-            return "Vencido";
+            return ScreenTexts.EmployeesWindow_Vencido;
         }
 
         return period.Status switch
         {
-            StatusPeriodo.EmAquisicao => "Em aquisição",
-            StatusPeriodo.Atencao => "Atenção",
+            StatusPeriodo.EmAquisicao => ScreenTexts.EmployeesWindow_EmAquisicao,
+
             _ => period.Status.ToString()
         };
     }
@@ -291,7 +325,7 @@ public sealed class RegraFeriasEngine : IRegraFeriasEngine
 
         if (novos.Count == 0)
         {
-            errors.Add("Adicione ao menos uma parcela de férias.");
+            errors.Add(ScreenTexts.ScheduleVacationDialog_AdicioneAoMenosUmaParcelaDeFerias);
             return new ResultadoValidacao(false, errors, warnings);
         }
 
@@ -303,7 +337,7 @@ public sealed class RegraFeriasEngine : IRegraFeriasEngine
 
         if (existentes.Count + novos.Count > 3)
         {
-            errors.Add("O limite de três parcelas já foi atingido.");
+            errors.Add(ScreenTexts.ScheduleVacationDialog_OLimiteDeTresParcelasJaFoiAtingido);
         }
 
         foreach (var item in novos)
@@ -318,7 +352,7 @@ public sealed class RegraFeriasEngine : IRegraFeriasEngine
         var consumedDays = (long)totalDays + diasAbono;
         if (consumedDays > periodo.Saldo)
         {
-            errors.Add($"O período possui somente {periodo.Saldo} dias disponíveis.");
+            errors.Add(string.Format(ScreenTexts.ScheduleVacationDialog_OPeriodoPossuiSomenteDiasDisponiveis, periodo.Saldo));
         }
 
         ValidateInstallments(
@@ -340,7 +374,7 @@ public sealed class RegraFeriasEngine : IRegraFeriasEngine
     {
         if (allowanceDays < 0)
         {
-            errors.Add("A quantidade de dias vendidos não pode ser negativa.");
+            errors.Add(ScreenTexts.ScheduleVacationDialog_AQuantidadeDeDiasVendidosNaoPodeSer);
             return;
         }
 
@@ -348,8 +382,8 @@ public sealed class RegraFeriasEngine : IRegraFeriasEngine
         if (period.Vendidos + allowanceDays > maximum)
         {
             errors.Add(
-                $"O abono pecuniário não pode ultrapassar {maximum} dias " +
-                "neste período aquisitivo.");
+                string.Format(ScreenTexts.ScheduleVacationDialog_OAbonoPecuniarioNaoPodeUltrapassarDias, maximum) +
+                ScreenTexts.ScheduleVacationDialog_NestePeriodoTrabalhadoQueGerouODireitoAs);
         }
     }
 
@@ -360,47 +394,45 @@ public sealed class RegraFeriasEngine : IRegraFeriasEngine
     {
         if (range.Fim < range.Inicio)
         {
-            errors.Add("A data final não pode ser anterior à inicial.");
+            errors.Add(ScreenTexts.ScheduleVacationDialog_ADataFinalNaoPodeSerAnteriorA);
             return;
         }
 
         if (range.Dias < 5)
         {
-            errors.Add("Uma parcela de férias deve possuir pelo menos 5 dias corridos.");
+            errors.Add(ScreenTexts.ScheduleVacationDialog_UmaParcelaDeFeriasDevePossuirPeloMenos);
         }
 
         var firstConcessionDay = period.Fim.Date.AddDays(1);
         if (range.Inicio < firstConcessionDay)
         {
             errors.Add(
-                $"As férias deste período só podem começar a partir de " +
-                $"{firstConcessionDay:dd/MM/yyyy}, após o término da aquisição.");
+                string.Format(ScreenTexts.ScheduleVacationDialog_AsFeriasDestePeriodoSoPodemComecarA) +
+                string.Format(ScreenTexts.ScheduleVacationDialog_AposOTerminoDaAquisicao, firstConcessionDay));
         }
 
         if (range.Inicio > period.Vencimento.Date || range.Fim > period.Vencimento.Date)
         {
             errors.Add(
-                $"As férias devem terminar até o vencimento do período " +
-                $"({period.Vencimento:dd/MM/yyyy}).");
+                string.Format(ScreenTexts.ScheduleVacationDialog_AsFeriasDevemTerminarAteOVencimentoDo) +
+                string.Format(ScreenTexts.ScheduleVacationDialog_VencimentoEntreParenteses, period.Vencimento));
         }
 
-        if (holidays.Any(holiday =>
-                holiday.Data.Date == range.Inicio.AddDays(1) ||
-                holiday.Data.Date == range.Inicio.AddDays(2)))
+        if (CalendarioFeriados.InicioProibido(range.Inicio, holidays))
         {
-            errors.Add("O início ocorre nos dois dias anteriores a um feriado.");
+            errors.Add(ScreenTexts.ScheduleVacationDialog_OInicioOcorreNosDoisDiasAnterioresA);
         }
 
         if (range.Inicio.DayOfWeek is DayOfWeek.Friday or DayOfWeek.Saturday)
         {
-            const string message =
-                "O início ocorre nos dois dias anteriores ao repouso semanal de domingo.";
+            string message =
+                ScreenTexts.ScheduleVacationDialog_OInicioOcorreNosDoisDiasAnterioresAo;
             if (blockWeeklyRest) errors.Add(message); else warnings.Add(message);
         }
 
         if (range.Inicio < DateTime.Today.AddDays(30))
         {
-            const string message = "O início das férias deve respeitar 30 dias de antecedência.";
+            string message = ScreenTexts.ScheduleVacationDialog_OInicioDasFeriasDeveRespeitar30Dias;
             if (blockNotice) errors.Add(message); else warnings.Add(message);
         }
     }
@@ -419,7 +451,7 @@ public sealed class RegraFeriasEngine : IRegraFeriasEngine
             if (all[index].Range.Inicio <= all[index - 1].Range.Fim &&
                 (all[index].IsNew || all[index - 1].IsNew))
             {
-                errors.Add("As parcelas de férias não podem se sobrepor.");
+                errors.Add(ScreenTexts.ScheduleVacationDialog_AsParcelasDeFeriasNaoPodemSeSobrepor);
                 return;
             }
         }
@@ -440,7 +472,7 @@ public sealed class RegraFeriasEngine : IRegraFeriasEngine
         var remainingSlots = 3 - all.Count;
         if (remainingBalance < 14 || remainingSlots < 1)
         {
-            errors.Add("Uma das parcelas deve possuir pelo menos 14 dias.");
+            errors.Add(ScreenTexts.ScheduleVacationDialog_UmaDasParcelasDevePossuirPeloMenos142);
         }
     }
 }
@@ -455,7 +487,7 @@ public sealed class AgendamentoService(
         await using var database = await databaseFactory.CreateDbContextAsync();
         return await database.Feriados
             .AsNoTracking()
-            .OrderBy(item => item.Data)
+            .OrderBy(item => item.Mes).ThenBy(item => item.Dia).ThenBy(item => item.Nome)
             .ToListAsync();
     }
 
@@ -474,7 +506,7 @@ public sealed class AgendamentoService(
         if (faltasNaoJustificadas < 0)
         {
             return new ResultadoValidacao(false,
-                ["A quantidade de faltas não justificadas não pode ser negativa."], []);
+                [ScreenTexts.ScheduleVacationDialog_AQuantidadeDeFaltasNaoJustificadasNaoPode], []);
         }
 
         period.FaltasNaoJustificadas = faltasNaoJustificadas;
@@ -531,7 +563,7 @@ public sealed class AgendamentoService(
             {
                 Tipo = TipoMovimentacao.Venda,
                 Dias = -diasAbono,
-                Motivo = "Abono pecuniário registrado com o agendamento"
+                Motivo = ScreenTexts.ScheduleVacationDialog_AbonoPecuniarioRegistradoComOAgendamento
             });
         }
         period.Status = totalDays + diasAbono == saldoAnterior
@@ -546,6 +578,38 @@ public sealed class AgendamentoService(
 public sealed class MovimentacaoService(
     IDbContextFactory<FeriasDbContext> databaseFactory) : IMovimentacaoService
 {
+    public async Task<ResultadoValidacao> RegistrarFolgaAsync(int periodoId, int dias, string motivo)
+    {
+        if (dias <= 0)
+            return new(false, [ScreenTexts.RegisterDayOffDialog_InformeUmaQuantidadeInteiraDeDiasMaiorQue], []);
+        if (string.IsNullOrWhiteSpace(motivo))
+            return new(false, [ScreenTexts.RegisterDayOffDialog_InformeAJustificativaDaFolga], []);
+
+        await using var database = await databaseFactory.CreateDbContextAsync();
+        await using var transaction = await database.Database.BeginTransactionAsync();
+        var period = await database.Periodos.Include(item => item.Movimentacoes)
+            .SingleOrDefaultAsync(item => item.Id == periodoId);
+        if (period is null)
+            return new(false, [ScreenTexts.RegisterDayOffDialog_PeriodoNaoEncontrado], []);
+        if (period.Vencimento.Date < DateTime.Today)
+            return new(false, [string.Format(ScreenTexts.RegisterDayOffDialog_EstePeriodoVenceuEmNaoEPossivelRegistrar, period.Vencimento)], []);
+        if (period.Saldo <= 0)
+            return new(false, [ScreenTexts.RegisterDayOffDialog_OPeriodoNaoPossuiSaldoDisponivelParaRegistrar], []);
+        if (dias > period.Saldo)
+            return new(false, [string.Format(ScreenTexts.RegisterDayOffDialog_OPeriodoPossuiSomenteDiasDisponiveis, period.Saldo)], []);
+
+        period.Movimentacoes.Add(new MovimentacaoSaldo
+        {
+            Tipo = TipoMovimentacao.Folga,
+            Dias = -dias,
+            Motivo = motivo.Trim()
+        });
+        period.Status = period.Saldo == 0 ? StatusPeriodo.Completo : StatusPeriodo.Parcial;
+        await database.SaveChangesAsync();
+        await transaction.CommitAsync();
+        return new(true, [], []);
+    }
+
     public async Task RegistrarAsync(
         int periodoId,
         TipoMovimentacao tipo,
@@ -564,22 +628,13 @@ public sealed class MovimentacaoService(
     }
 }
 
-public sealed class RelatorioService(IColaboradorService employees) : IRelatorioService
+public sealed class RelatorioService(IPeriodoService periods) : IRelatorioService
 {
     public async Task<string> ExportarCsvAsync(string destination)
     {
-        var dashboard = await employees.DashboardAsync();
-        var csv = new StringBuilder(
-            "Colaborador;Período;Vencimento;Saldo;Status\r\n");
-
-        foreach (var row in dashboard.Periodos)
-        {
-            csv.AppendLine(
-                $"{row.Colaborador};{row.Periodo.Replace('\n', ' ')};" +
-                $"{row.Vencimento};{row.Saldo};{row.Status}");
-        }
-
-        await File.WriteAllTextAsync(destination, csv.ToString(), Encoding.UTF8);
+        var report = RelatorioEngine.Gerar(await periods.ListarAsync(),
+            new FiltroRelatorio { Tipo = TipoRelatorio.Saldos }, DateTime.Today);
+        await RelatorioExportacao.SalvarCsvAsync(report, destination);
         return destination;
     }
 }
@@ -597,6 +652,6 @@ public sealed class ImportacaoPdfBloqueadaService : IImportacaoPdfService
     public bool Habilitada => false;
 
     public string MotivoBloqueio =>
-        "A importação será habilitada após o fornecimento do modelo, campos, " +
-        "exemplos, validações e política de duplicidade do PDF.";
+        ScreenTexts.MainWindow_AImportacaoSeraHabilitadaAposOFornecimentoDo +
+        ScreenTexts.MainWindow_ExemplosValidacoesEPoliticaDeDuplicidadeDoPDF;
 }

@@ -17,9 +17,7 @@ public sealed class FeriasDbContext(DbContextOptions<FeriasDbContext> options)
             .HasIndex(colaborador => colaborador.Cpf)
             .IsUnique();
 
-        modelBuilder.Entity<Colaborador>()
-            .HasIndex(colaborador => colaborador.Matricula)
-            .IsUnique();
+
 
         modelBuilder.Entity<PeriodoAquisitivo>()
             .HasMany(periodo => periodo.Movimentacoes)
@@ -84,10 +82,7 @@ public static class DbSeeder
         {
             Nome = Nomes[index],
             Cpf = $"000000000{index:D2}",
-            Matricula = (20 + index).ToString(),
             Admissao = inicio.AddYears(-1),
-            Cargo = "Colaborador",
-            Setor = "Operações",
             Unidade = "Washington Luiz"
         };
 
@@ -105,7 +100,7 @@ public static class DbSeeder
             Fim = inicio.AddYears(1).AddDays(-1),
             Vencimento = inicio.AddYears(2).AddDays(-1),
             DireitoDias = direito,
-            Status = GetStatus(index, diasUsados, direito)
+            Status = GetStatus(inicio, diasUsados, direito)
         };
 
         periodo.Movimentacoes.Add(new MovimentacaoSaldo
@@ -130,7 +125,7 @@ public static class DbSeeder
         return periodo;
     }
 
-    private static StatusPeriodo GetStatus(int index, int diasUsados, int direito)
+    private static StatusPeriodo GetStatus(DateTime inicio, int diasUsados, int direito)
     {
         if (diasUsados == direito)
         {
@@ -142,6 +137,6 @@ public static class DbSeeder
             return StatusPeriodo.Parcial;
         }
 
-        return index == 3 ? StatusPeriodo.Urgente : StatusPeriodo.Atencao;
+        return inicio.AddYears(1) <= DateTime.Today ? StatusPeriodo.Disponivel : StatusPeriodo.EmAquisicao;
     }
 }

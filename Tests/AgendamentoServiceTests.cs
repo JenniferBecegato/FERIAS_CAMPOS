@@ -133,7 +133,7 @@ public sealed class AgendamentoServiceTests
             await database.Database.EnsureCreatedAsync();
             var employee = new Colaborador
             {
-                Nome = "Teste da Silva", Cpf = "12345678901", Matricula = "T-1",
+                Nome = "Teste da Silva", Cpf = "12345678901",
                 Admissao = new DateTime(2024, 1, 1)
             };
             var period = new PeriodoAquisitivo

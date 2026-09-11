@@ -1,7 +1,22 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup><OutputType>WinExe</OutputType><TargetFramework>net9.0-windows</TargetFramework><UseWPF>true</UseWPF><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings><RootNamespace>FeriasCampos</RootNamespace><AssemblyName>ControleFerias</AssemblyName></PropertyGroup>
+  <PropertyGroup><OutputType>WinExe</OutputType><TargetFramework>net9.0-windows</TargetFramework><UseWPF>true</UseWPF><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings><RootNamespace>FeriasCampos</RootNamespace><AssemblyName>ControleFerias</AssemblyName><ApplicationIcon>Resource\program.ico</ApplicationIcon></PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Release'"><RuntimeIdentifier>win-x64</RuntimeIdentifier><SelfContained>true</SelfContained><PublishSingleFile>false</PublishSingleFile><PublishReadyToRun>false</PublishReadyToRun><DebugType>none</DebugType><DebugSymbols>false</DebugSymbols><PublishDir>$(MSBuildProjectDirectory)\bin\Release\publish\</PublishDir></PropertyGroup>
-  <ItemGroup><PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.11"/><PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.11"/></ItemGroup>
-  <ItemGroup><Compile Remove="Properties\AssemblyInfo.cs;Tests\**\*.cs"/><EmbeddedResource Remove="Tests\**\*"/><None Remove="Tests\**\*"/></ItemGroup>
-  <Target Name="CleanReleasePublishDirectory" BeforeTargets="PrepareForPublish" Condition="'$(Configuration)' == 'Release' and Exists('$(PublishDir)')"><RemoveDir Directories="$(PublishDir)"/></Target>
+  <ItemGroup><PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.11" /><PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.11" /></ItemGroup>
+  <ItemGroup><Compile Remove="Properties\AssemblyInfo.cs;Tests\**\*.cs" /><EmbeddedResource Remove="Tests\**\*" /><None Remove="Tests\**\*" /></ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resource\*.ico" />
+    <Resource Include="Resource\summer.png" />
+    <EmbeddedResource Update="Properties\ScreenTexts.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ScreenTexts.Designer.cs</LastGenOutput>
+      <CustomToolNamespace>FeriasCampos.Properties</CustomToolNamespace>
+    </EmbeddedResource>
+    <Compile Update="Properties\ScreenTexts.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ScreenTexts.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <Target Name="CleanReleasePublishDirectory" BeforeTargets="PrepareForPublish" Condition="'$(Configuration)' == 'Release' and Exists('$(PublishDir)')"><RemoveDir Directories="$(PublishDir)" /></Target>
+  <ItemGroup><EmbeddedResource Include="Data\SeedFeriados.sql" /></ItemGroup>
 </Project>

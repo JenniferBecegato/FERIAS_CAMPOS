@@ -6,8 +6,12 @@ namespace FeriasCampos.Controllers;
 public sealed class DashboardController(
     IColaboradorService colaboradores,
     IAgendamentoService agenda,
-    IImportacaoPdfService pdf)
+    IImportacaoPdfService pdf,
+    IMovimentacaoService movimentacoes)
 {
+    public Task<ResultadoValidacao> RegistrarFolgaAsync(int periodoId, int dias, string motivo)
+        => movimentacoes.RegistrarFolgaAsync(periodoId, dias, motivo);
+
     public Task<DashboardDto> CarregarAsync(string? busca = null)
     {
         return colaboradores.DashboardAsync(busca);
@@ -33,6 +37,12 @@ public sealed class DashboardController(
     {
         return colaboradores.CadastrarAsync(novo);
     }
+
+    public Task<ResultadoValidacao> AlterarColaboradorAsync(int id, NovoColaboradorDto dados)
+        => colaboradores.AlterarAsync(id, dados);
+
+    public Task<ResultadoValidacao> ExcluirColaboradorAsync(int id)
+        => colaboradores.ExcluirAsync(id);
 
     public Task<ResultadoValidacao> AgendarAsync(
         int id,

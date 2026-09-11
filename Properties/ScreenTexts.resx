@@ -1,0 +1,1404 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms</value>
+  </resheader>
+  <data name="EmployeesWindow_PeriodoConcessivo" xml:space="preserve">
+    <value>{0:dd/MM/yyyy} a {1:dd/MM/yyyy}</value>
+  </data>
+  <data name="EmployeesWindow_AAdmissaoNaoPodeEstarNoFuturo" xml:space="preserve">
+    <value>A admissão não pode estar no futuro.</value>
+  </data>
+  <data name="EmployeesWindow_AAdmissaoNaoPodeSerAlteradaPorqueHa" xml:space="preserve">
+    <value>A admissão não pode ser alterada porque há movimentações ou faltas registradas nos períodos de férias.</value>
+  </data>
+  <data name="EmployeesWindow_Acoes" xml:space="preserve">
+    <value>Ações</value>
+  </data>
+  <data name="EmployeesWindow_Admissao" xml:space="preserve">
+    <value>Admissão</value>
+  </data>
+  <data name="EmployeesWindow_Alterar" xml:space="preserve">
+    <value>Alterar</value>
+  </data>
+  <data name="EmployeesWindow_AlterarColaborador" xml:space="preserve">
+    <value>Alterar colaborador</value>
+  </data>
+  <data name="EmployeesWindow_CadastreAltereEExcluaColaboradores" xml:space="preserve">
+    <value>Cadastre, altere e exclua colaboradores</value>
+  </data>
+  <data name="EmployeesWindow_Cancelar" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="EmployeesWindow_ColaboradorAlteradoComSucesso" xml:space="preserve">
+    <value>Colaborador alterado com sucesso.</value>
+  </data>
+  <data name="EmployeesWindow_ColaboradorCadastradoComSucesso" xml:space="preserve">
+    <value>Colaborador cadastrado com sucesso.</value>
+  </data>
+  <data name="EmployeesWindow_Colaboradores" xml:space="preserve">
+    <value>Colaboradores</value>
+  </data>
+  <data name="EmployeesWindow_ColaboradorNaoEncontrado" xml:space="preserve">
+    <value>Colaborador não encontrado.</value>
+  </data>
+  <data name="EmployeesWindow_CPF" xml:space="preserve">
+    <value>CPF</value>
+  </data>
+  <data name="EmployeesWindow_CPF2" xml:space="preserve">
+    <value>CPF *</value>
+  </data>
+  <data name="EmployeesWindow_DataDeAdmissao" xml:space="preserve">
+    <value>Data de admissão *</value>
+  </data>
+  <data name="EmployeesWindow_EmAquisicao" xml:space="preserve">
+    <value>Em aquisição</value>
+  </data>
+  <data name="EmployeesWindow_Excluir" xml:space="preserve">
+    <value>Excluir</value>
+  </data>
+  <data name="EmployeesWindow_ExcluirColaborador" xml:space="preserve">
+    <value>Excluir colaborador</value>
+  </data>
+  <data name="EmployeesWindow_ExcluirOColaboradorTodosOsPeriodosDeFerias" xml:space="preserve">
+    <value>Excluir o colaborador {0}?
+
+Todos os períodos de férias e movimentações vinculados também serão excluídos. Esta ação não pode ser desfeita.</value>
+  </data>
+  <data name="EmployeesWindow_Gurgel" xml:space="preserve">
+    <value>Gurgel</value>
+  </data>
+  <data name="EmployeesWindow_InformeONomeCompleto" xml:space="preserve">
+    <value>Informe o nome completo.</value>
+  </data>
+  <data name="EmployeesWindow_JaExisteUmColaboradorComEsteCPF" xml:space="preserve">
+    <value>Já existe um colaborador com este CPF.</value>
+  </data>
+  <data name="EmployeesWindow_NaoFoiPossivelConcluirAOperacaoFecheE" xml:space="preserve">
+    <value>Não foi possível concluir a operação. Feche e reabra a lista para conferir os dados antes de tentar novamente.</value>
+  </data>
+  <data name="EmployeesWindow_Nome" xml:space="preserve">
+    <value>Nome</value>
+  </data>
+  <data name="EmployeesWindow_NomeCompleto" xml:space="preserve">
+    <value>Nome completo *</value>
+  </data>
+  <data name="EmployeesWindow_NovoColaborador" xml:space="preserve">
+    <value>+  Novo colaborador</value>
+  </data>
+  <data name="EmployeesWindow_NovoColaborador2" xml:space="preserve">
+    <value>Novo colaborador</value>
+  </data>
+  <data name="EmployeesWindow_OCPFDevePossuir11Digitos" xml:space="preserve">
+    <value>O CPF deve possuir 11 dígitos.</value>
+  </data>
+  <data name="EmployeesWindow_ODireitoDeveEstarEntre1E30" xml:space="preserve">
+    <value>O direito deve estar entre 1 e 30 dias.</value>
+  </data>
+  <data name="EmployeesWindow_SaldoInicialCriadoNoCadastro" xml:space="preserve">
+    <value>Saldo inicial criado no cadastro</value>
+  </data>
+  <data name="EmployeesWindow_SalvarColaborador" xml:space="preserve">
+    <value>Salvar colaborador</value>
+  </data>
+  <data name="EmployeesWindow_SelecioneUmaUnidadeValida" xml:space="preserve">
+    <value>Selecione uma unidade válida.</value>
+  </data>
+  <data name="EmployeesWindow_Simbolo" xml:space="preserve">
+    <value>×</value>
+  </data>
+  <data name="EmployeesWindow_Unidade" xml:space="preserve">
+    <value>Unidade</value>
+  </data>
+  <data name="EmployeesWindow_Unidade2" xml:space="preserve">
+    <value>Unidade *</value>
+  </data>
+  <data name="EmployeesWindow_Vencido" xml:space="preserve">
+    <value>Vencido</value>
+  </data>
+  <data name="EmployeesWindow_WashingtonLuiz" xml:space="preserve">
+    <value>Washington Luiz</value>
+  </data>
+  <data name="MainWindow_072026" xml:space="preserve">
+    <value>07/2026</value>
+  </data>
+  <data name="MainWindow_IntervaloAgenda" xml:space="preserve">
+    <value>{0:dd/MM} a {1:dd/MM}</value>
+  </data>
+  <data name="MainWindow_AFolgaFoiRegistradaMasNaoFoiPossivel" xml:space="preserve">
+    <value>A folga foi registrada, mas não foi possível atualizar o painel. Reabra a tela para consultar o saldo.</value>
+  </data>
+  <data name="MainWindow_AgendaDeFerias" xml:space="preserve">
+    <value>Agenda de Férias</value>
+  </data>
+  <data name="MainWindow_AgendaDeFerias2" xml:space="preserve">
+    <value>Agenda de férias — {0:MMMM yyyy}</value>
+  </data>
+  <data name="MainWindow_AgendamentoNaoPermitido" xml:space="preserve">
+    <value>Agendamento não permitido</value>
+  </data>
+  <data name="MainWindow_AgendamentoSalvoComAvisos" xml:space="preserve">
+    <value>Agendamento salvo com avisos</value>
+  </data>
+  <data name="MainWindow_AgendarFerias" xml:space="preserve">
+    <value>+  Agendar férias</value>
+  </data>
+  <data name="MainWindow_AImportacaoSeraHabilitadaAposOFornecimentoDo" xml:space="preserve">
+    <value>A importação será habilitada após o fornecimento do modelo, campos, </value>
+  </data>
+  <data name="MainWindow_Ate60Dias" xml:space="preserve">
+    <value>Até 60 dias</value>
+  </data>
+  <data name="MainWindow_AtualizacaoDoPainel" xml:space="preserve">
+    <value>Atualização do painel</value>
+  </data>
+  <data name="MainWindow_BuscarColaborador" xml:space="preserve">
+    <value>Buscar colaborador</value>
+  </data>
+  <data name="MainWindow_Colaborador" xml:space="preserve">
+    <value>Colaborador</value>
+  </data>
+  <data name="MainWindow_Colaboradores" xml:space="preserve">
+    <value>Colaboradores</value>
+  </data>
+  <data name="MainWindow_COMPETENCIA" xml:space="preserve">
+    <value>COMPETÊNCIA</value>
+  </data>
+  <data name="MainWindow_Configuracoes" xml:space="preserve">
+    <value>Configurações</value>
+  </data>
+  <data name="MainWindow_ControleDeFerias" xml:space="preserve">
+    <value>Controle de Férias</value>
+  </data>
+  <data name="MainWindow_ControleDePeriodos" xml:space="preserve">
+    <value>Controle de períodos</value>
+  </data>
+  <data name="MainWindow_D" xml:space="preserve">
+    <value>D</value>
+  </data>
+  <data name="MainWindow_Dashboard" xml:space="preserve">
+    <value>Dashboard</value>
+  </data>
+  <data name="MainWindow_DetalhesDoColaborador" xml:space="preserve">
+    <value>Detalhes do colaborador</value>
+  </data>
+  <data name="MainWindow_Dias" xml:space="preserve">
+    <value>{0} dias</value>
+  </data>
+  <data name="MainWindow_Dias2" xml:space="preserve">
+    <value>{0:+#;-#;0} dias</value>
+  </data>
+  <data name="MainWindow_DiasVendidos" xml:space="preserve">
+    <value>Dias vendidos</value>
+  </data>
+  <data name="MainWindow_DireitoTotal" xml:space="preserve">
+    <value>Direito total</value>
+  </data>
+  <data name="MainWindow_Entendi" xml:space="preserve">
+    <value>Entendi</value>
+  </data>
+  <data name="MainWindow_EstePeriodoVenceuEm" xml:space="preserve">
+    <value>Este período venceu em {0:dd/MM/yyyy}. </value>
+  </data>
+  <data name="MainWindow_ExemplosValidacoesEPoliticaDeDuplicidadeDoPDF" xml:space="preserve">
+    <value>exemplos, validações e política de duplicidade do PDF.</value>
+  </data>
+  <data name="MainWindow_FeriasAgendadasDias" xml:space="preserve">
+    <value>Férias agendadas
+(dias)</value>
+  </data>
+  <data name="MainWindow_FeriasGozadas" xml:space="preserve">
+    <value>Férias gozadas</value>
+  </data>
+  <data name="MainWindow_FeriasProgramadas" xml:space="preserve">
+    <value>Férias programadas</value>
+  </data>
+  <data name="MainWindow_Filtros" xml:space="preserve">
+    <value>⚑  Filtros ⌄</value>
+  </data>
+  <data name="MainWindow_FolgasDescontadas" xml:space="preserve">
+    <value>Folgas descontadas</value>
+  </data>
+  <data name="MainWindow_FolgasDias" xml:space="preserve">
+    <value>Folgas
+(dias)</value>
+  </data>
+  <data name="MainWindow_HistoricoDeMovimentacoes" xml:space="preserve">
+    <value>Histórico de movimentações</value>
+  </data>
+  <data name="MainWindow_ImportarPDF" xml:space="preserve">
+    <value>Importar PDF</value>
+  </data>
+  <data name="MainWindow_ImportarRelatorioPDF" xml:space="preserve">
+    <value>Importar relatório PDF</value>
+  </data>
+  <data name="MainWindow_LinhasPorPagina" xml:space="preserve">
+    <value>Linhas por página:</value>
+  </data>
+  <data name="MainWindow_LinhasPorPagina2" xml:space="preserve">
+    <value>Linhas por página</value>
+  </data>
+  <data name="MainWindow_ModuloPreparadoNoDesignSystem" xml:space="preserve">
+    <value>Módulo {0} preparado no design system. </value>
+  </data>
+  <data name="MainWindow_MostrandoADeColaboradores" xml:space="preserve">
+    <value>Mostrando {0} a {1} de {2} colaboradores</value>
+  </data>
+  <data name="MainWindow_NaoEPossivelAgendarFeriasAposOVencimento" xml:space="preserve">
+    <value>Não é possível agendar férias após o vencimento.</value>
+  </data>
+  <data name="MainWindow_NaoEPossivelRegistrarFolgaAposOVencimento" xml:space="preserve">
+    <value>Não é possível registrar folga após o vencimento.</value>
+  </data>
+  <data name="MainWindow_NenhumaFeriasAgendadaNesteMes" xml:space="preserve">
+    <value>Nenhuma férias agendada neste mês</value>
+  </data>
+  <data name="MainWindow_NosProximos60Dias" xml:space="preserve">
+    <value>Nos próximos 60 dias</value>
+  </data>
+  <data name="MainWindow_OPeriodoNaoPossuiSaldoDisponivelParaRegistrar" xml:space="preserve">
+    <value>O período não possui saldo disponível para registrar folga.</value>
+  </data>
+  <data name="MainWindow_OsDadosDestaEntregaSaoAdministradosPeloDashboard" xml:space="preserve">
+    <value>Os dados desta entrega são administrados pelo dashboard integrado.</value>
+  </data>
+  <data name="MainWindow_PaginaAnterior" xml:space="preserve">
+    <value>Página anterior</value>
+  </data>
+  <data name="MainWindow_Pendentes" xml:space="preserve">
+    <value>Pendentes</value>
+  </data>
+  <data name="MainWindow_Periodo" xml:space="preserve">
+    <value>Período</value>
+  </data>
+  <data name="MainWindow_PeriodoVencido" xml:space="preserve">
+    <value>Período vencido</value>
+  </data>
+  <data name="MainWindow_ProximaPagina" xml:space="preserve">
+    <value>Próxima página</value>
+  </data>
+  <data name="MainWindow_ProximasDoVencimento" xml:space="preserve">
+    <value>Próximas do vencimento</value>
+  </data>
+  <data name="MainWindow_Q" xml:space="preserve">
+    <value>Q</value>
+  </data>
+  <data name="MainWindow_RegistrarFolga" xml:space="preserve">
+    <value>+  Registrar folga</value>
+  </data>
+  <data name="MainWindow_RegistrarFolga2" xml:space="preserve">
+    <value>Registrar folga</value>
+  </data>
+  <data name="MainWindow_Regras" xml:space="preserve">
+    <value>Regras</value>
+  </data>
+  <data name="MainWindow_Relatorios" xml:space="preserve">
+    <value>Relatórios</value>
+  </data>
+  <data name="MainWindow_S" xml:space="preserve">
+    <value>S</value>
+  </data>
+  <data name="MainWindow_SaldoDisponivel" xml:space="preserve">
+    <value>Saldo disponível</value>
+  </data>
+  <data name="MainWindow_SaldoInicialDias" xml:space="preserve">
+    <value>Saldo inicial
+(dias)</value>
+  </data>
+  <data name="MainWindow_SaldoRestanteDias" xml:space="preserve">
+    <value>Saldo restante
+(dias)</value>
+  </data>
+  <data name="MainWindow_SaldoRestanteDias2" xml:space="preserve">
+    <value>Saldo restante: {0} dias</value>
+  </data>
+  <data name="MainWindow_SelecionarPeriodo" xml:space="preserve">
+    <value>Selecionar período</value>
+  </data>
+  <data name="MainWindow_SemProgramacao" xml:space="preserve">
+    <value>Sem programação</value>
+  </data>
+  <data name="MainWindow_Simbolo" xml:space="preserve">
+    <value>♟</value>
+  </data>
+  <data name="MainWindow_Simbolo2" xml:space="preserve">
+    <value>♙</value>
+  </data>
+  <data name="MainWindow_Simbolo3" xml:space="preserve">
+    <value>▣</value>
+  </data>
+  <data name="MainWindow_Simbolo4" xml:space="preserve">
+    <value>◷</value>
+  </data>
+  <data name="MainWindow_Simbolo5" xml:space="preserve">
+    <value>⌛</value>
+  </data>
+  <data name="MainWindow_Simbolo6" xml:space="preserve">
+    <value>‹</value>
+  </data>
+  <data name="MainWindow_Simbolo7" xml:space="preserve">
+    <value>›</value>
+  </data>
+  <data name="MainWindow_Simbolo8" xml:space="preserve">
+    <value>×</value>
+  </data>
+  <data name="MainWindow_MovimentacaoTipoData" xml:space="preserve">
+    <value>●  {0}     {1:dd/MM/yyyy} </value>
+  </data>
+  <data name="MainWindow_Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="MainWindow_T" xml:space="preserve">
+    <value>T</value>
+  </data>
+  <data name="MainWindow_TotalDeColaboradores" xml:space="preserve">
+    <value>Total de colaboradores</value>
+  </data>
+  <data name="MainWindow_Vencimento" xml:space="preserve">
+    <value>Vencimento</value>
+  </data>
+  <data name="MainWindow_VendidoDias" xml:space="preserve">
+    <value>Vendido
+(dias)</value>
+  </data>
+  <data name="MainWindow_VerAgendaCompleta" xml:space="preserve">
+    <value>Ver agenda completa</value>
+  </data>
+  <data name="RegisterDayOffDialog_Cancelar" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="RegisterDayOffDialog_EstePeriodoVenceuEmNaoEPossivelRegistrar" xml:space="preserve">
+    <value>Este período venceu em {0:dd/MM/yyyy}. Não é possível registrar folga após o vencimento.</value>
+  </data>
+  <data name="RegisterDayOffDialog_InformeAJustificativaDaFolga" xml:space="preserve">
+    <value>Informe a justificativa da folga.</value>
+  </data>
+  <data name="RegisterDayOffDialog_InformeUmaQuantidadeInteiraDeDiasMaiorQue" xml:space="preserve">
+    <value>Informe uma quantidade inteira de dias maior que zero.</value>
+  </data>
+  <data name="RegisterDayOffDialog_Justificativa" xml:space="preserve">
+    <value>Justificativa</value>
+  </data>
+  <data name="RegisterDayOffDialog_NaoFoiPossivelConcluirORegistroFecheEsta" xml:space="preserve">
+    <value>Não foi possível concluir o registro. Feche esta janela e atualize o período antes de tentar novamente.</value>
+  </data>
+  <data name="RegisterDayOffDialog_OPeriodoNaoPossuiSaldoDisponivelParaRegistrar" xml:space="preserve">
+    <value>O período não possui saldo disponível para registrar folga.</value>
+  </data>
+  <data name="RegisterDayOffDialog_OPeriodoPossuiSomenteDiasDisponiveis" xml:space="preserve">
+    <value>O período possui somente {0} dias disponíveis.</value>
+  </data>
+  <data name="RegisterDayOffDialog_PeriodoA" xml:space="preserve">
+    <value>Período: {0:dd/MM/yyyy} a {1:dd/MM/yyyy}</value>
+  </data>
+  <data name="RegisterDayOffDialog_PeriodoNaoEncontrado" xml:space="preserve">
+    <value>Período não encontrado.</value>
+  </data>
+  <data name="RegisterDayOffDialog_QuantidadeDeDias" xml:space="preserve">
+    <value>Quantidade de dias</value>
+  </data>
+  <data name="RegisterDayOffDialog_RegistrarFolga" xml:space="preserve">
+    <value>Registrar folga</value>
+  </data>
+  <data name="RegisterDayOffDialog_SaldoDisponivelDias" xml:space="preserve">
+    <value>Saldo disponível: {0} dias</value>
+  </data>
+  <data name="ReportsWindow_PeriodoAquisitivoFormato" xml:space="preserve">
+    <value>{0:dd/MM/yyyy} a {1:dd/MM/yyyy}</value>
+  </data>
+  <data name="ReportsWindow_ADataFinalDeveSerIgualOuPosterior" xml:space="preserve">
+    <value>A data final deve ser igual ou posterior à inicial.</value>
+  </data>
+  <data name="ReportsWindow_AgendadosDias" xml:space="preserve">
+    <value>Agendados (dias)</value>
+  </data>
+  <data name="ReportsWindow_Ate" xml:space="preserve">
+    <value>{0}: {1} até {2}</value>
+  </data>
+  <data name="ReportsWindow_AusenciasSimultaneasPorUnidade" xml:space="preserve">
+    <value>Ausências simultâneas por unidade</value>
+  </data>
+  <data name="ReportsWindow_BuscaSomentePeloNome" xml:space="preserve">
+    <value>Busca somente pelo nome</value>
+  </data>
+  <data name="ReportsWindow_CarregandoOpcoes" xml:space="preserve">
+    <value>Carregando opções…</value>
+  </data>
+  <data name="ReportsWindow_CliqueEmGerarRelatorioParaAplicarANova" xml:space="preserve">
+    <value>Clique em Gerar relatório para aplicar a nova seleção. As exportações correspondem à última consulta gerada.</value>
+  </data>
+  <data name="ReportsWindow_Colaborador" xml:space="preserve">
+    <value>Colaborador</value>
+  </data>
+  <data name="ReportsWindow_Colaboradores" xml:space="preserve">
+    <value>Colaboradores</value>
+  </data>
+  <data name="ReportsWindow_ColaboradoresPeriodosAquisitivosRegistros" xml:space="preserve">
+    <value>Colaboradores: {0} | Períodos aquisitivos: {1} | Registros: {2}
+</value>
+  </data>
+  <data name="ReportsWindow_Completo" xml:space="preserve">
+    <value>Completo</value>
+  </data>
+  <data name="ReportsWindow_ConferenciaDeAjustesEMovimentacoes" xml:space="preserve">
+    <value>Conferência de ajustes e movimentações</value>
+  </data>
+  <data name="ReportsWindow_CreditosDiasDebitosDiasVariacaoLiquidaDiasO" xml:space="preserve">
+    <value>Créditos: {0} dias | Débitos: {1} dias | Variação líquida: {2} dias. O extrato filtrado não representa necessariamente o saldo total.</value>
+  </data>
+  <data name="ReportsWindow_CSVCompativelComExcelCsv" xml:space="preserve">
+    <value>CSV (compatível com Excel)|*.csv</value>
+  </data>
+  <data name="ReportsWindow_DataDeVencimento" xml:space="preserve">
+    <value>Data de vencimento</value>
+  </data>
+  <data name="ReportsWindow_DataDoRegistroDaMovimentacaoLocal" xml:space="preserve">
+    <value>Data do registro da movimentação (local)</value>
+  </data>
+  <data name="ReportsWindow_DataFinal" xml:space="preserve">
+    <value>Data final</value>
+  </data>
+  <data name="ReportsWindow_DataInicial" xml:space="preserve">
+    <value>Data inicial</value>
+  </data>
+  <data name="ReportsWindow_DatasDeFeriasQualquerSobreposicao" xml:space="preserve">
+    <value>Datas de férias (qualquer sobreposição)</value>
+  </data>
+  <data name="ReportsWindow_DiasAgendados" xml:space="preserve">
+    <value>Dias agendados</value>
+  </data>
+  <data name="ReportsWindow_DiasAgendadosNasParcelasExibidasRetornoPrevistoDia" xml:space="preserve">
+    <value>Dias agendados nas parcelas exibidas: {0}. Retorno previsto: dia seguinte ao término; conferir escala.</value>
+  </data>
+  <data name="ReportsWindow_DiasAteVencer" xml:space="preserve">
+    <value>Dias até vencer</value>
+  </data>
+  <data name="ReportsWindow_DiasCreditoDebito" xml:space="preserve">
+    <value>Dias (+ crédito / - débito)</value>
+  </data>
+  <data name="ReportsWindow_DiasVendidosEFolgasRegistradas" xml:space="preserve">
+    <value>Dias vendidos e folgas registradas</value>
+  </data>
+  <data name="ReportsWindow_DireitoDias" xml:space="preserve">
+    <value>Direito (dias)</value>
+  </data>
+  <data name="ReportsWindow_DireitoDiasAgendadosDiasGozoRegistradoDiasVendidos" xml:space="preserve">
+    <value>Direito: {0} dias | Agendados: {1} dias | Gozo registrado: {2} dias | Vendidos: {3} dias | Folgas: {4} dias | Saldo disponível: {5} dias.</value>
+  </data>
+  <data name="ReportsWindow_Disponivel" xml:space="preserve">
+    <value>Disponível</value>
+  </data>
+  <data name="ReportsWindow_DocumentoPDFPdf" xml:space="preserve">
+    <value>Documento PDF|*.pdf</value>
+  </data>
+  <data name="ReportsWindow_EmAquisicao" xml:space="preserve">
+    <value>Em aquisição</value>
+  </data>
+  <data name="ReportsWindow_Exportacao" xml:space="preserve">
+    <value>Exportação</value>
+  </data>
+  <data name="ReportsWindow_ExportacaoConcluida" xml:space="preserve">
+    <value>Exportação concluída</value>
+  </data>
+  <data name="ReportsWindow_ExportacoesIncluemTodosOsRegistrosEOsFiltros" xml:space="preserve">
+    <value>Exportações incluem todos os registros e os filtros desta consulta. Gozo considera somente lançamentos explícitos de gozo.</value>
+  </data>
+  <data name="ReportsWindow_ExportarCSVExcel" xml:space="preserve">
+    <value>Exportar CSV (Excel)</value>
+  </data>
+  <data name="ReportsWindow_ExportarPDF" xml:space="preserve">
+    <value>Exportar PDF</value>
+  </data>
+  <data name="ReportsWindow_ExtratoIndividualDeFerias" xml:space="preserve">
+    <value>Extrato individual de férias</value>
+  </data>
+  <data name="ReportsWindow_FeriasVencidasEProximasDoVencimento" xml:space="preserve">
+    <value>Férias vencidas e próximas do vencimento</value>
+  </data>
+  <data name="ReportsWindow_FiltrosLimposCliqueEmGerarRelatorioParaAtualizar" xml:space="preserve">
+    <value>Filtros limpos. Clique em Gerar relatório para atualizar a consulta.</value>
+  </data>
+  <data name="ReportsWindow_Fim" xml:space="preserve">
+    <value>Fim</value>
+  </data>
+  <data name="ReportsWindow_FimSimultaneo" xml:space="preserve">
+    <value>Fim simultâneo</value>
+  </data>
+  <data name="ReportsWindow_FolgasDias" xml:space="preserve">
+    <value>Folgas (dias)</value>
+  </data>
+  <data name="ReportsWindow_GeradoEm" xml:space="preserve">
+    <value>Gerado em {0:dd/MM/yyyy HH:mm} • {1}</value>
+  </data>
+  <data name="ReportsWindow_GerarRelatorio" xml:space="preserve">
+    <value>Gerar relatório</value>
+  </data>
+  <data name="ReportsWindow_GozoRegistradoDias" xml:space="preserve">
+    <value>Gozo registrado (dias)</value>
+  </data>
+  <data name="ReportsWindow_Identificacao" xml:space="preserve">
+    <value>Identificação</value>
+  </data>
+  <data name="ReportsWindow_IdentificacaoRegistrada" xml:space="preserve">
+    <value>Identificação registrada</value>
+  </data>
+  <data name="ReportsWindow_InformePeloMenos2PessoasParaAsAusencias" xml:space="preserve">
+    <value>Informe pelo menos 2 pessoas para as ausências simultâneas.</value>
+  </data>
+  <data name="ReportsWindow_InformeUmNumeroInteiro" xml:space="preserve">
+    <value>{0}: informe um número inteiro.</value>
+  </data>
+  <data name="ReportsWindow_Inicio" xml:space="preserve">
+    <value>Início</value>
+  </data>
+  <data name="ReportsWindow_InicioSimultaneo" xml:space="preserve">
+    <value>Início simultâneo</value>
+  </data>
+  <data name="ReportsWindow_LimparFiltros" xml:space="preserve">
+    <value>Limpar filtros</value>
+  </data>
+  <data name="ReportsWindow_Maximo" xml:space="preserve">
+    <value>Máximo</value>
+  </data>
+  <data name="ReportsWindow_Minimo" xml:space="preserve">
+    <value>Mínimo</value>
+  </data>
+  <data name="ReportsWindow_MinimoDeAusentes" xml:space="preserve">
+    <value>Mínimo de ausentes: {0}</value>
+  </data>
+  <data name="ReportsWindow_MinimoDePessoas" xml:space="preserve">
+    <value>Mínimo de pessoas</value>
+  </data>
+  <data name="ReportsWindow_MinimoDePessoasSimultaneas" xml:space="preserve">
+    <value>Mínimo de pessoas simultâneas</value>
+  </data>
+  <data name="ReportsWindow_Motivo" xml:space="preserve">
+    <value>Motivo</value>
+  </data>
+  <data name="ReportsWindow_MotivoContem" xml:space="preserve">
+    <value>Motivo contém</value>
+  </data>
+  <data name="ReportsWindow_NaoFoiPossivelCarregarOsRelatorios" xml:space="preserve">
+    <value>Não foi possível carregar os relatórios: {0}</value>
+  </data>
+  <data name="ReportsWindow_NaoFoiPossivelExportar" xml:space="preserve">
+    <value>Não foi possível exportar: {0}</value>
+  </data>
+  <data name="ReportsWindow_NaoFoiPossivelGerarORelatorio" xml:space="preserve">
+    <value>Não foi possível gerar o relatório: {0}</value>
+  </data>
+  <data name="ReportsWindow_NaoInformado" xml:space="preserve">
+    <value>(Não informado)</value>
+  </data>
+  <data name="ReportsWindow_NenhumRegistroEncontradoAjusteOsFiltrosEGere" xml:space="preserve">
+    <value>Nenhum registro encontrado. Ajuste os filtros e gere novamente.</value>
+  </data>
+  <data name="ReportsWindow_Nome" xml:space="preserve">
+    <value>Nome</value>
+  </data>
+  <data name="ReportsWindow_NomeDoColaborador" xml:space="preserve">
+    <value>Nome do colaborador</value>
+  </data>
+  <data name="ReportsWindow_OSaldoMaximoDeveSerIgualOuMaior" xml:space="preserve">
+    <value>O saldo máximo deve ser igual ou maior que o mínimo.</value>
+  </data>
+  <data name="ReportsWindow_Parcial" xml:space="preserve">
+    <value>Parcial</value>
+  </data>
+  <data name="ReportsWindow_PendenciasDeProgramacao" xml:space="preserve">
+    <value>Pendências de programação</value>
+  </data>
+  <data name="ReportsWindow_PeriodoAquisitivo" xml:space="preserve">
+    <value>Período aquisitivo</value>
+  </data>
+  <data name="ReportsWindow_Periodos" xml:space="preserve">
+    <value>Períodos</value>
+  </data>
+  <data name="ReportsWindow_PessoasAusentes" xml:space="preserve">
+    <value>Pessoas ausentes</value>
+  </data>
+  <data name="ReportsWindow_PicoDeAusenciasSimultaneasPorUnidadeCalculadoDentro" xml:space="preserve">
+    <value>Pico de ausências simultâneas por unidade: {0}. Calculado dentro dos filtros selecionados.</value>
+  </data>
+  <data name="ReportsWindow_PrazoDeVencimento" xml:space="preserve">
+    <value>Prazo de vencimento</value>
+  </data>
+  <data name="ReportsWindow_Programacao" xml:space="preserve">
+    <value>Programação</value>
+  </data>
+  <data name="ReportsWindow_ProgramacaoDeFerias" xml:space="preserve">
+    <value>Programação de férias</value>
+  </data>
+  <data name="ReportsWindow_ProgramacaoParcial" xml:space="preserve">
+    <value>Programação parcial</value>
+  </data>
+  <data name="ReportsWindow_Proximos30Dias" xml:space="preserve">
+    <value>Próximos 30 dias</value>
+  </data>
+  <data name="ReportsWindow_Proximos60Dias" xml:space="preserve">
+    <value>Próximos 60 dias</value>
+  </data>
+  <data name="ReportsWindow_Proximos90Dias" xml:space="preserve">
+    <value>Próximos 90 dias</value>
+  </data>
+  <data name="ReportsWindow_RegistroLocal" xml:space="preserve">
+    <value>Registro (local)</value>
+  </data>
+  <data name="ReportsWindow_Relatorio" xml:space="preserve">
+    <value>Relatório</value>
+  </data>
+  <data name="ReportsWindow_RelatorioExportadoPara" xml:space="preserve">
+    <value>Relatório exportado para:
+{0}</value>
+  </data>
+  <data name="ReportsWindow_RelatorioFerias" xml:space="preserve">
+    <value>Relatorio-ferias-{0:yyyyMMdd-HHmm}</value>
+  </data>
+  <data name="ReportsWindow_RelatoriosDeFerias" xml:space="preserve">
+    <value>Relatórios de férias</value>
+  </data>
+  <data name="ReportsWindow_RetornoPrevisto" xml:space="preserve">
+    <value>Retorno previsto</value>
+  </data>
+  <data name="ReportsWindow_SaldoA" xml:space="preserve">
+    <value>Saldo: {0} a {1}</value>
+  </data>
+  <data name="ReportsWindow_SaldoDeFeriasPorColaborador" xml:space="preserve">
+    <value>Saldo de férias por colaborador</value>
+  </data>
+  <data name="ReportsWindow_SaldoDisponivelDias" xml:space="preserve">
+    <value>Saldo disponível (dias)</value>
+  </data>
+  <data name="ReportsWindow_SaldoMaximo" xml:space="preserve">
+    <value>Saldo máximo</value>
+  </data>
+  <data name="ReportsWindow_SaldoMinimo" xml:space="preserve">
+    <value>Saldo mínimo</value>
+  </data>
+  <data name="ReportsWindow_SelecaoMultiplaCliqueParaMarcarDesmarcarNenhumaSelecao" xml:space="preserve">
+    <value>Seleção múltipla: clique para marcar/desmarcar. Nenhuma seleção inclui todas as opções.</value>
+  </data>
+  <data name="ReportsWindow_SelecioneUmRelatorioCombineOsFiltrosEGere" xml:space="preserve">
+    <value>Selecione um relatório, combine os filtros e gere a consulta para visualizar ou exportar.</value>
+  </data>
+  <data name="ReportsWindow_SemFim" xml:space="preserve">
+    <value>sem fim</value>
+  </data>
+  <data name="ReportsWindow_SemInicio" xml:space="preserve">
+    <value>sem início</value>
+  </data>
+  <data name="ReportsWindow_SemMaximo" xml:space="preserve">
+    <value>sem máximo</value>
+  </data>
+  <data name="ReportsWindow_SemMinimo" xml:space="preserve">
+    <value>sem mínimo</value>
+  </data>
+  <data name="ReportsWindow_SemProgramacao" xml:space="preserve">
+    <value>Sem programação</value>
+  </data>
+  <data name="ReportsWindow_SemProgramacaoOuParcial" xml:space="preserve">
+    <value>Sem programação ou parcial</value>
+  </data>
+  <data name="ReportsWindow_FiltroNomeValor" xml:space="preserve">
+    <value>{0}: {1}</value>
+  </data>
+  <data name="ReportsWindow_SomenteSaldoPendente" xml:space="preserve">
+    <value>Somente saldo pendente</value>
+  </data>
+  <data name="ReportsWindow_SomenteSaldoPositivo" xml:space="preserve">
+    <value>Somente saldo positivo</value>
+  </data>
+  <data name="ReportsWindow_SomenteVencidos" xml:space="preserve">
+    <value>Somente vencidos</value>
+  </data>
+  <data name="ReportsWindow_Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="ReportsWindow_StatusDoPeriodo" xml:space="preserve">
+    <value>Status do período</value>
+  </data>
+  <data name="ReportsWindow_Tipo" xml:space="preserve">
+    <value>Tipo</value>
+  </data>
+  <data name="ReportsWindow_Tipos" xml:space="preserve">
+    <value>Tipos</value>
+  </data>
+  <data name="ReportsWindow_TiposDeMovimentacao" xml:space="preserve">
+    <value>Tipos de movimentação</value>
+  </data>
+  <data name="ReportsWindow_TodosComSaldo" xml:space="preserve">
+    <value>Todos com saldo</value>
+  </data>
+  <data name="ReportsWindow_TodosOsVencimentosComSaldo" xml:space="preserve">
+    <value>Todos os vencimentos com saldo</value>
+  </data>
+  <data name="ReportsWindow_Unidade" xml:space="preserve">
+    <value>Unidade</value>
+  </data>
+  <data name="ReportsWindow_Unidades" xml:space="preserve">
+    <value>Unidades</value>
+  </data>
+  <data name="ReportsWindow_Vencidas" xml:space="preserve">
+    <value>Vencidas</value>
+  </data>
+  <data name="ReportsWindow_Vencido" xml:space="preserve">
+    <value>Vencido</value>
+  </data>
+  <data name="ReportsWindow_Vencimento" xml:space="preserve">
+    <value>Vencimento</value>
+  </data>
+  <data name="ReportsWindow_VencimentoNosProximosDias" xml:space="preserve">
+    <value>Vencimento nos próximos {0} dias</value>
+  </data>
+  <data name="ReportsWindow_VendidosDias" xml:space="preserve">
+    <value>Vendidos (dias)</value>
+  </data>
+  <data name="RulesWindow_12Dias" xml:space="preserve">
+    <value>12 dias</value>
+  </data>
+  <data name="RulesWindow_15A23" xml:space="preserve">
+    <value>15 a 23</value>
+  </data>
+  <data name="RulesWindow_18Dias" xml:space="preserve">
+    <value>18 dias</value>
+  </data>
+  <data name="RulesWindow_24A32" xml:space="preserve">
+    <value>24 a 32</value>
+  </data>
+  <data name="RulesWindow_24Dias" xml:space="preserve">
+    <value>24 dias</value>
+  </data>
+  <data name="RulesWindow_30Dias" xml:space="preserve">
+    <value>30 dias</value>
+  </data>
+  <data name="RulesWindow_6A14" xml:space="preserve">
+    <value>6 a 14</value>
+  </data>
+  <data name="RulesWindow_AAntecedenciaInferiorA30DiasPodeSer" xml:space="preserve">
+    <value>• A antecedência inferior a 30 dias pode ser bloqueada ou apenas alertada, conforme a configuração descrita adiante.</value>
+  </data>
+  <data name="RulesWindow_AgendarMaisDiasDoQueOSaldoDisponivel" xml:space="preserve">
+    <value>• Agendar mais dias do que o saldo disponível.</value>
+  </data>
+  <data name="RulesWindow_AOpcaoMarcadaEOPadraoSeguroA" xml:space="preserve">
+    <value>A opção marcada é o padrão seguro. A escolha é salva no arquivo configuracoes.json e reaplicada nas próximas execuções.</value>
+  </data>
+  <data name="RulesWindow_AplicarRegraColetivaMaisFavoravelAposConferenciaDo" xml:space="preserve">
+    <value>• Aplicar regra coletiva mais favorável, após conferência do RH.</value>
+  </data>
+  <data name="RulesWindow_AQuantidadeDeFaltasInjustificadasAlteraOTotal" xml:space="preserve">
+    <value>A quantidade de faltas injustificadas altera o total do direito. Não se desconta simplesmente um dia de férias para cada falta. Ausências legalmente justificadas não entram nesse cálculo e devem ser classificadas corretamente.</value>
+  </data>
+  <data name="RulesWindow_AquisicaoConcessaoEVencimento" xml:space="preserve">
+    <value>Aquisição, concessão e vencimento</value>
+  </data>
+  <data name="RulesWindow_ARemuneracaoPodeEnvolverDiasDeFeriasAdicional" xml:space="preserve">
+    <value>A remuneração pode envolver dias de férias, adicional constitucional de um terço, abono, médias de horas extras e verbas variáveis, adicionais noturno, de insalubridade ou periculosidade, comissões, produção e eventual pagamento em dobro. O cálculo deve possuir memória detalhada e reproduzível.</value>
+  </data>
+  <data name="RulesWindow_Ate5" xml:space="preserve">
+    <value>Até 5</value>
+  </data>
+  <data name="RulesWindow_AvisoPagamentoEAbonoPecuniario" xml:space="preserve">
+    <value>Aviso, pagamento e abono pecuniário</value>
+  </data>
+  <data name="RulesWindow_BLOQUEADOPELOSISTEMA" xml:space="preserve">
+    <value>BLOQUEADO PELO SISTEMA</value>
+  </data>
+  <data name="RulesWindow_BloquearFeriasComMenosDe30DiasDe" xml:space="preserve">
+    <value>Bloquear férias com menos de 30 dias de antecedência</value>
+  </data>
+  <data name="RulesWindow_BloquearInicioAntesDoRepousoSemanal" xml:space="preserve">
+    <value>Bloquear início antes do repouso semanal</value>
+  </data>
+  <data name="RulesWindow_ComoOSistemaFuncionaAtualmente" xml:space="preserve">
+    <value>Como o sistema funciona atualmente</value>
+  </data>
+  <data name="RulesWindow_CONFERENCIADORH" xml:space="preserve">
+    <value>CONFERÊNCIA DO RH</value>
+  </data>
+  <data name="RulesWindow_ConfiguracoesAplicadas" xml:space="preserve">
+    <value>Configurações aplicadas</value>
+  </data>
+  <data name="RulesWindow_ConsiderandoODomingoComoRepousoSemanalPadraoInicios" xml:space="preserve">
+    <value>• Considerando o domingo como repouso semanal padrão, inícios na sexta-feira ou no sábado são bloqueados ou permitidos com aviso, conforme a configuração.</value>
+  </data>
+  <data name="RulesWindow_ConsulteSempreAsFontesVigentesEOInstrumento" xml:space="preserve">
+    <value>Consulte sempre as fontes vigentes e o instrumento coletivo aplicável antes da decisão final.</value>
+  </data>
+  <data name="RulesWindow_ConteudoOrientativo" xml:space="preserve">
+    <value>Conteúdo orientativo</value>
+  </data>
+  <data name="RulesWindow_ConverterAteUmTercoDoDireitoEmAbono" xml:space="preserve">
+    <value>• Converter até um terço do direito em abono, quando solicitado pelo empregado no prazo.</value>
+  </data>
+  <data name="RulesWindow_CriarQuartaParcelaOuParcelaComMenosDe" xml:space="preserve">
+    <value>• Criar quarta parcela ou parcela com menos de 5 dias.</value>
+  </data>
+  <data name="RulesWindow_DesmarcadaOAgendamentoPodeSerConcluidoMasO" xml:space="preserve">
+    <value>Desmarcada: o agendamento pode ser concluído, mas o sistema exibe um aviso de antecedência.</value>
+  </data>
+  <data name="RulesWindow_DesmarcadaPermiteEssesIniciosMasRegistraUmAviso" xml:space="preserve">
+    <value>Desmarcada: permite esses inícios, mas registra um aviso para conferência do RH.</value>
+  </data>
+  <data name="RulesWindow_DireitoAFerias" xml:space="preserve">
+    <value>Direito a férias</value>
+  </data>
+  <data name="RulesWindow_DividirEmAteTresParcelasComConcordanciaDo" xml:space="preserve">
+    <value>• Dividir em até três parcelas, com concordância do empregado e observando os mínimos legais.</value>
+  </data>
+  <data name="RulesWindow_EmCasosAmbiguosRegistreUmaPendenciaEEncaminhe" xml:space="preserve">
+    <value>Em casos ambíguos, registre uma pendência e encaminhe ao RH.</value>
+  </data>
+  <data name="RulesWindow_Entendi" xml:space="preserve">
+    <value>Entendi</value>
+  </data>
+  <data name="RulesWindow_EsteManualResumeRegrasGeraisDaCLTEle" xml:space="preserve">
+    <value>Este manual resume regras gerais da CLT. Ele não substitui a validação do RH, da contabilidade ou do jurídico. Convenções e acordos coletivos podem estabelecer condições mais favoráveis. Nem todas as regras descritas abaixo são automatizadas pela versão atual do sistema.</value>
+  </data>
+  <data name="RulesWindow_FaltasAfastamentosPagamentoFeriasColetivasRegrasFamiliaresConvencoes" xml:space="preserve">
+    <value>• Faltas, afastamentos, pagamento, férias coletivas, regras familiares, convenções e demais situações especiais ainda dependem de conferência e registro do RH.</value>
+  </data>
+  <data name="RulesWindow_FaltasInjustificadas" xml:space="preserve">
+    <value>Faltas injustificadas</value>
+  </data>
+  <data name="RulesWindow_FaltasNoPeriodoTrabalhadoQueGerouODireito" xml:space="preserve">
+    <value>Faltas no período trabalhado que gerou o direito às férias</value>
+  </data>
+  <data name="RulesWindow_Fechar" xml:space="preserve">
+    <value>Fechar</value>
+  </data>
+  <data name="RulesWindow_FeriasColetivasEmpregadoComMenosDe12Meses" xml:space="preserve">
+    <value>Férias coletivas, empregado com menos de 12 meses, familiares no mesmo estabelecimento, estudante menor de 18 anos, afastamentos previdenciários, licença-maternidade, suspensão ou interrupção contratual e rescisão exigem tratamento específico.</value>
+  </data>
+  <data name="RulesWindow_FeriasConcedidasDepoisDoPeriodoConcessivoExigemTratamento" xml:space="preserve">
+    <value>Férias concedidas depois do período concessivo exigem tratamento legal em dobro. Se apenas parte dos dias ultrapassar o prazo, os dias excedentes devem ser identificados separadamente. Casos vencidos ou parcialmente vencidos devem ser encaminhados ao RH.</value>
+  </data>
+  <data name="RulesWindow_FracionamentoEInicioDasFerias" xml:space="preserve">
+    <value>Fracionamento e início das férias</value>
+  </data>
+  <data name="RulesWindow_HipotesesDePerdaOuReinicioDoPeriodoInterrupcoes" xml:space="preserve">
+    <value>Hipóteses de perda ou reinício do período, interrupções durante as férias e conflitos entre lei, convenção e situação cadastral devem gerar pendência para análise do RH, sem decisão automática.</value>
+  </data>
+  <data name="RulesWindow_ImporUnilateralmenteAVendaDeDiasOuDescontar" xml:space="preserve">
+    <value>• Impor unilateralmente a venda de dias ou descontar uma falta como um dia de férias.</value>
+  </data>
+  <data name="RulesWindow_IniciarNosDoisDiasAnterioresAFeriadoOu" xml:space="preserve">
+    <value>• Iniciar nos dois dias anteriores a feriado ou repouso semanal remunerado.</value>
+  </data>
+  <data name="RulesWindow_MaisDe32" xml:space="preserve">
+    <value>Mais de 32</value>
+  </data>
+  <data name="RulesWindow_ManualDeConsultaParaProgramacaoEConferencia" xml:space="preserve">
+    <value>Manual de consulta para programação e conferência</value>
+  </data>
+  <data name="RulesWindow_MarcadaBloqueiaParcelasIniciadasNaSextaFeiraOu" xml:space="preserve">
+    <value>Marcada: bloqueia parcelas iniciadas na sexta-feira ou no sábado, considerando o domingo como repouso semanal padrão.</value>
+  </data>
+  <data name="RulesWindow_MarcadaDatasQueNaoCumpremOs30Dias" xml:space="preserve">
+    <value>Marcada: datas que não cumprem os 30 dias ficam indisponíveis no calendário e o agendamento é rejeitado.</value>
+  </data>
+  <data name="RulesWindow_NaoPermitido" xml:space="preserve">
+    <value>× Não permitido</value>
+  </data>
+  <data name="RulesWindow_OAbonoERegistradoJuntoAsParcelasE" xml:space="preserve">
+    <value>• O abono é registrado junto às parcelas e limitado automaticamente a um terço do direito. A prova de que o empregado o requereu até 15 dias antes do fim do período trabalhado que gerou o direito às férias permanece sob conferência do RH.</value>
+  </data>
+  <data name="RulesWindow_OAbonoEUmaOpcaoDoEmpregadoNunca" xml:space="preserve">
+    <value>O abono é uma opção do empregado, nunca uma decisão unilateral do empregador. Pode alcançar até um terço do período a que o empregado tem direito e deve ser solicitado até 15 dias antes do fim do período trabalhado que gerou o direito às férias, com prova da manifestação arquivada.</value>
+  </data>
+  <data name="RulesWindow_OAvisoDeveSerEscritoEEntregueCom" xml:space="preserve">
+    <value>O aviso deve ser escrito e entregue com antecedência mínima de 30 dias, com registro da ciência. A remuneração das férias e o eventual abono devem ser pagos até dois dias antes do início.</value>
+  </data>
+  <data name="RulesWindow_ODireitoEAdquiridoAposCadaPeriodoDe" xml:space="preserve">
+    <value>O direito é adquirido após cada período de 12 meses de contrato. O empregador dispõe dos 12 meses seguintes para conceder as férias, escolhendo a época dentro das limitações legais.</value>
+  </data>
+  <data name="RulesWindow_OFracionamentoExigeConcordanciaDoEmpregadoEAdmite" xml:space="preserve">
+    <value>O fracionamento exige concordância do empregado e admite no máximo três períodos. Um deles deve possuir pelo menos 14 dias corridos e cada um dos demais, pelo menos 5 dias corridos. A soma de gozo, abono e saldo não pode superar o direito adquirido.</value>
+  </data>
+  <data name="RulesWindow_OInicioEProibidoNosDoisDiasAnteriores" xml:space="preserve">
+    <value>O início é proibido nos dois dias anteriores a feriado ou repouso semanal remunerado. A conferência deve considerar feriados nacionais, estaduais, municipais e regras coletivas cadastradas.</value>
+  </data>
+  <data name="RulesWindow_OSistemaBloqueiaOInicioNosDoisDias" xml:space="preserve">
+    <value>• O sistema bloqueia o início nos dois dias anteriores aos feriados cadastrados e limita as datas ao dia atual, ao saldo disponível e ao vencimento do período.</value>
+  </data>
+  <data name="RulesWindow_OSistemaValidaEmConjuntoAsParcelasNovas" xml:space="preserve">
+    <value>• O sistema valida em conjunto as parcelas novas e existentes: bloqueia saldo insuficiente, sobreposição, períodos com menos de 5 dias, quarta parcela e divisões que não possam conter uma parcela de pelo menos 14 dias.</value>
+  </data>
+  <data name="RulesWindow_Permitido" xml:space="preserve">
+    <value>✓ Permitido</value>
+  </data>
+  <data name="RulesWindow_PERMITIDOCOMAVISO" xml:space="preserve">
+    <value>PERMITIDO COM AVISO</value>
+  </data>
+  <data name="RulesWindow_ProgramarDentroDoSaldoEDoPeriodoConcessivo" xml:space="preserve">
+    <value>• Programar dentro do saldo e do período concessivo.</value>
+  </data>
+  <data name="RulesWindow_ReferenciasOficiais" xml:space="preserve">
+    <value>Referências oficiais</value>
+  </data>
+  <data name="RulesWindow_RegrasDeFerias" xml:space="preserve">
+    <value>Regras de Férias</value>
+  </data>
+  <data name="RulesWindow_RemuneracaoESituacoesEspeciais" xml:space="preserve">
+    <value>Remuneração e situações especiais</value>
+  </data>
+  <data name="RulesWindow_SemDireitoNoPeriodo" xml:space="preserve">
+    <value>Sem direito no período</value>
+  </data>
+  <data name="RulesWindow_VisaoRapida" xml:space="preserve">
+    <value>Visão rápida</value>
+  </data>
+  <data name="ScheduleVacationDialog_AbonoPecuniario" xml:space="preserve">
+    <value>Abono pecuniário</value>
+  </data>
+  <data name="ScheduleVacationDialog_AbonoPecuniarioRegistradoComOAgendamento" xml:space="preserve">
+    <value>Abono pecuniário registrado com o agendamento</value>
+  </data>
+  <data name="ScheduleVacationDialog_AbonoPecuniarioVenda" xml:space="preserve">
+    <value>Abono pecuniário (venda)</value>
+  </data>
+  <data name="ScheduleVacationDialog_ADataFinalNaoPodeSerAnteriorA" xml:space="preserve">
+    <value>A data final não pode ser anterior à inicial.</value>
+  </data>
+  <data name="ScheduleVacationDialog_ADias" xml:space="preserve">
+    <value>{0:dd/MM/yyyy} a {1:dd/MM/yyyy} • {2} dias</value>
+  </data>
+  <data name="ScheduleVacationDialog_AdicionarParcela" xml:space="preserve">
+    <value>Adicionar parcela</value>
+  </data>
+  <data name="ScheduleVacationDialog_AdicioneAoMenosUmaParcelaDeFerias" xml:space="preserve">
+    <value>Adicione ao menos uma parcela de férias.</value>
+  </data>
+  <data name="ScheduleVacationDialog_ADivisaoPrecisaConterUmaParcelaDePelo" xml:space="preserve">
+    <value>A divisão precisa conter uma parcela de pelo menos 14 dias.</value>
+  </data>
+  <data name="ScheduleVacationDialog_AgendarFeriasPorPeriodos" xml:space="preserve">
+    <value>Agendar férias por períodos</value>
+  </data>
+  <data name="ScheduleVacationDialog_AntecedenciaDe30Dias" xml:space="preserve">
+    <value>• Antecedência de 30 dias: {0}.
+</value>
+  </data>
+  <data name="ScheduleVacationDialog_AParcelaDeveTerminarAte" xml:space="preserve">
+    <value>A parcela deve terminar até {0:dd/MM/yyyy}.</value>
+  </data>
+  <data name="ScheduleVacationDialog_AParcelaNaoPodeIniciarNaSextaFeira" xml:space="preserve">
+    <value>A parcela não pode iniciar na sexta-feira ou no sábado, antes do repouso semanal.</value>
+  </data>
+  <data name="ScheduleVacationDialog_AParcelaSeSobrepoeAFeriasJaAgendadas" xml:space="preserve">
+    <value>A parcela se sobrepõe a férias já agendadas.</value>
+  </data>
+  <data name="ScheduleVacationDialog_AposOTerminoDaAquisicao" xml:space="preserve">
+    <value>{0:dd/MM/yyyy}, após o término da aquisição.</value>
+  </data>
+  <data name="ScheduleVacationDialog_AQuantidadeDeDiasVendidosNaoPodeSer" xml:space="preserve">
+    <value>A quantidade de dias vendidos não pode ser negativa.</value>
+  </data>
+  <data name="ScheduleVacationDialog_AQuantidadeDeFaltasNaoJustificadasNaoPode" xml:space="preserve">
+    <value>A quantidade de faltas não justificadas não pode ser negativa.</value>
+  </data>
+  <data name="ScheduleVacationDialog_AsFeriasDestePeriodoSoPodemComecarA" xml:space="preserve">
+    <value>As férias deste período só podem começar a partir de </value>
+  </data>
+  <data name="ScheduleVacationDialog_AsFeriasDevemTerminarAteOVencimentoDo" xml:space="preserve">
+    <value>As férias devem terminar até o vencimento do período </value>
+  </data>
+  <data name="ScheduleVacationDialog_AsFeriasPodemSerDivididasEmAte3" xml:space="preserve">
+    <value>• As férias podem ser divididas em até 3 parcelas, com concordância do empregado.</value>
+  </data>
+  <data name="ScheduleVacationDialog_AsNovasParcelasNaoPodemSeSobrepor" xml:space="preserve">
+    <value>As novas parcelas não podem se sobrepor.</value>
+  </data>
+  <data name="ScheduleVacationDialog_ASomaDasFeriasEDoAbonoExcede" xml:space="preserve">
+    <value>A soma das férias e do abono excede o saldo disponível.</value>
+  </data>
+  <data name="ScheduleVacationDialog_ASomaDasParcelasEDoAbonoExcede" xml:space="preserve">
+    <value>A soma das parcelas e do abono excede o saldo disponível.</value>
+  </data>
+  <data name="ScheduleVacationDialog_ASomaDasParcelasEDosDiasVendidos" xml:space="preserve">
+    <value>• A soma das parcelas e dos dias vendidos não pode ultrapassar o saldo disponível.</value>
+  </data>
+  <data name="ScheduleVacationDialog_AsParcelasDeFeriasNaoPodemSeSobrepor" xml:space="preserve">
+    <value>As parcelas de férias não podem se sobrepor.</value>
+  </data>
+  <data name="ScheduleVacationDialog_Ate5Faltas30DiasDeFerias" xml:space="preserve">
+    <value>• Até 5 faltas: 30 dias de férias.</value>
+  </data>
+  <data name="ScheduleVacationDialog_AteDiaSAdicionaisDeAbono" xml:space="preserve">
+    <value>até {0} dia(s) adicionais de abono.</value>
+  </data>
+  <data name="ScheduleVacationDialog_AtualizarParcela" xml:space="preserve">
+    <value>Atualizar parcela</value>
+  </data>
+  <data name="ScheduleVacationDialog_Bloqueada" xml:space="preserve">
+    <value>bloqueada</value>
+  </data>
+  <data name="ScheduleVacationDialog_Bloqueado" xml:space="preserve">
+    <value>bloqueado</value>
+  </data>
+  <data name="ScheduleVacationDialog_CadaUmaDasDemaisParcelasDevePossuirPelo" xml:space="preserve">
+    <value>• Cada uma das demais parcelas deve possuir pelo menos 5 dias corridos.</value>
+  </data>
+  <data name="ScheduleVacationDialog_Cancelar" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="ScheduleVacationDialog_ConfirmarParcelas" xml:space="preserve">
+    <value>Confirmar parcelas</value>
+  </data>
+  <data name="ScheduleVacationDialog_DataDeInicio" xml:space="preserve">
+    <value>Data de início</value>
+  </data>
+  <data name="ScheduleVacationDialog_DataInicial" xml:space="preserve">
+    <value>Data inicial</value>
+  </data>
+  <data name="ScheduleVacationDialog_Datas" xml:space="preserve">
+    <value>Datas</value>
+  </data>
+  <data name="ScheduleVacationDialog_DatasDisponiveisParaFeriasA" xml:space="preserve">
+    <value>Datas disponíveis para férias: {0:dd/MM/yyyy} a {1:dd/MM/yyyy}</value>
+  </data>
+  <data name="ScheduleVacationDialog_De15A23Faltas18DiasDe" xml:space="preserve">
+    <value>• De 15 a 23 faltas: 18 dias de férias.</value>
+  </data>
+  <data name="ScheduleVacationDialog_De24A32Faltas12DiasDe" xml:space="preserve">
+    <value>• De 24 a 32 faltas: 12 dias de férias.</value>
+  </data>
+  <data name="ScheduleVacationDialog_De6A14Faltas24DiasDe" xml:space="preserve">
+    <value>• De 6 a 14 faltas: 24 dias de férias.</value>
+  </data>
+  <data name="ScheduleVacationDialog_DescontoPorFaltasNaoJustificadas" xml:space="preserve">
+    <value>• Desconto por faltas não justificadas: {0}.</value>
+  </data>
+  <data name="ScheduleVacationDialog_Desligado" xml:space="preserve">
+    <value>desligado</value>
+  </data>
+  <data name="ScheduleVacationDialog_DiaSCorridoSTerminoEm" xml:space="preserve">
+    <value>{0} dia(s) corrido(s) • término em {1:dd/MM/yyyy}</value>
+  </data>
+  <data name="ScheduleVacationDialog_DiasRestantes" xml:space="preserve">
+    <value>{0} dias restantes</value>
+  </data>
+  <data name="ScheduleVacationDialog_FaltasJustificadasNaoEntramNesteCalculoAReducao" xml:space="preserve">
+    <value>Faltas justificadas não entram neste cálculo. A redução ocorre por faixas; não se desconta um dia de férias para cada falta.</value>
+  </data>
+  <data name="ScheduleVacationDialog_FaltasNaoJustificadas" xml:space="preserve">
+    <value>Faltas não justificadas</value>
+  </data>
+  <data name="ScheduleVacationDialog_FaltasNaoJustificadasNoPeriodo" xml:space="preserve">
+    <value>Faltas não justificadas no período</value>
+  </data>
+  <data name="ScheduleVacationDialog_FeriasIndividuaisCLT" xml:space="preserve">
+    <value>Férias individuais — CLT</value>
+  </data>
+  <data name="ScheduleVacationDialog_InformeOInicioEAQuantidadeDeDias" xml:space="preserve">
+    <value>Informe o início e a quantidade de dias</value>
+  </data>
+  <data name="ScheduleVacationDialog_InicioAntesDoRepousoSemanal" xml:space="preserve">
+    <value>• Início antes do repouso semanal: {0}.
+</value>
+  </data>
+  <data name="ScheduleVacationDialog_Ligado" xml:space="preserve">
+    <value>ligado</value>
+  </data>
+  <data name="ScheduleVacationDialog_MaisDe32FaltasSemDireitoAFerias" xml:space="preserve">
+    <value>• Mais de 32 faltas: sem direito a férias no período.</value>
+  </data>
+  <data name="ScheduleVacationDialog_MaximoLegalDiaSOPedidoDoEmpregado" xml:space="preserve">
+    <value>Máximo legal: {0} dia(s). O pedido do empregado deve ter sido feito no prazo legal.</value>
+  </data>
+  <data name="ScheduleVacationDialog_MonteAteTresParcelasEConfirmeTodasDe" xml:space="preserve">
+    <value>Monte até três parcelas e confirme todas de uma vez</value>
+  </data>
+  <data name="ScheduleVacationDialog_NestePeriodoTrabalhadoQueGerouODireitoAs" xml:space="preserve">
+    <value>neste período trabalhado que gerou o direito às férias.</value>
+  </data>
+  <data name="ScheduleVacationDialog_NovasParcelas" xml:space="preserve">
+    <value>Novas parcelas</value>
+  </data>
+  <data name="ScheduleVacationDialog_OAbonoPecuniarioEstaLimitadoADiaS" xml:space="preserve">
+    <value>O abono pecuniário está limitado a {0} dia(s).</value>
+  </data>
+  <data name="ScheduleVacationDialog_OAbonoPecuniarioNaoPodeUltrapassarDias" xml:space="preserve">
+    <value>O abono pecuniário não pode ultrapassar {0} dias </value>
+  </data>
+  <data name="ScheduleVacationDialog_OEmpregadoPodeConverterAte13Do" xml:space="preserve">
+    <value>• O empregado pode converter até 1/3 do direito em abono (venda).</value>
+  </data>
+  <data name="ScheduleVacationDialog_OInicioDasFeriasDeveRespeitar30Dias" xml:space="preserve">
+    <value>O início das férias deve respeitar 30 dias de antecedência.</value>
+  </data>
+  <data name="ScheduleVacationDialog_OInicioNaoPodeOcorrerNos2Dias" xml:space="preserve">
+    <value>• O início não pode ocorrer nos 2 dias anteriores a feriado ou repouso semanal, quando o bloqueio estiver habilitado.</value>
+  </data>
+  <data name="ScheduleVacationDialog_OInicioOcorreNosDoisDiasAnterioresA" xml:space="preserve">
+    <value>O início ocorre nos dois dias anteriores a um feriado.</value>
+  </data>
+  <data name="ScheduleVacationDialog_OInicioOcorreNosDoisDiasAnterioresAo" xml:space="preserve">
+    <value>O início ocorre nos dois dias anteriores ao repouso semanal de domingo.</value>
+  </data>
+  <data name="ScheduleVacationDialog_OLimiteDeTresParcelasJaFoiAtingido" xml:space="preserve">
+    <value>O limite de três parcelas já foi atingido.</value>
+  </data>
+  <data name="ScheduleVacationDialog_OPedidoDevePartirDoEmpregadoESer" xml:space="preserve">
+    <value>• O pedido deve partir do empregado e ser feito até 15 dias antes do fim do período trabalhado que gerou o direito às férias.</value>
+  </data>
+  <data name="ScheduleVacationDialog_OPeriodoPossuiSomenteDiasDisponiveis" xml:space="preserve">
+    <value>O período possui somente {0} dias disponíveis.</value>
+  </data>
+  <data name="ScheduleVacationDialog_ParaEstePeriodoAteNovaSParcelaS" xml:space="preserve">
+    <value>Para este período: até {0} nova(s) parcela(s) e </value>
+  </data>
+  <data name="ScheduleVacationDialog_ParcelaSDiasDeDescansoVendidos" xml:space="preserve">
+    <value>{0} parcela(s) • {1} dias de descanso • {2} vendidos</value>
+  </data>
+  <data name="ScheduleVacationDialog_ParcelaSDisponivelIs" xml:space="preserve">
+    <value>{0} parcela(s) disponível(is)</value>
+  </data>
+  <data name="ScheduleVacationDialog_ParcelasJaAgendadas" xml:space="preserve">
+    <value>Parcelas já agendadas</value>
+  </data>
+  <data name="ScheduleVacationDialog_PermitidaComAviso" xml:space="preserve">
+    <value>permitida com aviso</value>
+  </data>
+  <data name="ScheduleVacationDialog_PermitidoComAviso" xml:space="preserve">
+    <value>permitido com aviso</value>
+  </data>
+  <data name="ScheduleVacationDialog_QuantidadeDeDias" xml:space="preserve">
+    <value>Quantidade de dias</value>
+  </data>
+  <data name="ScheduleVacationDialog_RegraCLTDesligadaRegistroSemDescontoNoSaldo" xml:space="preserve">
+    <value>Regra CLT desligada: registro sem desconto no saldo.</value>
+  </data>
+  <data name="ScheduleVacationDialog_RegraCLTLigadaDireitoDoPeriodoEmDia" xml:space="preserve">
+    <value>Regra CLT ligada: direito do período em {0} dia(s).</value>
+  </data>
+  <data name="ScheduleVacationDialog_RegrasDaDivisao" xml:space="preserve">
+    <value>Regras da divisão</value>
+  </data>
+  <data name="ScheduleVacationDialog_RemoverSelecionada" xml:space="preserve">
+    <value>Remover selecionada</value>
+  </data>
+  <data name="ScheduleVacationDialog_SemDatasDisponiveisParaAgendamentoNestePeriodo" xml:space="preserve">
+    <value>Sem datas disponíveis para agendamento neste período</value>
+  </data>
+  <data name="ScheduleVacationDialog_VencimentoEntreParenteses" xml:space="preserve">
+    <value>({0:dd/MM/yyyy}).</value>
+  </data>
+  <data name="ScheduleVacationDialog_TodasAsParcelasDevemTerminarAte" xml:space="preserve">
+    <value>Todas as parcelas devem terminar até {0:dd/MM/yyyy}.</value>
+  </data>
+  <data name="ScheduleVacationDialog_TodasAsParcelasDevemTerminarDentroDoPeriodo" xml:space="preserve">
+    <value>• Todas as parcelas devem terminar dentro do período concessivo.</value>
+  </data>
+  <data name="ScheduleVacationDialog_UmaDasParcelasDevePossuirPeloMenos14" xml:space="preserve">
+    <value>• Uma das parcelas deve possuir pelo menos 14 dias corridos.</value>
+  </data>
+  <data name="ScheduleVacationDialog_UmaDasParcelasDevePossuirPeloMenos142" xml:space="preserve">
+    <value>Uma das parcelas deve possuir pelo menos 14 dias.</value>
+  </data>
+  <data name="ScheduleVacationDialog_UmaParcelaDeFeriasDevePossuirPeloMenos" xml:space="preserve">
+    <value>Uma parcela de férias deve possuir pelo menos 5 dias corridos.</value>
+  </data>
+  <data name="ScheduleVacationDialog_UmaParcelaDevePossuirPeloMenos5Dias" xml:space="preserve">
+    <value>Uma parcela deve possuir pelo menos 5 dias corridos.</value>
+  </data>
+  <data name="SettingsWindow_BloquearFeriasComMenosDe30DiasDe" xml:space="preserve">
+    <value>Bloquear férias com menos de 30 dias de antecedência</value>
+  </data>
+  <data name="SettingsWindow_BloquearInicioNaSextaFeiraENoSabado" xml:space="preserve">
+    <value>Bloquear início na sexta-feira e no sábado</value>
+  </data>
+  <data name="SettingsWindow_Cancelar" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="SettingsWindow_Configuracoes" xml:space="preserve">
+    <value>Configurações</value>
+  </data>
+  <data name="SettingsWindow_ConsideraODomingoComoRepousoSemanalQuandoDesmarcada" xml:space="preserve">
+    <value>Considera o domingo como repouso semanal. Quando desmarcada, o sistema permite o agendamento e exibe um aviso.</value>
+  </data>
+  <data name="SettingsWindow_DefinaAsRegrasUsadasNoAgendamentoDeFerias" xml:space="preserve">
+    <value>Defina as regras usadas no agendamento de férias.</value>
+  </data>
+  <data name="SettingsWindow_DescontarSaldoDeFeriasPorFaltasNaoJustificadas" xml:space="preserve">
+    <value>Descontar saldo de férias por faltas não justificadas</value>
+  </data>
+  <data name="SettingsWindow_QuandoMarcadaAplicaAoPeriodoAsFaixasDe" xml:space="preserve">
+    <value>Quando marcada, aplica ao período as faixas de redução previstas na CLT. Quando desmarcada, as faltas continuam registradas, mas não reduzem o saldo.</value>
+  </data>
+  <data name="SettingsWindow_QuandoMarcadaAsDatasQueNaoCumpremA" xml:space="preserve">
+    <value>Quando marcada, as datas que não cumprem a antecedência ficam indisponíveis no calendário. Quando desmarcada, o sistema permite o agendamento e exibe apenas um aviso.</value>
+  </data>
+  <data name="SettingsWindow_RegrasDeAgendamento" xml:space="preserve">
+    <value>Regras de agendamento</value>
+  </data>
+  <data name="SettingsWindow_Salvar" xml:space="preserve">
+    <value>Salvar</value>
+  </data>
+  <data name="VacationAgendaWindow_IntervaloPeriodo" xml:space="preserve">
+    <value>{0:dd/MM/yyyy} a {1:dd/MM/yyyy}</value>
+  </data>
+  <data name="VacationAgendaWindow_ADias" xml:space="preserve">
+    <value>{0}
+{1:dd/MM/yyyy} a {2:dd/MM/yyyy}
+{3} dias</value>
+  </data>
+  <data name="VacationAgendaWindow_AgendaDeFerias" xml:space="preserve">
+    <value>Agenda de Férias</value>
+  </data>
+  <data name="VacationAgendaWindow_AgendaDeFerias2" xml:space="preserve">
+    <value>☀  Agenda de férias</value>
+  </data>
+  <data name="VacationAgendaWindow_Ano" xml:space="preserve">
+    <value>− Ano</value>
+  </data>
+  <data name="VacationAgendaWindow_Ano2" xml:space="preserve">
+    <value>+ Ano</value>
+  </data>
+  <data name="VacationAgendaWindow_AsDatasEOsDiasRepresentamOPeriodo" xml:space="preserve">
+    <value>As datas e os dias representam o período completo, incluindo outros meses e anos.</value>
+  </data>
+  <data name="VacationAgendaWindow_CadaColaboradorTemUmaCorENasFaixas" xml:space="preserve">
+    <value>Cada colaborador tem uma cor • ‹ e › nas faixas indicam continuidade do período</value>
+  </data>
+  <data name="VacationAgendaWindow_ColaboradorEsPeriodoSNesteMes" xml:space="preserve">
+    <value>{0} colaborador(es) · {1} período(s) neste mês</value>
+  </data>
+  <data name="VacationAgendaWindow_ColaboradorPeriodoCompleto" xml:space="preserve">
+    <value>Colaborador / período completo</value>
+  </data>
+  <data name="VacationAgendaWindow_Dia" xml:space="preserve">
+    <value>‹ Dia</value>
+  </data>
+  <data name="VacationAgendaWindow_Dia2" xml:space="preserve">
+    <value>Dia ›</value>
+  </data>
+  <data name="VacationAgendaWindow_Dias" xml:space="preserve">
+    <value>Dias</value>
+  </data>
+  <data name="VacationAgendaWindow_DigiteUmaDataOuCliqueNoTituloDo" xml:space="preserve">
+    <value>Digite uma data ou clique no título do calendário para escolher mês e ano</value>
+  </data>
+  <data name="VacationAgendaWindow_DOM" xml:space="preserve">
+    <value>DOM</value>
+  </data>
+  <data name="VacationAgendaWindow_Ferias" xml:space="preserve">
+    <value>Férias</value>
+  </data>
+  <data name="VacationAgendaWindow_Hoje" xml:space="preserve">
+    <value>Hoje</value>
+  </data>
+  <data name="VacationAgendaWindow_HojeContornoDiaSelecionado" xml:space="preserve">
+    <value>● Hoje  ·  Contorno: dia selecionado</value>
+  </data>
+  <data name="VacationAgendaWindow_IrPara" xml:space="preserve">
+    <value>Ir para</value>
+  </data>
+  <data name="VacationAgendaWindow_IrParaDiaMesEAno" xml:space="preserve">
+    <value>Ir para dia, mês e ano</value>
+  </data>
+  <data name="VacationAgendaWindow_Limpar" xml:space="preserve">
+    <value>Limpar</value>
+  </data>
+  <data name="VacationAgendaWindow_MesAnterior" xml:space="preserve">
+    <value>Mês anterior</value>
+  </data>
+  <data name="VacationAgendaWindow_NaoFoiPossivelCarregarAAgendaFecheE" xml:space="preserve">
+    <value>Não foi possível carregar a agenda. Feche e abra novamente para tentar de novo.</value>
+  </data>
+  <data name="VacationAgendaWindow_NenhumPeriodoDeFeriasNesteMes" xml:space="preserve">
+    <value>Nenhum período de férias neste mês.</value>
+  </data>
+  <data name="VacationAgendaWindow_PeriodoDeFerias" xml:space="preserve">
+    <value>Período de férias</value>
+  </data>
+  <data name="VacationAgendaWindow_PesquisarColaborador" xml:space="preserve">
+    <value>Pesquisar colaborador</value>
+  </data>
+  <data name="VacationAgendaWindow_ProximoMes" xml:space="preserve">
+    <value>Próximo mês</value>
+  </data>
+  <data name="VacationAgendaWindow_QUA" xml:space="preserve">
+    <value>QUA</value>
+  </data>
+  <data name="VacationAgendaWindow_QUI" xml:space="preserve">
+    <value>QUI</value>
+  </data>
+  <data name="VacationAgendaWindow_SAB" xml:space="preserve">
+    <value>SÁB</value>
+  </data>
+  <data name="VacationAgendaWindow_SEG" xml:space="preserve">
+    <value>SEG</value>
+  </data>
+  <data name="VacationAgendaWindow_SelecioneUmColaborador" xml:space="preserve">
+    <value>Selecione um colaborador</value>
+  </data>
+  <data name="VacationAgendaWindow_SelecioneUmColaboradorParaEscolherOPeriodo" xml:space="preserve">
+    <value>Selecione um colaborador para escolher o período</value>
+  </data>
+  <data name="VacationAgendaWindow_SemFeriasAgendadas" xml:space="preserve">
+    <value>Sem férias agendadas</value>
+  </data>
+  <data name="VacationAgendaWindow_SEX" xml:space="preserve">
+    <value>SEX</value>
+  </data>
+  <data name="VacationAgendaWindow_Simbolo" xml:space="preserve">
+    <value>‹</value>
+  </data>
+  <data name="VacationAgendaWindow_Simbolo2" xml:space="preserve">
+    <value>›</value>
+  </data>
+  <data name="VacationAgendaWindow_ColaboradorNomeId" xml:space="preserve">
+    <value>{0} · #{1}</value>
+  </data>
+  <data name="VacationAgendaWindow_DatasFerias" xml:space="preserve">
+    <value>{0:dd/MM/yyyy} → {1:dd/MM/yyyy}</value>
+  </data>
+  <data name="VacationAgendaWindow_FaixaColaborador" xml:space="preserve">
+    <value>{0}{1}{2}</value>
+  </data>
+  <data name="VacationAgendaWindow_TempoDeDescansarTudoOrganizadoPorAqui" xml:space="preserve">
+    <value>Tempo de descansar. Tudo organizado por aqui.</value>
+  </data>
+  <data name="VacationAgendaWindow_TER" xml:space="preserve">
+    <value>TER</value>
+  </data>
+  <data name="VacationAgendaWindow_TodosOsPeriodos" xml:space="preserve">
+    <value>Todos os períodos</value>
+  </data>
+  <data name="VacationAgendaWindow_VoltarAoPainel" xml:space="preserve">
+    <value>Voltar ao painel</value>
+  </data>
+  <data name="RulesWindow_ReferenciaTst" xml:space="preserve">
+    <value>Tribunal Superior do Trabalho — orientações sobre férias</value>
+  </data>
+  <data name="RulesWindow_ReferenciaClt" xml:space="preserve">
+    <value>CLT compilada — artigos 129 a 145</value>
+  </data>
+  <data name="Holidays_Titulo" xml:space="preserve"><value>Feriados</value></data>
+  <data name="Holidays_Subtitulo" xml:space="preserve"><value>Cadastre, edite e exclua feriados de data fixa.</value></data>
+  <data name="Holidays_Novo" xml:space="preserve"><value>Novo feriado</value></data>
+  <data name="Holidays_Editar" xml:space="preserve"><value>Editar</value></data>
+  <data name="Holidays_Nome" xml:space="preserve"><value>Nome do feriado</value></data>
+  <data name="Holidays_Dia" xml:space="preserve"><value>Dia</value></data>
+  <data name="Holidays_Mes" xml:space="preserve"><value>Mês</value></data>
+  <data name="Holidays_Salvar" xml:space="preserve"><value>Salvar</value></data>
+  <data name="Holidays_Cancelar" xml:space="preserve"><value>Cancelar</value></data>
+  <data name="Holidays_Excluir" xml:space="preserve"><value>Excluir</value></data>
+  <data name="Holidays_Acoes" xml:space="preserve"><value>Ações</value></data>
+  <data name="Holidays_ConfirmarExclusao" xml:space="preserve"><value>Excluir o feriado &quot;{0}&quot;?</value></data>
+  <data name="Holidays_NomeObrigatorio" xml:space="preserve"><value>Informe o nome do feriado.</value></data>
+  <data name="Holidays_DataInvalida" xml:space="preserve"><value>Informe um dia e mês válidos.</value></data>
+  <data name="Holidays_Duplicado" xml:space="preserve"><value>Já existe um feriado com esse nome e data.</value></data>
+  <data name="Holidays_NaoEncontrado" xml:space="preserve"><value>Feriado não encontrado. Atualize a lista.</value></data>
+  <data name="Holidays_Falha" xml:space="preserve"><value>Não foi possível concluir a operação. Tente novamente.</value></data>
+</root>

@@ -1,3 +1,4 @@
+using FeriasCampos.Properties;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,14 +15,17 @@ public partial class MainWindow : Window
 {
     private readonly DashboardController _controller;
     private readonly IConfiguracaoService _configuracao;
+    private readonly IPeriodoService _periodos;
+    private readonly IFeriadoService _feriados;
     private PeriodoAquisitivo? _selectedPeriod;
     private IReadOnlyList<PeriodoRow> _periodRows = [];
     private List<PeriodoRow> _employeeRows = [];
     private readonly Dictionary<int, int> _selectedPeriodIds = [];
     private readonly ObservableCollection<PeriodoRow> _visiblePeriodRows = [];
     private int _currentPage = 1;
-    private const int PageSize = 10;
+    private int PageSize = 10;
     private bool _updatingPeriodSelector;
+    private bool _restoringPeriodSelection;
     private IReadOnlyList<FeriasAgendaItem> _agenda = [];
     private DateTime _agendaMonth = new(DateTime.Today.Year, DateTime.Today.Month, 1);
     private static readonly string[] AgendaColors =
@@ -32,11 +36,15 @@ public partial class MainWindow : Window
 
     public MainWindow(
         DashboardController controller,
-        IConfiguracaoService configuracao)
+        IConfiguracaoService configuracao,
+        IPeriodoService periodos,
+        IFeriadoService feriados)
     {
         InitializeComponent();
         _controller = controller;
         _configuracao = configuracao;
+        _periodos = periodos;
+        _feriados = feriados;
 
         Loaded += async (_, _) => await LoadDataAsync();
         SizeChanged += (_, _) => ApplyResponsiveLayout();
@@ -97,7 +105,7 @@ public partial class MainWindow : Window
 
         var first = _employeeRows.Count == 0 ? 0 : ((_currentPage - 1) * PageSize) + 1;
         var last = Math.Min(_currentPage * PageSize, _employeeRows.Count);
-        PaginationSummaryText.Text = $"Mostrando {first} a {last} de {_employeeRows.Count} colaboradores";
+        PaginationSummaryText.Text = string.Format(ScreenTexts.MainWindow_MostrandoADeColaboradores, first, last, _employeeRows.Count);
         CurrentPageText.Text = _currentPage.ToString();
         PreviousPageButton.IsEnabled = _currentPage > 1;
         NextPageButton.IsEnabled = _currentPage < pageCount;
@@ -106,6 +114,21 @@ public partial class MainWindow : Window
     private void PreviousPageClick(object sender, RoutedEventArgs e)
     {
         _currentPage--;
+        ShowCurrentPage();
+        if (PeriodsGrid.Items.Count > 0) PeriodsGrid.SelectedIndex = 0;
+    }
+
+    private void PageSizeChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (sender is not ComboBox { SelectedItem: ComboBoxItem item } ||
+            !int.TryParse(item.Content?.ToString(), out var pageSize) ||
+            pageSize <= 0 || pageSize == PageSize)
+        {
+            return;
+        }
+
+        PageSize = pageSize;
+        _currentPage = 1;
         ShowCurrentPage();
         if (PeriodsGrid.Items.Count > 0) PeriodsGrid.SelectedIndex = 0;
     }
@@ -179,7 +202,7 @@ public partial class MainWindow : Window
 
     private void RenderAgenda()
     {
-        AgendaMonthText.Text = $"Agenda de férias — {_agendaMonth:MMMM yyyy}";
+        AgendaMonthText.Text = string.Format(ScreenTexts.MainWindow_AgendaDeFerias2, _agendaMonth);
         AgendaDaysGrid.Children.Clear();
         AgendaLegend.Children.Clear();
 
@@ -212,7 +235,7 @@ public partial class MainWindow : Window
                 Orientation = Orientation.Horizontal,
                 Margin = new Thickness(5, 3, 5, 3),
                 ToolTip = string.Join("\n", employee.Select(item =>
-                    $"{item.Inicio:dd/MM} a {item.Fim:dd/MM}"))
+                    string.Format(ScreenTexts.MainWindow_IntervaloAgenda, item.Inicio, item.Fim)))
             };
             legendItem.Children.Add(new Border
             {
@@ -306,7 +329,7 @@ public partial class MainWindow : Window
 
     private async void PeriodSelected(object sender, SelectionChangedEventArgs e)
     {
-        if (PeriodsGrid.SelectedItem is not PeriodoRow selectedRow)
+        if (_restoringPeriodSelection || PeriodsGrid.SelectedItem is not PeriodoRow selectedRow)
         {
             return;
         }
@@ -332,18 +355,18 @@ public partial class MainWindow : Window
         PeriodSelector.SelectedValue = period.Id;
         _updatingPeriodSelector = false;
         ExpiryText.Text = period.Vencimento.ToString("dd/MM/yyyy");
-        RightText.Text = $"{period.DireitoDias} dias";
-        UsedText.Text = $"{period.Agendados} dias";
-        SoldText.Text = $"{period.Vendidos} dias";
-        DaysOffText.Text = $"{period.Folgas} dias";
-        BalanceText.Text = $"{period.Saldo} dias";
-        RemainingText.Text = $"Saldo restante: {period.Saldo} dias";
+        RightText.Text = string.Format(ScreenTexts.MainWindow_Dias, period.DireitoDias);
+        UsedText.Text = string.Format(ScreenTexts.MainWindow_Dias, -period.Movimentacoes.Where(m => m.Tipo == TipoMovimentacao.Gozo).Sum(m => m.Dias));
+        SoldText.Text = string.Format(ScreenTexts.MainWindow_Dias, period.Vendidos);
+        DaysOffText.Text = string.Format(ScreenTexts.MainWindow_Dias, period.Folgas);
+        BalanceText.Text = string.Format(ScreenTexts.MainWindow_Dias, period.Saldo);
+        RemainingText.Text = string.Format(ScreenTexts.MainWindow_SaldoRestanteDias2, period.Saldo);
 
         HistoryList.ItemsSource = period.Movimentacoes
             .OrderByDescending(movement => movement.DataHoraUtc)
             .Select(movement =>
-                $"●  {movement.Tipo}     {movement.Inicio:dd/MM/yyyy} " +
-                $"{(-movement.Dias):+#;-#;0} dias");
+                string.Format(ScreenTexts.MainWindow_MovimentacaoTipoData, movement.Tipo, movement.Inicio) +
+                string.Format(ScreenTexts.MainWindow_Dias2, (-movement.Dias)));
     }
 
     private async void PeriodSelectorChanged(object sender, SelectionChangedEventArgs e)
@@ -371,9 +394,9 @@ public partial class MainWindow : Window
         if (_selectedPeriod.Vencimento.Date < DateTime.Today)
         {
             MessageBox.Show(
-                $"Este período venceu em {_selectedPeriod.Vencimento:dd/MM/yyyy}. " +
-                "Não é possível agendar férias após o vencimento.",
-                "Período vencido",
+                string.Format(ScreenTexts.MainWindow_EstePeriodoVenceuEm, _selectedPeriod.Vencimento) +
+                ScreenTexts.MainWindow_NaoEPossivelAgendarFeriasAposOVencimento,
+                ScreenTexts.MainWindow_PeriodoVencido,
                 MessageBoxButton.OK,
                 MessageBoxImage.Warning);
             return;
@@ -405,7 +428,7 @@ public partial class MainWindow : Window
         {
             MessageBox.Show(
                 string.Join(Environment.NewLine, result.Erros),
-                "Agendamento não permitido",
+                ScreenTexts.MainWindow_AgendamentoNaoPermitido,
                 MessageBoxButton.OK,
                 MessageBoxImage.Warning);
             return;
@@ -415,7 +438,7 @@ public partial class MainWindow : Window
         {
             MessageBox.Show(
                 string.Join(Environment.NewLine, result.Avisos),
-                "Agendamento salvo com avisos");
+                ScreenTexts.MainWindow_AgendamentoSalvoComAvisos);
         }
 
         await LoadDataAsync(SearchBox.Text);
@@ -431,17 +454,49 @@ public partial class MainWindow : Window
 
     private void ImportClick(object sender, RoutedEventArgs e)
     {
-        MessageBox.Show(
-            _controller.EstadoImportacao(),
-            "Importar PDF",
-            MessageBoxButton.OK,
-            MessageBoxImage.Information);
+        ShowModuleNotice(ScreenTexts.MainWindow_ImportarPDF, "importIcon", _controller.EstadoImportacao());
     }
 
+    private void ShowModuleNotice(string title, string iconKey, string message)
+    {
+        var icon = (ImageSource)FindResource(iconKey);
+        var panel = new StackPanel { Margin = new Thickness(24) };
+        var header = new StackPanel { Orientation = Orientation.Horizontal };
+        header.Children.Add(new Image { Source = icon, Width = 30, Height = 30, Margin = new Thickness(0, 0, 10, 0) });
+        header.Children.Add(new TextBlock { Text = title, FontSize = 22, FontWeight = FontWeights.Bold, VerticalAlignment = VerticalAlignment.Center });
+        panel.Children.Add(header);
+        panel.Children.Add(new TextBlock { Text = message, TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 18, 0, 20) });
+        var close = new Button { Content = ScreenTexts.MainWindow_Entendi, IsCancel = true, IsDefault = true, HorizontalAlignment = HorizontalAlignment.Right };
+        panel.Children.Add(close);
+        var dialog = new Window
+        {
+            Owner = this, Title = title, Icon = icon, Width = 520,
+            SizeToContent = SizeToContent.Height, ResizeMode = ResizeMode.NoResize,
+            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+            Background = new SolidColorBrush(Color.FromRgb(248, 250, 252)), Content = panel
+        };
+        close.Click += (_, _) => dialog.Close();
+        dialog.ShowDialog();
+    }
     private async void ModuleClick(object sender, RoutedEventArgs e)
     {
         var moduleName = (sender as FrameworkElement)?.Tag?.ToString();
-        if (moduleName == "Colaboradores")
+        if (moduleName == ScreenTexts.Holidays_Titulo)
+        {
+            new HolidaysWindow(_feriados) { Owner = this }.ShowDialog();
+            return;
+        }
+        if (moduleName == ScreenTexts.MainWindow_Relatorios)
+        {
+            new ReportsWindow(_periodos) { Owner = this }.ShowDialog();
+            return;
+        }
+        if (moduleName == ScreenTexts.MainWindow_AgendaDeFerias)
+        {
+            new VacationAgendaWindow(_controller) { Owner = this }.ShowDialog();
+            return;
+        }
+        if (moduleName == ScreenTexts.MainWindow_Colaboradores)
         {
             var window = new EmployeesWindow(_controller)
             {
@@ -457,30 +512,72 @@ public partial class MainWindow : Window
             return;
         }
 
-        if (moduleName == "Configurações")
+        if (moduleName == ScreenTexts.MainWindow_Configuracoes)
         {
             new SettingsWindow(_configuracao) { Owner = this }.ShowDialog();
             return;
         }
 
-        if (moduleName == "Regras")
+        if (moduleName == ScreenTexts.MainWindow_Regras)
         {
             new RulesWindow { Owner = this }.ShowDialog();
             return;
         }
 
-        MessageBox.Show(
-            $"Módulo {moduleName} preparado no design system. " +
-            "Os dados desta entrega são administrados pelo dashboard integrado.",
-            "Controle de Férias");
+        ShowModuleNotice(
+            moduleName ?? ScreenTexts.MainWindow_ControleDeFerias,
+            moduleName == ScreenTexts.MainWindow_AgendaDeFerias ? "travelIcon" : "dashboardIcon",
+            string.Format(ScreenTexts.MainWindow_ModuloPreparadoNoDesignSystem, moduleName) +
+            ScreenTexts.MainWindow_OsDadosDestaEntregaSaoAdministradosPeloDashboard);
     }
 
-    private void DayOffClick(object sender, RoutedEventArgs e)
+    private async void DayOffClick(object sender, RoutedEventArgs e)
     {
-        MessageBox.Show(
-            "O registro de folga exige quantidade e justificativa; " +
-            "a movimentação é imutável e auditável.",
-            "Registrar folga");
+        if (_selectedPeriod is null) return;
+        var period = _selectedPeriod;
+        if (period.Vencimento.Date < DateTime.Today)
+        {
+            MessageBox.Show(
+                string.Format(ScreenTexts.MainWindow_EstePeriodoVenceuEm, period.Vencimento) +
+                ScreenTexts.MainWindow_NaoEPossivelRegistrarFolgaAposOVencimento,
+                ScreenTexts.MainWindow_PeriodoVencido,
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+            return;
+        }
+        if (period.Saldo <= 0)
+        {
+            MessageBox.Show(ScreenTexts.MainWindow_OPeriodoNaoPossuiSaldoDisponivelParaRegistrar,
+                ScreenTexts.MainWindow_RegistrarFolga2, MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+        var dialog = new RegisterDayOffDialog(period, _controller) { Owner = this };
+        if (dialog.ShowDialog() != true) return;
+
+        try
+        {
+            _restoringPeriodSelection = true;
+            _selectedPeriodIds[period.ColaboradorId] = period.Id;
+            await LoadDataAsync(SearchBox.Text);
+            var index = _employeeRows.FindIndex(row => row.Id == period.Id);
+            if (index >= 0)
+            {
+                _currentPage = index / PageSize + 1;
+                ShowCurrentPage();
+                PeriodsGrid.SelectedItem = _visiblePeriodRows.First(row => row.Id == period.Id);
+            }
+            _selectedPeriod = await _controller.SelecionarAsync(period.Id);
+            if (_selectedPeriod is not null) ShowPeriodDetails(_selectedPeriod);
+        }
+        catch (Exception)
+        {
+            MessageBox.Show(ScreenTexts.MainWindow_AFolgaFoiRegistradaMasNaoFoiPossivel,
+                ScreenTexts.MainWindow_AtualizacaoDoPainel, MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+        finally
+        {
+            _restoringPeriodSelection = false;
+        }
     }
 
     private void ApplyResponsiveLayout()
