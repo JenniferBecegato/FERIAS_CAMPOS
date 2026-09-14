@@ -413,7 +413,7 @@ public partial class MainWindow : Window
             Owner = this
         };
 
-        if (dialog.ShowDialog() != true || dialog.Intervalos.Count == 0)
+        if (dialog.ShowDialog() != true)
         {
             return;
         }
@@ -422,7 +422,7 @@ public partial class MainWindow : Window
             _selectedPeriod.Id,
             dialog.Intervalos,
             dialog.DiasAbono,
-            dialog.FaltasNaoJustificadas);
+            dialog.FaltasNaoJustificadas, dialog.ExcluirAgendamentos);
 
         if (!result.Valido)
         {

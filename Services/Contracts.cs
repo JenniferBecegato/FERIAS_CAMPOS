@@ -26,7 +26,8 @@ public interface IAgendamentoService
         IReadOnlyList<IntervaloFerias> intervalos,
         int diasAbono,
         int faltasNaoJustificadas,
-        string motivo);
+        string motivo,
+        IReadOnlyList<long>? excluirAgendamentos = null);
 }
 
 public interface IRegraFeriasEngine

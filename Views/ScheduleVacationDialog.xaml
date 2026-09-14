@@ -35,8 +35,12 @@
     <ListBox x:Name="NewRangesList" Grid.Row="1" Margin="0,10" SelectionChanged="NewRangeSelected" DisplayMemberPath="Descricao"/>
     <Button Grid.Row="2" Content="{x:Static texts:ScreenTexts.ScheduleVacationDialog_RemoverSelecionada}" Click="RemoveClick"/>
     <TextBlock Grid.Row="3" Text="{x:Static texts:ScreenTexts.ScheduleVacationDialog_ParcelasJaAgendadas}" FontSize="14" FontWeight="Bold" Margin="0,18,0,0"/>
-    <ListBox x:Name="ExistingRangesList" Grid.Row="4" Margin="0,8,0,0" IsHitTestVisible="False" DisplayMemberPath="Descricao"/>
-    <TextBlock x:Name="SummaryText" Grid.Row="5" FontWeight="SemiBold" Margin="0,12,0,0"/>
+    <ListBox x:Name="ExistingRangesList" Grid.Row="4" Margin="0,8,0,0" SelectionChanged="ExistingRangeSelected" DisplayMemberPath="Descricao"/>
+    <StackPanel Grid.Row="5">
+     <Button x:Name="RemoveExistingButton" Content="{x:Static texts:ScreenTexts.ScheduleVacationDialog_ExcluirAgendada}" Click="RemoveExistingClick" IsEnabled="False" Margin="0,8,0,0"/>
+     <TextBlock Text="{x:Static texts:ScreenTexts.ScheduleVacationDialog_AjudaExclusao}" TextWrapping="Wrap" FontSize="11" Margin="0,6,0,0"/>
+     <TextBlock x:Name="SummaryText" FontWeight="SemiBold" Margin="0,12,0,0"/>
+    </StackPanel>
    </Grid></Border>
    <Border Grid.Column="4" Style="{StaticResource Card}" Padding="18" Background="#FFFCF5" BorderBrush="#F5C66D">
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">

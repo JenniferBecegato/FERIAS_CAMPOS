@@ -496,12 +496,34 @@ public sealed class AgendamentoService(
         IReadOnlyList<IntervaloFerias> intervalos,
         int diasAbono,
         int faltasNaoJustificadas,
-        string motivo)
+        string motivo,
+        IReadOnlyList<long>? excluirAgendamentos = null)
     {
         await using var database = await databaseFactory.CreateDbContextAsync();
         var period = await database.Periodos
             .Include(item => item.Movimentacoes)
             .FirstAsync(item => item.Id == periodoId);
+        var removidos = (excluirAgendamentos ?? []).Distinct().ToList();
+        foreach (var id in removidos)
+        {
+            var movimento = period.Movimentacoes.SingleOrDefault(item => item.Id == id);
+            if (movimento is null || movimento.Tipo != TipoMovimentacao.Agendamento ||
+                movimento.Inicio is null || movimento.Inicio.Value.Date <= DateTime.Today)
+                return new(false, [ScreenTexts.ScheduleVacationDialog_ExclusaoNaoPermitida], []);
+            period.Movimentacoes.Remove(movimento);
+            database.Movimentacoes.Remove(movimento);
+        }
+        if (removidos.Count > 0 && intervalos.Count == 0 && diasAbono == 0)
+        {
+            period.Status = period.Saldo <= 0 ? StatusPeriodo.Completo
+                : period.Vencimento.Date < DateTime.Today ? StatusPeriodo.Vencido
+                : period.Movimentacoes.Any(item => item.Dias < 0 && item.Tipo != TipoMovimentacao.Ajuste)
+                    ? StatusPeriodo.Parcial
+                : period.Fim.Date >= DateTime.Today ? StatusPeriodo.EmAquisicao
+                : StatusPeriodo.Disponivel;
+            await database.SaveChangesAsync();
+            return new(true, [], []);
+        }
         var holidays = await database.Feriados.ToListAsync();
         if (faltasNaoJustificadas < 0)
         {

@@ -10,10 +10,12 @@ namespace FeriasCampos.Views;
 
 public partial class ScheduleVacationDialog : Window
 {
-    private readonly int _saldoSemAjusteFaltas;
-    private readonly int _vagasDisponiveis;
+    private int _saldoSemAjusteFaltas;
+    private int _vagasDisponiveis;
     private readonly bool _bloquearInicioAntesRepousoSemanal;
-    private readonly IReadOnlyList<IntervaloItem> _existentes;
+    private readonly ObservableCollection<IntervaloItem> _existentes = [];
+    private readonly List<long> _excluirAgendamentos = [];
+    public IReadOnlyList<long> ExcluirAgendamentos => _excluirAgendamentos;
     private readonly bool _descontarPorFaltas;
     private readonly int _direitoOriginal;
     private readonly int _vendidos;
@@ -38,13 +40,13 @@ public partial class ScheduleVacationDialog : Window
         _saldoSemAjusteFaltas = Math.Max(0,
             periodo.Saldo - RegraFaltasClt.ObterAjusteAtual(periodo));
         _vencimento = periodo.Vencimento.Date;
-        _existentes = periodo.Movimentacoes
+        _existentes = new(periodo.Movimentacoes
             .Where(item => item.Tipo == TipoMovimentacao.Agendamento &&
                            item.Inicio is not null && item.Fim is not null)
             .OrderBy(item => item.Inicio)
             .Select(item => new IntervaloItem(
-                new IntervaloFerias(item.Inicio!.Value, item.Fim!.Value)))
-            .ToList();
+                new IntervaloFerias(item.Inicio!.Value, item.Fim!.Value), item.Id, -item.Dias))
+            .ToList());
         _vagasDisponiveis = Math.Max(0, 3 - _existentes.Count);
 
         EmployeeText.Text = periodo.Colaborador.Nome;
@@ -285,6 +287,24 @@ public partial class ScheduleVacationDialog : Window
         RefreshSummary();
     }
 
+    private void ExistingRangeSelected(object sender, SelectionChangedEventArgs e)
+    {
+        RemoveExistingButton.IsEnabled = ExistingRangesList.SelectedItem is IntervaloItem item &&
+            item.Intervalo.Inicio.Date > DateTime.Today;
+    }
+
+    private void RemoveExistingClick(object sender, RoutedEventArgs e)
+    {
+        if (ExistingRangesList.SelectedItem is not IntervaloItem item ||
+            item.Intervalo.Inicio.Date <= DateTime.Today) return;
+        _excluirAgendamentos.Add(item.Id);
+        _existentes.Remove(item);
+        _saldoSemAjusteFaltas += item.DiasSaldo;
+        _vagasDisponiveis++;
+        RefreshSummary();
+        EvaluateDraft();
+    }
+
     private void ClearDraft()
     {
         _adjusting = true;
@@ -314,8 +334,12 @@ public partial class ScheduleVacationDialog : Window
         RulesPeriodLimitText.Text =
             string.Format(ScreenTexts.ScheduleVacationDialog_ParaEstePeriodoAteNovaSParcelaS, _vagasDisponiveis) +
             string.Format(ScreenTexts.ScheduleVacationDialog_AteDiaSAdicionaisDeAbono, MaximoAbono);
-        ConfirmButton.IsEnabled = _hasAvailableDates && _novos.Count > 0 &&
-            ValidatePlan(_novos.Select(item => item.Intervalo).ToList()) is null;
+        ConfirmButton.Content = _excluirAgendamentos.Count > 0
+            ? ScreenTexts.ScheduleVacationDialog_ConfirmarAlteracoes
+            : ScreenTexts.ScheduleVacationDialog_ConfirmarParcelas;
+        ConfirmButton.IsEnabled = (_excluirAgendamentos.Count > 0 && _novos.Count == 0 && DiasAbono == 0) ||
+            (_hasAvailableDates && _novos.Count > 0 &&
+             ValidatePlan(_novos.Select(item => item.Intervalo).ToList()) is null);
     }
 
     private void AllowanceDaysPreviewTextInput(object sender, TextCompositionEventArgs e)
@@ -370,7 +394,7 @@ public partial class ScheduleVacationDialog : Window
     private void CancelClick(object sender, RoutedEventArgs e) => DialogResult = false;
     private void ConfirmClick(object sender, RoutedEventArgs e) => DialogResult = true;
 
-    private sealed record IntervaloItem(IntervaloFerias Intervalo)
+    private sealed record IntervaloItem(IntervaloFerias Intervalo, long Id = 0, int DiasSaldo = 0)
     {
         public string Descricao =>
             string.Format(ScreenTexts.ScheduleVacationDialog_ADias, Intervalo.Inicio, Intervalo.Fim, Intervalo.Dias);

@@ -7,6 +7,10 @@ public class ScreenTexts
     private static readonly System.Resources.ResourceManager resourceManager = new("FeriasCampos.Properties.ScreenTexts", typeof(ScreenTexts).Assembly);
     public static System.Resources.ResourceManager ResourceManager => resourceManager;
     public static System.Globalization.CultureInfo? Culture { get; set; }
+    public static string ScheduleVacationDialog_ExcluirAgendada => ResourceManager.GetString(nameof(ScheduleVacationDialog_ExcluirAgendada), Culture)!;
+    public static string ScheduleVacationDialog_AjudaExclusao => ResourceManager.GetString(nameof(ScheduleVacationDialog_AjudaExclusao), Culture)!;
+    public static string ScheduleVacationDialog_ConfirmarAlteracoes => ResourceManager.GetString(nameof(ScheduleVacationDialog_ConfirmarAlteracoes), Culture)!;
+    public static string ScheduleVacationDialog_ExclusaoNaoPermitida => ResourceManager.GetString(nameof(ScheduleVacationDialog_ExclusaoNaoPermitida), Culture)!;
     public static string EmployeesWindow_AAdmissaoNaoPodeEstarNoFuturo => ResourceManager.GetString(nameof(EmployeesWindow_AAdmissaoNaoPodeEstarNoFuturo), Culture)!;
     public static string EmployeesWindow_AAdmissaoNaoPodeSerAlteradaPorqueHa => ResourceManager.GetString(nameof(EmployeesWindow_AAdmissaoNaoPodeSerAlteradaPorqueHa), Culture)!;
     public static string EmployeesWindow_Acoes => ResourceManager.GetString(nameof(EmployeesWindow_Acoes), Culture)!;

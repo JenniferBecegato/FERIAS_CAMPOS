@@ -105,6 +105,63 @@ public sealed class AgendamentoServiceTests
             .ToListAsync(TestContext.Current.CancellationToken));
     }
 
+    [Theory]
+    [InlineData(1, true)]
+    [InlineData(0, false)]
+    [InlineData(-5, false)]
+    [InlineData(-30, false)]
+    public async Task Exclui_somente_parcela_futura_e_restaura_saldo(int inicio, bool permitido)
+    {
+        await using var fixture = await Fixture.CreateAsync();
+        long id;
+        await using (var database = fixture.Factory.CreateDbContext())
+        {
+            var period = await database.Periodos.Include(x => x.Movimentacoes).SingleAsync(TestContext.Current.CancellationToken);
+            var item = new MovimentacaoSaldo
+            {
+                Tipo = TipoMovimentacao.Agendamento, Dias = -30,
+                Inicio = DateTime.Today.AddDays(inicio), Fim = DateTime.Today.AddDays(inicio + 29)
+            };
+            period.Movimentacoes.Add(item);
+            period.Status = StatusPeriodo.Completo;
+            await database.SaveChangesAsync(TestContext.Current.CancellationToken);
+            id = item.Id;
+        }
+        var result = await fixture.Service.AgendarAsync(fixture.PeriodId, [], 0, 0, "Teste", [id]);
+        await using var check = fixture.Factory.CreateDbContext();
+        var saved = await check.Periodos.Include(x => x.Movimentacoes).SingleAsync(TestContext.Current.CancellationToken);
+        Assert.Equal(permitido, result.Valido);
+        Assert.Equal(permitido ? 30 : 0, saved.Saldo);
+        Assert.Equal(permitido ? StatusPeriodo.Disponivel : StatusPeriodo.Completo, saved.Status);
+        Assert.Equal(!permitido, saved.Movimentacoes.Any(x => x.Id == id));
+    }
+
+    [Fact]
+    public async Task Exclusao_com_novo_agendamento_invalido_nao_altera_dados()
+    {
+        await using var fixture = await Fixture.CreateAsync();
+        await fixture.Service.AgendarAsync(fixture.PeriodId,
+            [new(new DateTime(2027, 1, 4), new DateTime(2027, 1, 23))], 10, 0, "Teste");
+        await using var database = fixture.Factory.CreateDbContext();
+        var id = await database.Movimentacoes.Where(x => x.Tipo == TipoMovimentacao.Agendamento)
+            .Select(x => x.Id).SingleAsync(TestContext.Current.CancellationToken);
+        var result = await fixture.Service.AgendarAsync(fixture.PeriodId,
+            [new(new DateTime(2027, 2, 1), new DateTime(2027, 2, 28))], 0, 0, "Teste", [id]);
+        Assert.False(result.Valido);
+        var saved = await database.Periodos.Include(x => x.Movimentacoes).SingleAsync(TestContext.Current.CancellationToken);
+        Assert.Equal(0, saved.Saldo);
+        Assert.Equal(10, saved.Vendidos);
+        Assert.Contains(saved.Movimentacoes, x => x.Id == id);
+        var deleted = await fixture.Service.AgendarAsync(fixture.PeriodId, [], 0, 0, "Teste", [id]);
+        Assert.True(deleted.Valido);
+        await using var check = fixture.Factory.CreateDbContext();
+        var remaining = await check.Periodos.Include(x => x.Movimentacoes).SingleAsync(TestContext.Current.CancellationToken);
+        Assert.Equal(20, remaining.Saldo);
+        Assert.Equal(10, remaining.Vendidos);
+        Assert.Equal(StatusPeriodo.Parcial, remaining.Status);
+        Assert.False((await fixture.Service.AgendarAsync(fixture.PeriodId, [], 0, 0, "Teste", [id])).Valido);
+    }
+
     private sealed class Fixture : IAsyncDisposable
     {
         private readonly SqliteConnection _connection;

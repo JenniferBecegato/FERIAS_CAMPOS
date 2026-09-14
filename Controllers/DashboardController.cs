@@ -48,14 +48,15 @@ public sealed class DashboardController(
         int id,
         IReadOnlyList<IntervaloFerias> intervalos,
         int diasAbono,
-        int faltasNaoJustificadas)
+        int faltasNaoJustificadas,
+        IReadOnlyList<long>? excluirAgendamentos = null)
     {
         return agenda.AgendarAsync(
             id,
             intervalos,
             diasAbono,
             faltasNaoJustificadas,
-            "Agendamento administrativo");
+            "Agendamento administrativo", excluirAgendamentos);
     }
 
     public Task<IReadOnlyList<Feriado>> ListarFeriadosAsync()

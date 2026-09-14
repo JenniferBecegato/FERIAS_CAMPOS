@@ -1401,4 +1401,8 @@ Todos os períodos de férias e movimentações vinculados também serão exclu�
   <data name="Holidays_Duplicado" xml:space="preserve"><value>Já existe um feriado com esse nome e data.</value></data>
   <data name="Holidays_NaoEncontrado" xml:space="preserve"><value>Feriado não encontrado. Atualize a lista.</value></data>
   <data name="Holidays_Falha" xml:space="preserve"><value>Não foi possível concluir a operação. Tente novamente.</value></data>
+  <data name="ScheduleVacationDialog_ExcluirAgendada" xml:space="preserve"><value>Excluir parcela selecionada</value></data>
+  <data name="ScheduleVacationDialog_AjudaExclusao" xml:space="preserve"><value>Somente parcelas que ainda não começaram. A exclusão será salva ao confirmar as alterações.</value></data>
+  <data name="ScheduleVacationDialog_ConfirmarAlteracoes" xml:space="preserve"><value>Confirmar alterações</value></data>
+  <data name="ScheduleVacationDialog_ExclusaoNaoPermitida" xml:space="preserve"><value>Não foi possível excluir: a parcela não foi encontrada neste período ou já começou.</value></data>
 </root>
