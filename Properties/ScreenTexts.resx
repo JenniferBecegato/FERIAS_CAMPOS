@@ -504,7 +504,7 @@ Todos os períodos de férias e movimentações vinculados também serão exclu�
     <value>Exportação concluída</value>
   </data>
   <data name="ReportsWindow_ExportacoesIncluemTodosOsRegistrosEOsFiltros" xml:space="preserve">
-    <value>Exportações incluem todos os registros e os filtros desta consulta. Gozo considera somente lançamentos explícitos de gozo.</value>
+    <value>Exportações incluem todos os registros, filtros e totais da última consulta gerada.</value>
   </data>
   <data name="ReportsWindow_ExportarCSVExcel" xml:space="preserve">
     <value>Exportar CSV (Excel)</value>
@@ -1396,11 +1396,22 @@ Todos os períodos de férias e movimentações vinculados também serão exclu�
   <data name="Holidays_NaoEncontrado" xml:space="preserve"><value>Feriado não encontrado. Atualize a lista.</value></data>
   <data name="Holidays_Falha" xml:space="preserve"><value>Não foi possível concluir a operação. Tente novamente.</value></data>
   <data name="ScheduleVacationDialog_ExcluirAgendada" xml:space="preserve"><value>Excluir parcela selecionada</value></data>
-  <data name="ScheduleVacationDialog_AjudaExclusao" xml:space="preserve"><value>Somente parcelas que ainda não começaram. A exclusão será salva ao confirmar as alterações.</value></data>
+  <data name="ScheduleVacationDialog_AjudaExclusao" xml:space="preserve"><value>É possível excluir parcelas futuras ou já concluídas. A exclusão será salva ao confirmar as alterações.</value></data>
   <data name="ScheduleVacationDialog_ConfirmarAlteracoes" xml:space="preserve"><value>Confirmar alterações</value></data>
-  <data name="ScheduleVacationDialog_ExclusaoNaoPermitida" xml:space="preserve"><value>Não foi possível excluir: a parcela não foi encontrada neste período ou já começou.</value></data>
+  <data name="ScheduleVacationDialog_ExclusaoNaoPermitida" xml:space="preserve"><value>Não foi possível excluir: a parcela não foi encontrada neste período, possui datas incompletas ou está em andamento.</value></data>
   <data name="MainWindow_SincronizarTabela" xml:space="preserve"><value>Sincronizar tabela</value></data>
   <data name="MainWindow_Sincronizando" xml:space="preserve"><value>Sincronizando...</value></data>
   <data name="MainWindow_ErroSincronizacao" xml:space="preserve"><value>Não foi possível sincronizar a tabela. Tente novamente.</value></data>
   <data name="MainWindow_TodosColaboradores" xml:space="preserve"><value>Todos</value></data>
+  <data name="ReportsWindow_TodosColaboradores" xml:space="preserve"><value>Todos os colaboradores</value></data>
+  <data name="ReportsWindow_TodasUnidades" xml:space="preserve"><value>Todas as unidades</value></data>
+  <data name="ReportsWindow_RelatorioUnico" xml:space="preserve"><value>Relatório de férias</value></data>
+  <data name="ReportsWindow_InicioAquisitivo" xml:space="preserve"><value>Início do período aquisitivo</value></data>
+  <data name="ReportsWindow_FimAquisitivo" xml:space="preserve"><value>Fim do período aquisitivo</value></data>
+  <data name="ReportsWindow_FaltasNaoJustificadas" xml:space="preserve"><value>Faltas não justificadas</value></data>
+  <data name="ReportsWindow_Vigencia" xml:space="preserve"><value>Vigência do período aquisitivo</value></data>
+  <data name="ReportsWindow_AjudaVigencia" xml:space="preserve"><value>Inclui os períodos aquisitivos com pelo menos um dia no intervalo informado. Os valores são os totais atuais de cada período.</value></data>
+  <data name="ReportsWindow_DescricaoUnico" xml:space="preserve"><value>Combine os filtros, visualize os períodos e exporte em XLSX ou PDF.</value></data>
+  <data name="ReportsWindow_ExportarXlsx" xml:space="preserve"><value>Exportar XLSX</value></data>
+  <data name="ReportsWindow_ArquivoXlsx" xml:space="preserve"><value>Planilha Excel (*.xlsx)|*.xlsx</value></data>
 </root>

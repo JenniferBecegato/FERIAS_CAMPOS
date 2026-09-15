@@ -1,4 +1,4 @@
-using FeriasCampos.Data;
+﻿using FeriasCampos.Data;
 using FeriasCampos.Models;
 using FeriasCampos.Services;
 using Microsoft.Data.Sqlite;
@@ -92,6 +92,41 @@ public sealed class ColaboradorServiceTests
         Assert.Equal(admission.AddYears(1).AddDays(-1), period.Fim);
         Assert.Equal(15, period.Saldo);
         Assert.Single(period.Movimentacoes);
+    }
+
+    [Fact]
+    public async Task Excluir_periodo_remove_movimentos_e_nao_recria_na_atualizacao()
+    {
+        await using var connection = new SqliteConnection("Data Source=:memory:");
+        await connection.OpenAsync(TestContext.Current.CancellationToken);
+        var factory = new Factory(new DbContextOptionsBuilder<FeriasDbContext>().UseSqlite(connection).Options);
+        await using var db = factory.CreateDbContext();
+        await db.Database.EnsureCreatedAsync(TestContext.Current.CancellationToken);
+        var service = new ColaboradorService(factory);
+        await service.CadastrarAsync(new("Maria Silva", "", DateTime.Today.AddYears(-2), "Gurgel", 30));
+        var employee = Assert.Single(await service.ListarAsync());
+        await service.DashboardAsync();
+        var periods = await service.ListarPeriodosAsync(employee.Id);
+        var latest = periods.First();
+        db.Movimentacoes.Add(new() { PeriodoAquisitivoId = latest.Id, Tipo = TipoMovimentacao.Folga, Dias = -3 });
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
+        Assert.Equal(27, (await service.ListarPeriodosAsync(employee.Id)).First().Saldo);
+        Assert.Equal(3, (await service.ListarPeriodosAsync(employee.Id)).First().Folgas);
+        Assert.False((await service.ExcluirPeriodoAsync(employee.Id + 1, latest.Id)).Valido);
+        Assert.True((await service.ExcluirPeriodoAsync(employee.Id, latest.Id)).Valido);
+        Assert.False((await service.ExcluirPeriodoAsync(employee.Id, latest.Id)).Valido);
+        Assert.Null(await service.PeriodoAsync(latest.Id));
+        Assert.False(await db.Movimentacoes.AnyAsync(m => m.PeriodoAquisitivoId == latest.Id, TestContext.Current.CancellationToken));
+        var dashboard = await service.DashboardAsync();
+        Assert.Equal(periods.Count - 1, dashboard.Periodos.Count);
+        Assert.DoesNotContain(dashboard.Periodos, p => p.Id == latest.Id);
+        Assert.Equal(periods.Count - 1, (await new PeriodoService(factory).ListarAsync()).Count);
+        foreach (var period in await service.ListarPeriodosAsync(employee.Id))
+            Assert.True((await service.ExcluirPeriodoAsync(employee.Id, period.Id)).Valido);
+        Assert.Empty((await service.DashboardAsync()).Periodos);
+        Assert.Empty(await service.ListarPeriodosAsync(employee.Id));
+        Assert.True((await service.ExcluirAsync(employee.Id)).Valido);
+        Assert.Empty(await db.Periodos.IgnoreQueryFilters().ToListAsync(TestContext.Current.CancellationToken));
     }
 
     private sealed class Factory(DbContextOptions<FeriasDbContext> options) : IDbContextFactory<FeriasDbContext>

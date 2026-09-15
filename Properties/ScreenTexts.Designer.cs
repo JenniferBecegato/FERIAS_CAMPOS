@@ -4,6 +4,18 @@ namespace FeriasCampos.Properties;
 
 public class ScreenTexts
 {
+    public static string ReportsWindow_TodosColaboradores => ResourceManager.GetString(nameof(ReportsWindow_TodosColaboradores), Culture)!;
+    public static string ReportsWindow_TodasUnidades => ResourceManager.GetString(nameof(ReportsWindow_TodasUnidades), Culture)!;
+    public static string ReportsWindow_RelatorioUnico => ResourceManager.GetString(nameof(ReportsWindow_RelatorioUnico), Culture)!;
+    public static string ReportsWindow_InicioAquisitivo => ResourceManager.GetString(nameof(ReportsWindow_InicioAquisitivo), Culture)!;
+    public static string ReportsWindow_FimAquisitivo => ResourceManager.GetString(nameof(ReportsWindow_FimAquisitivo), Culture)!;
+    public static string ReportsWindow_FaltasNaoJustificadas => ResourceManager.GetString(nameof(ReportsWindow_FaltasNaoJustificadas), Culture)!;
+    public static string ReportsWindow_Vigencia => ResourceManager.GetString(nameof(ReportsWindow_Vigencia), Culture)!;
+    public static string ReportsWindow_AjudaVigencia => ResourceManager.GetString(nameof(ReportsWindow_AjudaVigencia), Culture)!;
+    public static string ReportsWindow_DescricaoUnico => ResourceManager.GetString(nameof(ReportsWindow_DescricaoUnico), Culture)!;
+    public static string ReportsWindow_ExportarXlsx => ResourceManager.GetString(nameof(ReportsWindow_ExportarXlsx), Culture)!;
+    public static string ReportsWindow_ArquivoXlsx => ResourceManager.GetString(nameof(ReportsWindow_ArquivoXlsx), Culture)!;
+
     public static string MainWindow_TodosColaboradores => ResourceManager.GetString(nameof(MainWindow_TodosColaboradores), Culture)!;
     public static string MainWindow_SincronizarTabela => ResourceManager.GetString(nameof(MainWindow_SincronizarTabela), Culture)!;
     public static string MainWindow_Sincronizando => ResourceManager.GetString(nameof(MainWindow_Sincronizando), Culture)!;

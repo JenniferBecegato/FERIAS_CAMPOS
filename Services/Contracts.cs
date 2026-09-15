@@ -1,4 +1,4 @@
-using FeriasCampos.Models;
+﻿using FeriasCampos.Models;
 
 namespace FeriasCampos.Services;
 
@@ -11,6 +11,8 @@ public interface IColaboradorService
     Task<ResultadoValidacao> CadastrarAsync(NovoColaboradorDto novo);
     Task<ResultadoValidacao> AlterarAsync(int id, NovoColaboradorDto dados);
     Task<ResultadoValidacao> ExcluirAsync(int id);
+    Task<ResultadoValidacao> ExcluirPeriodoAsync(int colaboradorId, int periodoId);
+    Task<IReadOnlyList<PeriodoAquisitivo>> ListarPeriodosAsync(int colaboradorId);
 }
 
 public interface IPeriodoService
@@ -54,7 +56,7 @@ public interface IMovimentacaoService
 
 public interface IRelatorioService
 {
-    Task<string> ExportarCsvAsync(string destino);
+    Task<string> ExportarXlsxAsync(string destino);
 }
 
 public interface IDocumentoService

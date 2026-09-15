@@ -1,4 +1,4 @@
-using FeriasCampos.Models;
+﻿using FeriasCampos.Models;
 
 namespace FeriasCampos.Services;
 
@@ -44,7 +44,7 @@ public static class PeriodoAquisitivoMaintenance
         }
 
         foreach (var periodo in colaborador.Periodos.Where(periodo =>
-                     periodo.Movimentacoes.All(movimento =>
+                     periodo.Status != StatusPeriodo.Excluido && periodo.Movimentacoes.All(movimento =>
                          movimento.Tipo != TipoMovimentacao.Aquisicao)))
         {
             AdicionarAquisicao(periodo);

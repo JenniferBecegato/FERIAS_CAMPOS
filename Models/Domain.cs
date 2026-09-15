@@ -1,10 +1,11 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FeriasCampos.Models;
 
 public enum StatusPeriodo
 {
+    Excluido = -1,
     EmAquisicao = 0,
     Disponivel = 1,
     Parcial = 3,

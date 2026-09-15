@@ -14,66 +14,53 @@ public partial class ReportsWindow : Window
 {
     private readonly IPeriodoService _periodos;
     private ResultadoRelatorio? _result;
-    private bool _ready;
+    private sealed record EmployeeOption(int? Id, string Label);
+    private sealed record UnitOption(string? Value, string Label);
     public ReportsWindow(IPeriodoService periodos)
     {
         InitializeComponent();
         _periodos = periodos;
-        ReportType.ItemsSource = RelatorioEngine.Titulos;
-        ReportType.SelectedIndex = 0;
+        GenerateButton.IsEnabled = FiltersPanel.IsEnabled = false;
         Loaded += async (_, _) =>
         {
             try
             {
                 var data = await _periodos.ListarAsync();
-                static string Option(string value) => string.IsNullOrEmpty(value) ? ScreenTexts.ReportsWindow_NaoInformado : value;
-                UnitsFilter.ItemsSource = data.Select(p => Option(p.Colaborador.Unidade)).Distinct().Order().ToList();
-                StatusFilter.ItemsSource = new[] { ScreenTexts.ReportsWindow_EmAquisicao, ScreenTexts.ReportsWindow_Disponivel, ScreenTexts.ReportsWindow_Parcial, ScreenTexts.ReportsWindow_Completo, ScreenTexts.ReportsWindow_Vencido };
-                _ready = true;
+                var employees = new List<EmployeeOption> { new(null, ScreenTexts.ReportsWindow_TodosColaboradores) };
+                employees.AddRange(data.Select(p => p.Colaborador).DistinctBy(c => c.Id).OrderBy(c => c.Nome)
+                    .Select(c => new EmployeeOption(c.Id, $"{c.Nome} — {(string.IsNullOrEmpty(c.Unidade) ? ScreenTexts.ReportsWindow_NaoInformado : c.Unidade)} (código {c.Id})")));
+                EmployeeFilter.ItemsSource = employees;
+                EmployeeFilter.SelectedIndex = 0;
+                var units = new List<UnitOption> { new(null, ScreenTexts.ReportsWindow_TodasUnidades) };
+                units.AddRange(data.Select(p => p.Colaborador.Unidade).Distinct().Order()
+                    .Select(u => new UnitOption(u, string.IsNullOrEmpty(u) ? ScreenTexts.ReportsWindow_NaoInformado : u)));
+                UnitFilter.ItemsSource = units;
+                UnitFilter.SelectedIndex = 0;
                 await GenerateAsync();
             }
             catch (Exception ex) { MessageText.Text = string.Format(ScreenTexts.ReportsWindow_NaoFoiPossivelCarregarOsRelatorios, ex.Message); }
         };
     }
-    private TipoRelatorio Tipo => (TipoRelatorio)Math.Max(0, ReportType.SelectedIndex);
-    private void ReportTypeChanged(object sender, SelectionChangedEventArgs e)
+    private FiltroRelatorio ReadFilter() => new()
     {
-        if (DateLabel is null) return;
-        DateLabel.Text = RelatorioEngine.DataLabel(Tipo);
-        ExpiryOptions.Visibility = Tipo == TipoRelatorio.Vencimentos ? Visibility.Visible : Visibility.Collapsed;
-        PendingOptions.Visibility = Tipo == TipoRelatorio.Pendencias ? Visibility.Visible : Visibility.Collapsed;
-        OverlapOptions.Visibility = Tipo == TipoRelatorio.Sobreposicoes ? Visibility.Visible : Visibility.Collapsed;
-        MovementOptions.Visibility = RelatorioEngine.Movimentos(Tipo) ? Visibility.Visible : Visibility.Collapsed;
-        MovementTypesFilter.ItemsSource = Tipo == TipoRelatorio.VendasFolgas ? new[] { TipoMovimentacao.Venda, TipoMovimentacao.Folga } : Enum.GetValues<TipoMovimentacao>();
-        FromFilter.SelectedDate = ToFilter.SelectedDate = null;
-        if (_ready) MessageText.Text = ScreenTexts.ReportsWindow_CliqueEmGerarRelatorioParaAplicarANova;
-    }
-    private static int? Number(TextBox box, string label)
-    {
-        if (string.IsNullOrWhiteSpace(box.Text)) return null;
-        if (!int.TryParse(box.Text, out var n)) throw new ArgumentException(string.Format(ScreenTexts.ReportsWindow_InformeUmNumeroInteiro, label));
-        return n;
-    }
-    private FiltroRelatorio ReadFilter()
-    {
-        static string[] Items(ListBox box) => box.SelectedItems.Cast<string>().Select(v => v == ScreenTexts.ReportsWindow_NaoInformado ? "" : v).ToArray();
-        return new()
-        {
-            Tipo = Tipo, Nome = NameFilter.Text.Trim(),
-            Unidades = Items(UnitsFilter), Status = Items(StatusFilter),
-            De = FromFilter.SelectedDate, Ate = ToFilter.SelectedDate,
-            SaldoMinimo = Number(MinBalanceFilter, ScreenTexts.ReportsWindow_SaldoMinimo), SaldoMaximo = Number(MaxBalanceFilter, ScreenTexts.ReportsWindow_SaldoMaximo),
-            ApenasSaldoPendente = PositiveBalanceFilter.IsChecked == true, Prazo = new[] { 0, -1, 30, 60, 90 }[ExpiryFilter.SelectedIndex],
-            Programacao = PendingFilter.SelectedIndex, MinimoAusentes = Tipo == TipoRelatorio.Sobreposicoes ? Number(MinPeopleFilter, ScreenTexts.ReportsWindow_MinimoDePessoas) ?? 2 : 2,
-            TiposMovimentacao = MovementTypesFilter.SelectedItems.Cast<TipoMovimentacao>().ToArray(), Identificacao = IdentificationFilter.Text, Motivo = ReasonFilter.Text
-        };
-    }
+        ColaboradorId = (EmployeeFilter.SelectedItem as EmployeeOption)?.Id,
+        Unidade = (UnitFilter.SelectedItem as UnitOption)?.Value,
+        De = FromFilter.SelectedDate, Ate = ToFilter.SelectedDate
+    };
     private async void GenerateClick(object sender, RoutedEventArgs e) => await GenerateAsync();
     private void ResultColumnGenerated(object sender, DataGridAutoGeneratingColumnEventArgs e)
     {
         if (e.Column is not DataGridTextColumn column) return;
-        column.MinWidth = (e.PropertyName == ScreenTexts.ReportsWindow_Colaborador || e.PropertyName == ScreenTexts.ReportsWindow_PeriodoAquisitivo) ? 185 : 110;
+        var index = Array.IndexOf(_result!.Colunas, e.PropertyName);
+        int[] widths = [150, 80, 100, 100, 95, 90, 70, 95];
+        column.MinWidth = 70;
+        column.Width = new DataGridLength(widths[index]);
         column.MaxWidth = 360;
+        column.Binding = new Binding(e.PropertyName)
+        {
+            StringFormat = e.PropertyType == typeof(DateTime) ? "dd/MM/yyyy" : e.PropertyType == typeof(decimal) ? "0.##" : null,
+            ConverterCulture = System.Globalization.CultureInfo.GetCultureInfo("pt-BR")
+        };
         var style = new Style(typeof(TextBlock));
         style.Setters.Add(new Setter(TextBlock.PaddingProperty, new Thickness(8, 0, 8, 0)));
         style.Setters.Add(new Setter(TextBlock.VerticalAlignmentProperty, VerticalAlignment.Center));
@@ -83,20 +70,19 @@ public partial class ReportsWindow : Window
     }
     private async Task GenerateAsync()
     {
-        GenerateButton.IsEnabled = CsvButton.IsEnabled = PdfButton.IsEnabled = false;
+        GenerateButton.IsEnabled = XlsxButton.IsEnabled = PdfButton.IsEnabled = false;
         FiltersPanel.IsEnabled = false;
         try
         {
             var filter = ReadFilter();
             var periods = await _periodos.ListarAsync();
-            _result = RelatorioEngine.Gerar(periods, filter, DateTime.Today);
+            _result = RelatorioEngine.Gerar(periods, filter, DateTime.Now);
             var table = new DataTable();
             for (var i = 0; i < _result.Colunas.Length; i++)
             {
-                var sample = _result.Linhas.Select(r => r.Valores[i]).FirstOrDefault(v => v is not string);
-                table.Columns.Add(_result.Colunas[i], sample is int ? typeof(int) : typeof(string));
+                table.Columns.Add(_result.Colunas[i], i is 2 or 3 ? typeof(DateTime) : i is >= 4 and <= 6 ? typeof(decimal) : i == 7 ? typeof(int) : typeof(string));
             }
-            foreach (var row in _result.Linhas) table.Rows.Add(row.Valores.Select(v => v is DateTime ? RelatorioExportacao.Texto(v) : v).ToArray());
+            foreach (var row in _result.Linhas) table.Rows.Add(row.Valores);
             ResultsGrid.ItemsSource = table.DefaultView;
             ResultTitle.Text = _result.Titulo;
             AppliedFilters.Text = string.Format(ScreenTexts.ReportsWindow_GeradoEm, _result.GeradoEm, _result.Filtros);
@@ -108,30 +94,27 @@ public partial class ReportsWindow : Window
             _result = null; ResultsGrid.ItemsSource = null; TotalsText.Text = ""; AppliedFilters.Text = ""; ResultTitle.Text = "";
             MessageText.Text = string.Format(ScreenTexts.ReportsWindow_NaoFoiPossivelGerarORelatorio, ex.Message);
         }
-        finally { GenerateButton.IsEnabled = FiltersPanel.IsEnabled = true; CsvButton.IsEnabled = PdfButton.IsEnabled = _result is not null; }
+        finally { GenerateButton.IsEnabled = FiltersPanel.IsEnabled = true; XlsxButton.IsEnabled = PdfButton.IsEnabled = _result is not null; }
     }
     private void ClearClick(object sender, RoutedEventArgs e)
     {
-        NameFilter.Clear(); IdentificationFilter.Clear(); ReasonFilter.Clear(); MinBalanceFilter.Clear(); MaxBalanceFilter.Clear();
-        foreach (var box in new[] { UnitsFilter, StatusFilter, MovementTypesFilter }) box.UnselectAll();
-        ExpiryFilter.SelectedIndex = PendingFilter.SelectedIndex = 0;
-        PositiveBalanceFilter.IsChecked = false; MinPeopleFilter.Text = "2"; FromFilter.SelectedDate = ToFilter.SelectedDate = null;
+        EmployeeFilter.SelectedIndex = UnitFilter.SelectedIndex = 0;
+        FromFilter.SelectedDate = ToFilter.SelectedDate = null;
         MessageText.Text = ScreenTexts.ReportsWindow_FiltrosLimposCliqueEmGerarRelatorioParaAtualizar;
     }
-    private async void CsvClick(object sender, RoutedEventArgs e) => await ExportAsync(false);
+    private async void XlsxClick(object sender, RoutedEventArgs e) => await ExportAsync(false);
     private async void PdfClick(object sender, RoutedEventArgs e) => await ExportAsync(true);
     private async Task ExportAsync(bool pdf)
     {
         if (_result is not { } report) return;
-        var dialog = new SaveFileDialog { Filter = pdf ? ScreenTexts.ReportsWindow_DocumentoPDFPdf : ScreenTexts.ReportsWindow_CSVCompativelComExcelCsv, FileName = string.Format(ScreenTexts.ReportsWindow_RelatorioFerias, report.GeradoEm), AddExtension = true };
+        var dialog = new SaveFileDialog { Filter = pdf ? ScreenTexts.ReportsWindow_DocumentoPDFPdf : ScreenTexts.ReportsWindow_ArquivoXlsx, FileName = string.Format(ScreenTexts.ReportsWindow_RelatorioFerias, report.GeradoEm), AddExtension = true };
         if (dialog.ShowDialog(this) != true) return;
         try
         {
             if (pdf) await File.WriteAllBytesAsync(dialog.FileName, RelatorioExportacao.Pdf(report));
-            else await RelatorioExportacao.SalvarCsvAsync(report, dialog.FileName);
+            else await File.WriteAllBytesAsync(dialog.FileName, RelatorioExportacao.Xlsx(report));
             MessageBox.Show(this, string.Format(ScreenTexts.ReportsWindow_RelatorioExportadoPara, dialog.FileName), ScreenTexts.ReportsWindow_ExportacaoConcluida, MessageBoxButton.OK, MessageBoxImage.Information);
         }
         catch (Exception ex) { MessageBox.Show(this, string.Format(ScreenTexts.ReportsWindow_NaoFoiPossivelExportar, ex.Message), ScreenTexts.ReportsWindow_Exportacao, MessageBoxButton.OK, MessageBoxImage.Error); }
     }
 }
-

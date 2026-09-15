@@ -290,13 +290,13 @@ public partial class ScheduleVacationDialog : Window
     private void ExistingRangeSelected(object sender, SelectionChangedEventArgs e)
     {
         RemoveExistingButton.IsEnabled = ExistingRangesList.SelectedItem is IntervaloItem item &&
-            item.Intervalo.Inicio.Date > DateTime.Today;
+            (item.Intervalo.Inicio.Date > DateTime.Today || item.Intervalo.Fim.Date < DateTime.Today);
     }
 
     private void RemoveExistingClick(object sender, RoutedEventArgs e)
     {
         if (ExistingRangesList.SelectedItem is not IntervaloItem item ||
-            item.Intervalo.Inicio.Date <= DateTime.Today) return;
+            (item.Intervalo.Inicio.Date <= DateTime.Today && item.Intervalo.Fim.Date >= DateTime.Today)) return;
         _excluirAgendamentos.Add(item.Id);
         _existentes.Remove(item);
         _saldoSemAjusteFaltas += item.DiasSaldo;

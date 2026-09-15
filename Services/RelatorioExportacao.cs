@@ -9,24 +9,7 @@ public static class RelatorioExportacao
 {
     public static string Texto(object value) => value is DateTime date ? date.ToString("dd/MM/yyyy") : Convert.ToString(value, CultureInfo.GetCultureInfo("pt-BR")) ?? "";
 
-    public static string Csv(ResultadoRelatorio report)
-    {
-        // Quoting alone does not prevent Excel from interpreting user-entered text as formulas.
-        static string Cell(object value)
-        {
-            var text = Texto(value);
-            if (value is string && text.TrimStart().FirstOrDefault() is '=' or '+' or '-' or '@') text = "'" + text;
-            return "\"" + text.Replace("\"", "\"\"") + "\"";
-        }
-        var csv = new StringBuilder();
-        void Row(IEnumerable<object> cells) => csv.AppendLine(string.Join(";", cells.Select(Cell)));
-        Row([report.Titulo]); Row([$"Gerado em {report.GeradoEm:dd/MM/yyyy HH:mm}"]);
-        Row([report.Filtros]); Row([report.Totais]); Row(report.Colunas);
-        foreach (var row in report.Linhas) Row(row.Valores);
-        return csv.ToString();
-    }
-
-    public static Task SalvarCsvAsync(ResultadoRelatorio report, string path) => File.WriteAllTextAsync(path, Csv(report), new UTF8Encoding(true));
+    public static byte[] Xlsx(ResultadoRelatorio report) => RelatorioXlsx.Gerar(report);
 
     // A4, searchable text, repeated page headers and wrapped fields. A record layout avoids
     // reducing the wide report tables to unreadably small print on paper.

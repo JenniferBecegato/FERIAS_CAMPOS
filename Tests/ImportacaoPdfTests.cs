@@ -10,6 +10,67 @@ namespace FeriasCampos.Tests;
 public sealed class ImportacaoPdfTests
 {
     [Fact]
+    public async Task Nome_encontrado_reutiliza_cadastro_manual_mesmo_com_unidade_e_admissao_diferentes()
+    {
+        await using var connection = new SqliteConnection("Data Source=:memory:");
+        await connection.OpenAsync(TestContext.Current.CancellationToken);
+        var factory = new Factory(new DbContextOptionsBuilder<FeriasDbContext>().UseSqlite(connection).Options);
+        await using var db = factory.CreateDbContext();
+        await db.Database.EnsureCreatedAsync(TestContext.Current.CancellationToken);
+        var pessoa = new Colaborador { Nome = "Emily Lucas Leão", Cpf = "12345678901",
+            Unidade = "Washington Luiz", Admissao = new DateTime(2024, 3, 1) };
+        db.Colaboradores.Add(pessoa);
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
+        var periodo = new PeriodoPdf(new(2026, 3, 1), new(2027, 2, 28), new(2028, 2, 29), 15);
+        var resultado = await new ImportacaoPdfService(factory).ImportarLeituraAsync(new([
+            new(" EMILY  LUCAS LEAO ", [periodo]),
+            new("Emily Lucas Leão", [periodo])], []), "Gurgel");
+        Assert.Equal(0, resultado.ColaboradoresCriados);
+        Assert.Equal(1, resultado.PeriodosCriados);
+        Assert.Equal(1, resultado.PeriodosExistentes);
+        db.ChangeTracker.Clear();
+        var salvo = Assert.Single(await db.Colaboradores.Include(c => c.Periodos).ToListAsync(TestContext.Current.CancellationToken));
+        Assert.Equal(pessoa.Id, salvo.Id);
+        Assert.Equal(pessoa.Nome, salvo.Nome);
+        Assert.Equal(pessoa.Cpf, salvo.Cpf);
+        Assert.Equal(pessoa.Admissao, salvo.Admissao);
+        Assert.Equal(pessoa.Unidade, salvo.Unidade);
+        Assert.Single(salvo.Periodos);
+    }
+
+    [Theory]
+    [InlineData("Gabriela dos Reis Melo", "GABRIELA DOS REIS MELO SANTOS")]
+    [InlineData("Adriana Regina Jesus", "ADRIANA REGINA JESUS SANTOS")]
+    [InlineData("Taiane Teixeira da Silva", "TAINA TEIXEIRA DA SILVA")]
+    [InlineData("FABIANA CAROLINE ZANELATTO", "FABIANA CAROLINE ZANELATO")]
+    public async Task Nome_semelhante_gera_aviso_e_importa_demais_sem_alterar_lancamentos(string nome, string nomePdf)
+    {
+        await using var connection = new SqliteConnection("Data Source=:memory:");
+        await connection.OpenAsync(TestContext.Current.CancellationToken);
+        var factory = new Factory(new DbContextOptionsBuilder<FeriasDbContext>().UseSqlite(connection).Options);
+        await using var db = factory.CreateDbContext();
+        await db.Database.EnsureCreatedAsync(TestContext.Current.CancellationToken);
+        var inicio = new DateTime(2025, 3, 4);
+        db.Colaboradores.Add(new Colaborador { Nome = nome, Admissao = inicio, Periodos = [
+            new() { Inicio = inicio, Fim = inicio.AddYears(1).AddDays(-1), Movimentacoes = [
+                new() { Tipo = TipoMovimentacao.Aquisicao, Dias = 30 },
+                new() { Tipo = TipoMovimentacao.Folga, Dias = -5, Motivo = "Preservar" }] }] });
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
+        var p = new PeriodoPdf(inicio, inicio.AddYears(1).AddDays(-1), inicio.AddYears(2).AddDays(-1), 30);
+        var resultado = await
+            new ImportacaoPdfService(factory).ImportarLeituraAsync(new([
+                new("NOVO COLABORADOR", [p]), new(nomePdf, [p]), new("OUTRA PESSOA", [p])], []), "Gurgel");
+        Assert.Contains("Possível cadastro duplicado", Assert.Single(resultado.Avisos));
+        Assert.Contains(nomePdf, resultado.Avisos[0]);
+        Assert.Equal(2, resultado.ColaboradoresCriados);
+        db.ChangeTracker.Clear();
+        Assert.Equal(3, await db.Colaboradores.CountAsync(TestContext.Current.CancellationToken));
+        var salvo = await db.Periodos.Include(p => p.Movimentacoes).SingleAsync(p => p.Colaborador.Nome == nome, TestContext.Current.CancellationToken);
+        Assert.Equal(25, salvo.Saldo);
+        Assert.Equal(2, salvo.Movimentacoes.Count);
+    }
+
+    [Fact]
     public void Le_nomes_quebrados_saldos_fracionados_e_prazo_prorrogado()
     {
         var leitura = LeitorPrevisaoFeriasPdf.LerLinhas([
@@ -22,8 +83,10 @@ public sealed class ImportacaoPdfTests
         Assert.Equal(17.5m, leitura.Colaboradores[1].Periodos[1].Saldo);
         Assert.Equal(new DateTime(2027, 7, 31), leitura.Colaboradores[0].Periodos[0].Vencimento);
         Assert.Single(leitura.Avisos);
-        Assert.Throws<System.IO.InvalidDataException>(() => LeitorPrevisaoFeriasPdf.LerLinhas([
-            ("1 MARIA SILVA", "01/11/2024 a 31/10/2025 saldo ilegível")]));
+        var invalida = LeitorPrevisaoFeriasPdf.LerLinhas([
+            ("1 MARIA SILVA", "01/11/2024 a 31/10/2025 saldo ilegível")]);
+        Assert.Empty(invalida.Colaboradores);
+        Assert.Contains("MARIA SILVA", Assert.Single(invalida.Avisos));
     }
 
     [Fact]
@@ -71,10 +134,52 @@ public sealed class ImportacaoPdfTests
         PeriodoAquisitivoMaintenance.Atualizar(ana, inicio.AddMonths(1));
         Assert.Equal(17m, ana.Periodos.Sum(p => p.Saldo));
         Assert.Equal(0m, (await db.Periodos.Include(p => p.Movimentacoes).SingleAsync(p => p.Colaborador.Nome == "MARIA SILVA", TestContext.Current.CancellationToken)).Saldo);
-        await Assert.ThrowsAsync<System.IO.InvalidDataException>(() => service.ImportarLeituraAsync(new([
+        var parcial = await service.ImportarLeituraAsync(new([
             new("NOVO COLABORADOR", [P(inicio, 30)]),
-            new("ANA REGINA SANTOS", [P(inicio.AddMonths(1), 30)])], []), "Gurgel"));
-        Assert.Equal(2, await db.Colaboradores.CountAsync(TestContext.Current.CancellationToken));
+            new("ANA REGINA SANTOS", [P(inicio.AddYears(2), 30), P(inicio.AddMonths(1), 30)])], []), "Gurgel");
+        Assert.Contains("ANA REGINA SANTOS", Assert.Single(parcial.Avisos));
+        Assert.Equal(1, parcial.PeriodosCriados);
+        Assert.Equal(3, await db.Colaboradores.CountAsync(TestContext.Current.CancellationToken));
+        Assert.Equal(2, await db.Periodos.CountAsync(p => p.Colaborador.Nome == "ANA REGINA SANTOS", TestContext.Current.CancellationToken));
+    }
+
+    [Theory]
+    [InlineData("31/02/2024 a 31/10/2025 31/10/2025 02/07/2027 02/06/2027 30,00")]
+    [InlineData("01/11/2024 a 31/10/2025 31/10/2025 02/07/2027 02/06/2027 31,00")]
+    [InlineData("período ilegível")]
+    public void Leitura_ignora_pessoa_inteira_com_erro_e_continua(string linhaInvalida)
+    {
+        const string valida = "01/11/2024 a 31/10/2025 31/10/2025 02/07/2027 02/06/2027 30,00";
+        var leitura = LeitorPrevisaoFeriasPdf.LerLinhas([
+            ("1 ANA SILVA", valida), ("", linhaInvalida),
+            ("2 MARIA SANTOS", valida), ("3 ANA SILVA", valida)]);
+        Assert.Equal("MARIA SANTOS", Assert.Single(leitura.Colaboradores).Nome);
+        Assert.Contains("ANA SILVA", Assert.Single(leitura.Avisos));
+    }
+
+    [Fact]
+    public async Task Ignora_duplicidade_e_sobreposicao_interna_sem_criar_cadastro_parcial()
+    {
+        await using var connection = new SqliteConnection("Data Source=:memory:");
+        await connection.OpenAsync(TestContext.Current.CancellationToken);
+        var factory = new Factory(new DbContextOptionsBuilder<FeriasDbContext>().UseSqlite(connection).Options);
+        await using var db = factory.CreateDbContext();
+        await db.Database.EnsureCreatedAsync(TestContext.Current.CancellationToken);
+        db.Colaboradores.AddRange(new Colaborador { Nome = "ANA SILVA" }, new Colaborador { Nome = "ANA SILVA" });
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
+        var p = new PeriodoPdf(new(2025, 1, 1), new(2025, 12, 31), new(2026, 12, 31), 30);
+        var resultado = await new ImportacaoPdfService(factory).ImportarLeituraAsync(new([
+            new("ANA SILVA", [p]),
+            new("MARIA SANTOS", [p, p with { Inicio = p.Inicio.AddMonths(1) }]),
+            new("JOAO SOUZA", [p with { Saldo = -1 }]),
+            new("CARLOS LIMA", [p])], []), "Gurgel");
+        Assert.Equal(3, resultado.Avisos.Count);
+        Assert.Equal(1, resultado.ColaboradoresCriados);
+        Assert.Equal(1, resultado.PeriodosCriados);
+        Assert.Equal(0, resultado.PeriodosExistentes);
+        db.ChangeTracker.Clear();
+        Assert.Equal(3, await db.Colaboradores.CountAsync(TestContext.Current.CancellationToken));
+        Assert.Equal("CARLOS LIMA", (await db.Periodos.Include(p => p.Colaborador).SingleAsync(TestContext.Current.CancellationToken)).Colaborador.Nome);
     }
 
     [Fact]

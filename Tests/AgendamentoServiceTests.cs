@@ -109,8 +109,10 @@ public sealed class AgendamentoServiceTests
     [InlineData(1, true)]
     [InlineData(0, false)]
     [InlineData(-5, false)]
-    [InlineData(-30, false)]
-    public async Task Exclui_somente_parcela_futura_e_restaura_saldo(int inicio, bool permitido)
+    [InlineData(-29, false)]
+    [InlineData(-30, true)]
+    [InlineData(-60, true)]
+    public async Task Exclui_parcela_futura_ou_concluida_e_restaura_saldo(int inicio, bool permitido)
     {
         await using var fixture = await Fixture.CreateAsync();
         long id;

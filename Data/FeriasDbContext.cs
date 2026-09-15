@@ -1,4 +1,4 @@
-using FeriasCampos.Models;
+﻿using FeriasCampos.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace FeriasCampos.Data;
@@ -13,6 +13,8 @@ public sealed class FeriasDbContext(DbContextOptions<FeriasDbContext> options)
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<PeriodoAquisitivo>().HasQueryFilter(p => p.Status != StatusPeriodo.Excluido);
+
         modelBuilder.Entity<Colaborador>()
             .HasIndex(colaborador => colaborador.Cpf)
             .IsUnique().HasFilter("Cpf <> ''");

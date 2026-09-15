@@ -1,31 +1,25 @@
-# Relatórios de férias
+# Relatório de férias
 
-Acesse **Relatórios** no menu lateral. Escolha uma consulta, ajuste os filtros e clique em **Gerar relatório**. A busca considera somente o nome do colaborador. A consulta inclui todos os colaboradores.
+Acesse **Relatórios** para visualizar o relatório único, com uma linha por período aquisitivo. A primeira consulta é gerada sem filtros.
 
-Unidade e status permitem múltiplas seleções: clique novamente para desmarcar. Sem seleção, todas as opções são incluídas. Unidades vazias aparecem como **(Não informado)**.
+## Filtros
 
-## Consultas
+Selecione um colaborador, uma unidade e/ou datas inicial e final; clique em **Gerar relatório**. Os colaboradores são identificados por nome, unidade e código para distinguir homônimos. **Todos os colaboradores** e **Todas as unidades** desativam esses filtros. Unidade vazia aparece como **(Não informado)**.
 
-| Consulta | Critério |
-|---|---|
-| Vencimentos | Períodos com saldo positivo; vencidos ou próximos 30, 60 e 90 dias. Os intervalos futuros incluem hoje e o último dia da faixa. |
-| Saldos | Uma linha por período aquisitivo, separando direito, agendamentos, gozo registrado, vendas, folgas e saldo. |
-| Programação | Uma linha por parcela de férias que intersecta as datas pesquisadas. A duração exibida é a parcela inteira. |
-| Pendências | Períodos já adquiridos com saldo positivo, sem programação ou com programação parcial. |
-| Ausências simultâneas | Intervalos com pelo menos duas pessoas distintas na mesma unidade, recortados às datas consultadas. O mínimo é configurável. |
-| Extrato | Movimentações por colaborador e data de registro, com sinais de crédito/débito e motivo. |
-| Vendas e folgas | Somente os lançamentos desses dois tipos. |
-| Conferência | Movimentações filtráveis por tipo, data de registro, identificação e motivo. |
+As datas selecionam os períodos aquisitivos com pelo menos um dia em comum com o intervalo, incluindo os limites. Não filtram pelo vencimento nem pela data das férias agendadas. Uma data isolada aplica somente aquele limite; sem datas, todos os períodos são incluídos. A data final não pode ser anterior à inicial.
 
-Os campos **Data inicial** e **Data final** ficam logo após o nome do colaborador. As datas significam **vencimento** nos relatórios de períodos; **datas de férias** na programação e sobreposições; **data local do registro** nos relatórios de movimentações. Datas inicial e final são inclusivas e opcionais.
+**Limpar filtros** restaura as opções gerais; clique em **Gerar relatório** para atualizar.
 
-O período aquisitivo usa as datas de início e fim da aquisição, não as datas do período concessivo. O saldo é a soma das movimentações atuais, sem reconstrução de saldo histórico. Agendamentos não são convertidos automaticamente em gozo: somente lançamentos explícitos de tipo Gozo compõem a coluna **Gozo registrado**. O retorno previsto é o dia seguinte ao fim da parcela e deve ser conferido com a escala.
+## Valores
 
-Os totais contam colaboradores e períodos distintos. Na sobreposição, uma pessoa não é contada duas vezes por possuir mais de um período; o pico é calculado por unidade dentro dos filtros aplicados. Créditos, débitos e variação líquida de um extrato filtrado não representam necessariamente o saldo total. A identificação registrada pode ser o nome do computador, não uma identidade autenticada de usuário.
+A tabela exibe colaborador, unidade, início e fim do período aquisitivo, saldo disponível, dias agendados, folgas e faltas não justificadas. Os valores representam os totais atuais de cada período, sem reconstrução de saldo histórico ou recorte das movimentações pelas datas consultadas. Dias fracionados são preservados. As faltas vêm da quantidade registrada no período, não do desconto aplicado ao saldo.
+
+Os totais somam as quatro quantidades e contam colaboradores distintos e períodos. A ordem inicial é nome do colaborador e início do período.
 
 ## Exportação
 
-**Exportar CSV (Excel)** gera UTF-8 com BOM, separador ponto e vírgula e escape de aspas e quebras de linha. Textos que possam ser interpretados como fórmulas são neutralizados. **Exportar PDF** gera um documento A4 paginado, em formato de registros para preservar a legibilidade de todas as colunas e dos motivos longos.
+**Exportar XLSX** gera uma planilha Excel real com números e datas tipados, cabeçalhos formatados, filtros de coluna e cabeçalhos congelados. Textos são gravados como texto, sem executar fórmulas.
 
-Ambos exportam todos os registros da última consulta gerada, seus filtros, data de geração e totais. Alterar filtros exige clicar em **Gerar relatório** novamente. Ordenar a tabela muda apenas a visualização; os arquivos mantêm a ordem original da consulta.
+**Exportar PDF** gera um documento A4 paginado com os campos de cada registro para preservar a legibilidade.
 
+Ambos exportam todos os registros da última consulta gerada, filtros, data de geração e totais. Alterar filtros exige gerar novamente. Ordenar a tabela altera somente a visualização; as exportações mantêm a ordem original. Consultas vazias também podem ser exportadas.

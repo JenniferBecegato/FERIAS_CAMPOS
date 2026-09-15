@@ -1,4 +1,4 @@
-using FeriasCampos.Models;
+﻿using FeriasCampos.Models;
 using FeriasCampos.Services;
 
 namespace FeriasCampos.Controllers;
@@ -40,6 +40,12 @@ public sealed class DashboardController(
 
     public Task<ResultadoValidacao> AlterarColaboradorAsync(int id, NovoColaboradorDto dados)
         => colaboradores.AlterarAsync(id, dados);
+
+    public Task<IReadOnlyList<PeriodoAquisitivo>> ListarPeriodosAsync(int colaboradorId)
+        => colaboradores.ListarPeriodosAsync(colaboradorId);
+
+    public Task<ResultadoValidacao> ExcluirPeriodoAsync(int colaboradorId, int periodoId)
+        => colaboradores.ExcluirPeriodoAsync(colaboradorId, periodoId);
 
     public Task<ResultadoValidacao> ExcluirColaboradorAsync(int id)
         => colaboradores.ExcluirAsync(id);

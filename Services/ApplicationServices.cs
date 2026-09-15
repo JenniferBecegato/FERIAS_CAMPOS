@@ -1,4 +1,4 @@
-using FeriasCampos.Properties;
+﻿using FeriasCampos.Properties;
 using System.IO;
 using System.Text;
 using FeriasCampos.Data;
@@ -13,7 +13,7 @@ public sealed class ColaboradorService(
     public async Task<DashboardDto> DashboardAsync(string? busca = null)
     {
         await using var database = await databaseFactory.CreateDbContextAsync();
-        var employees = await database.Colaboradores
+        var employees = await database.Colaboradores.IgnoreQueryFilters()
             .Include(colaborador => colaborador.Periodos)
             .ThenInclude(periodo => periodo.Movimentacoes)
             .ToListAsync();
@@ -118,7 +118,7 @@ public sealed class ColaboradorService(
     public async Task<ResultadoValidacao> AlterarAsync(int id, NovoColaboradorDto dados)
     {
         await using var database = await databaseFactory.CreateDbContextAsync();
-        var employee = await database.Colaboradores.Include(c => c.Periodos)
+        var employee = await database.Colaboradores.IgnoreQueryFilters().Include(c => c.Periodos)
             .ThenInclude(p => p.Movimentacoes).SingleOrDefaultAsync(c => c.Id == id);
         if (employee is null)
             return new(false, [ScreenTexts.EmployeesWindow_ColaboradorNaoEncontrado], []);
@@ -152,13 +152,33 @@ public sealed class ColaboradorService(
     public async Task<ResultadoValidacao> ExcluirAsync(int id)
     {
         await using var database = await databaseFactory.CreateDbContextAsync();
-        var employee = await database.Colaboradores.Include(c => c.Periodos)
+        var employee = await database.Colaboradores.IgnoreQueryFilters().Include(c => c.Periodos)
             .ThenInclude(p => p.Movimentacoes).SingleOrDefaultAsync(c => c.Id == id);
         if (employee is null)
             return new(false, [ScreenTexts.EmployeesWindow_ColaboradorNaoEncontrado], []);
         database.Movimentacoes.RemoveRange(employee.Periodos.SelectMany(p => p.Movimentacoes));
         database.Periodos.RemoveRange(employee.Periodos);
         database.Colaboradores.Remove(employee);
+        await database.SaveChangesAsync();
+        return new(true, [], []);
+    }
+
+    public async Task<IReadOnlyList<PeriodoAquisitivo>> ListarPeriodosAsync(int colaboradorId)
+    {
+        await using var database = await databaseFactory.CreateDbContextAsync();
+        return await database.Periodos.AsNoTracking().Include(p => p.Movimentacoes)
+            .Where(p => p.ColaboradorId == colaboradorId).OrderByDescending(p => p.Inicio).ToListAsync();
+    }
+
+    public async Task<ResultadoValidacao> ExcluirPeriodoAsync(int colaboradorId, int periodoId)
+    {
+        await using var database = await databaseFactory.CreateDbContextAsync();
+        var period = await database.Periodos.Include(p => p.Movimentacoes)
+            .SingleOrDefaultAsync(p => p.Id == periodoId && p.ColaboradorId == colaboradorId);
+        if (period is null) return new(false, ["Período não encontrado para este colaborador."], []);
+        database.Movimentacoes.RemoveRange(period.Movimentacoes);
+        // Retém as datas para a manutenção anual não recriar o período excluído.
+        period.Status = StatusPeriodo.Excluido;
         await database.SaveChangesAsync();
         return new(true, [], []);
     }
@@ -508,7 +528,8 @@ public sealed class AgendamentoService(
         {
             var movimento = period.Movimentacoes.SingleOrDefault(item => item.Id == id);
             if (movimento is null || movimento.Tipo != TipoMovimentacao.Agendamento ||
-                movimento.Inicio is null || movimento.Inicio.Value.Date <= DateTime.Today)
+                movimento.Inicio is null || movimento.Fim is null ||
+                (movimento.Inicio.Value.Date <= DateTime.Today && movimento.Fim.Value.Date >= DateTime.Today))
                 return new(false, [ScreenTexts.ScheduleVacationDialog_ExclusaoNaoPermitida], []);
             period.Movimentacoes.Remove(movimento);
             database.Movimentacoes.Remove(movimento);
@@ -652,11 +673,11 @@ public sealed class MovimentacaoService(
 
 public sealed class RelatorioService(IPeriodoService periods) : IRelatorioService
 {
-    public async Task<string> ExportarCsvAsync(string destination)
+    public async Task<string> ExportarXlsxAsync(string destination)
     {
         var report = RelatorioEngine.Gerar(await periods.ListarAsync(),
-            new FiltroRelatorio { Tipo = TipoRelatorio.Saldos }, DateTime.Today);
-        await RelatorioExportacao.SalvarCsvAsync(report, destination);
+            new FiltroRelatorio(), DateTime.Now);
+        await System.IO.File.WriteAllBytesAsync(destination, RelatorioExportacao.Xlsx(report));
         return destination;
     }
 }

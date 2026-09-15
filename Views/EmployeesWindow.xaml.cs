@@ -1,4 +1,4 @@
-using FeriasCampos.Properties;
+﻿using FeriasCampos.Properties;
 using System.Windows;
 using FeriasCampos.Controllers;
 using FeriasCampos.Models;
@@ -31,9 +31,9 @@ public partial class EmployeesWindow : Window
         ShowForm();
     }
 
-    private void EditClick(object sender, RoutedEventArgs e)
+    private async void EditClick(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { DataContext: Colaborador employee }) return;
+        if (_busy || sender is not FrameworkElement { DataContext: Colaborador employee }) return;
         ClearForm();
         _editing = employee;
         FormTitle.Text = ScreenTexts.EmployeesWindow_AlterarColaborador;
@@ -42,6 +42,49 @@ public partial class EmployeesWindow : Window
         AdmissionPicker.SelectedDate = employee.Admissao;
         UnitBox.SelectedValue = employee.Unidade;
         ShowForm();
+        _busy = true;
+        RootPanel.IsEnabled = false;
+        try { await LoadPeriodsAsync(employee.Id); }
+        catch (Exception) { ErrorText.Text = ScreenTexts.EmployeesWindow_NaoFoiPossivelConcluirAOperacaoFecheE; }
+        finally { _busy = false; RootPanel.IsEnabled = true; }
+    }
+
+    private async Task LoadPeriodsAsync(int employeeId)
+    {
+        var periods = await _controller.ListarPeriodosAsync(employeeId);
+        EmployeePeriods.ItemsSource = periods.Select(p => new
+        {
+            p.Id,
+            Datas = $"Aquisitivo: {p.Inicio:dd/MM/yyyy} a {p.Fim:dd/MM/yyyy}",
+            Saldo = $"Saldo de férias: {p.Saldo:0.##} dias",
+            Faltas = $"Faltas não justificadas: {p.FaltasNaoJustificadas} dias",
+            Folgas = $"Folgas descontadas: {p.Folgas:0.##} dias"
+        }).ToList();
+        PeriodsPanel.Visibility = Visibility.Visible;
+        EmptyPeriodsText.Visibility = periods.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private async void DeletePeriodClick(object sender, RoutedEventArgs e)
+    {
+        if (_busy || _editing is null || sender is not FrameworkElement { Tag: int periodId }) return;
+        _busy = true;
+        RootPanel.IsEnabled = false;
+        try
+        {
+            var period = await _controller.SelecionarAsync(periodId);
+            if (period is null) { await LoadPeriodsAsync(_editing.Id); return; }
+            if (MessageBox.Show(this,
+                $"Excluir o período aquisitivo de {period.Inicio:dd/MM/yyyy} a {period.Fim:dd/MM/yyyy}? Os agendamentos e todas as movimentações deste período serão removidos. Esta ação é imediata e não pode ser desfeita.",
+                "Excluir período", MessageBoxButton.YesNo,
+                MessageBoxImage.Warning, MessageBoxResult.No) != MessageBoxResult.Yes) return;
+            var result = await _controller.ExcluirPeriodoAsync(_editing.Id, periodId);
+            if (!result.Valido) { ErrorText.Text = string.Join(Environment.NewLine, result.Erros); return; }
+            Changed = true;
+            ErrorText.Text = string.Empty;
+            await LoadPeriodsAsync(_editing.Id);
+        }
+        catch (Exception) { ErrorText.Text = ScreenTexts.EmployeesWindow_NaoFoiPossivelConcluirAOperacaoFecheE; }
+        finally { _busy = false; RootPanel.IsEnabled = true; }
     }
 
     private void ShowForm()
@@ -142,6 +185,8 @@ public partial class EmployeesWindow : Window
     private void ClearForm()
     {
         _editing = null;
+        EmployeePeriods.ItemsSource = null;
+        PeriodsPanel.Visibility = Visibility.Collapsed;
         FormTitle.Text = ScreenTexts.EmployeesWindow_NovoColaborador2;
         ErrorText.Text = string.Empty;
         NameBox.Clear();

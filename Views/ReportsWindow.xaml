@@ -8,40 +8,34 @@
  </Window.Resources>
  <Grid Margin="20" Background="#F5F7FB">
   <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
-  <StackPanel Margin="0,0,0,16"><TextBlock Text="{x:Static texts:ScreenTexts.ReportsWindow_RelatoriosDeFerias}" FontSize="25" FontWeight="Bold"/><TextBlock Text="{x:Static texts:ScreenTexts.ReportsWindow_SelecioneUmRelatorioCombineOsFiltrosEGere}" Margin="0,5,0,0" Foreground="{StaticResource MutedBrush}"/></StackPanel>
+  <StackPanel Margin="0,0,0,16"><TextBlock Text="{x:Static texts:ScreenTexts.ReportsWindow_RelatoriosDeFerias}" FontSize="25" FontWeight="Bold"/><TextBlock Text="{x:Static texts:ScreenTexts.ReportsWindow_DescricaoUnico}" Margin="0,5,0,0" Foreground="{StaticResource MutedBrush}"/></StackPanel>
   <Grid Grid.Row="1"><Grid.ColumnDefinitions><ColumnDefinition Width="295"/><ColumnDefinition Width="16"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
    <Border Style="{StaticResource Card}" Padding="14">
     <DockPanel><StackPanel DockPanel.Dock="Bottom" Margin="0,12,0,0"><Button x:Name="GenerateButton" Content="{x:Static texts:ScreenTexts.ReportsWindow_GerarRelatorio}" Click="GenerateClick" Background="#0878E8" Foreground="White"/><Button Content="{x:Static texts:ScreenTexts.ReportsWindow_LimparFiltros}" Click="ClearClick" Margin="0,6,0,0"/></StackPanel>
      <ScrollViewer VerticalScrollBarVisibility="Auto"><StackPanel Margin="0,0,8,0" x:Name="FiltersPanel">
-      <TextBlock Text="{x:Static texts:ScreenTexts.ReportsWindow_Relatorio}" Style="{StaticResource Label}"/><ComboBox x:Name="ReportType" SelectionChanged="ReportTypeChanged"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding}" TextWrapping="Wrap" MaxWidth="225"/></DataTemplate></ComboBox.ItemTemplate></ComboBox>
-      <TextBlock Text="{x:Static texts:ScreenTexts.ReportsWindow_NomeDoColaborador}" Style="{StaticResource Label}"/><TextBox x:Name="NameFilter" ToolTip="{x:Static texts:ScreenTexts.ReportsWindow_BuscaSomentePeloNome}"/>
-      <TextBlock x:Name="DateLabel" Style="{StaticResource Label}" TextWrapping="Wrap"/>
-      <TextBlock Text="{x:Static texts:ScreenTexts.ReportsWindow_DataInicial}" Margin="0,0,0,4"/><DatePicker x:Name="FromFilter" Language="pt-BR" SelectedDateFormat="Short" AutomationProperties.Name="{x:Static texts:ScreenTexts.ReportsWindow_DataInicial}"/>
-      <TextBlock Text="{x:Static texts:ScreenTexts.ReportsWindow_DataFinal}" Margin="0,8,0,4"/><DatePicker x:Name="ToFilter" Language="pt-BR" SelectedDateFormat="Short" AutomationProperties.Name="{x:Static texts:ScreenTexts.ReportsWindow_DataFinal}"/>
-      <TextBlock Text="{x:Static texts:ScreenTexts.ReportsWindow_SelecaoMultiplaCliqueParaMarcarDesmarcarNenhumaSelecao}" TextWrapping="Wrap" FontSize="11" Margin="0,12,0,0" Foreground="{StaticResource MutedBrush}"/>
-      <TextBlock Text="{x:Static texts:ScreenTexts.ReportsWindow_Unidades}" Style="{StaticResource Label}"/><ListBox x:Name="UnitsFilter"/>
-      <TextBlock Text="{x:Static texts:ScreenTexts.ReportsWindow_StatusDoPeriodo}" Style="{StaticResource Label}"/><ListBox x:Name="StatusFilter"/>
-      <TextBlock Text="{x:Static texts:ScreenTexts.ReportsWindow_SaldoDisponivelDias}" Style="{StaticResource Label}"/>
-      <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="12"/><ColumnDefinition/></Grid.ColumnDefinitions><StackPanel><TextBlock Text="{x:Static texts:ScreenTexts.ReportsWindow_Minimo}"/><TextBox x:Name="MinBalanceFilter"/></StackPanel><StackPanel Grid.Column="2"><TextBlock Text="{x:Static texts:ScreenTexts.ReportsWindow_Maximo}"/><TextBox x:Name="MaxBalanceFilter"/></StackPanel></Grid>
-      <CheckBox x:Name="PositiveBalanceFilter" Content="{x:Static texts:ScreenTexts.ReportsWindow_SomenteSaldoPendente}" Margin="0,10,0,0"/>
-      <StackPanel x:Name="ExpiryOptions"><TextBlock Text="{x:Static texts:ScreenTexts.ReportsWindow_PrazoDeVencimento}" Style="{StaticResource Label}"/><ComboBox x:Name="ExpiryFilter" SelectedIndex="0"><ComboBoxItem Content="{x:Static texts:ScreenTexts.ReportsWindow_TodosComSaldo}"/><ComboBoxItem Content="{x:Static texts:ScreenTexts.ReportsWindow_Vencidas}"/><ComboBoxItem Content="{x:Static texts:ScreenTexts.ReportsWindow_Proximos30Dias}"/><ComboBoxItem Content="{x:Static texts:ScreenTexts.ReportsWindow_Proximos60Dias}"/><ComboBoxItem Content="{x:Static texts:ScreenTexts.ReportsWindow_Proximos90Dias}"/></ComboBox></StackPanel>
-      <StackPanel x:Name="PendingOptions"><TextBlock Text="{x:Static texts:ScreenTexts.ReportsWindow_Programacao}" Style="{StaticResource Label}"/><ComboBox x:Name="PendingFilter" SelectedIndex="0"><ComboBoxItem Content="{x:Static texts:ScreenTexts.ReportsWindow_SemProgramacaoOuParcial}"/><ComboBoxItem Content="{x:Static texts:ScreenTexts.ReportsWindow_SemProgramacao}"/><ComboBoxItem Content="{x:Static texts:ScreenTexts.ReportsWindow_ProgramacaoParcial}"/></ComboBox></StackPanel>
-      <StackPanel x:Name="OverlapOptions"><TextBlock Text="{x:Static texts:ScreenTexts.ReportsWindow_MinimoDePessoasSimultaneas}" Style="{StaticResource Label}"/><TextBox x:Name="MinPeopleFilter" Text="2"/></StackPanel>
-      <StackPanel x:Name="MovementOptions"><TextBlock Text="{x:Static texts:ScreenTexts.ReportsWindow_TiposDeMovimentacao}" Style="{StaticResource Label}"/><ListBox x:Name="MovementTypesFilter"/><TextBlock Text="{x:Static texts:ScreenTexts.ReportsWindow_IdentificacaoRegistrada}" Style="{StaticResource Label}"/><TextBox x:Name="IdentificationFilter"/><TextBlock Text="{x:Static texts:ScreenTexts.ReportsWindow_MotivoContem}" Style="{StaticResource Label}"/><TextBox x:Name="ReasonFilter"/></StackPanel>
+      <TextBlock Text="{x:Static texts:ScreenTexts.ReportsWindow_Colaborador}" Style="{StaticResource Label}"/>
+      <ComboBox x:Name="EmployeeFilter" DisplayMemberPath="Label" IsTextSearchEnabled="True"/>
+      <TextBlock Text="{x:Static texts:ScreenTexts.ReportsWindow_Unidade}" Style="{StaticResource Label}"/>
+      <ComboBox x:Name="UnitFilter" DisplayMemberPath="Label"/>
+      <TextBlock Text="{x:Static texts:ScreenTexts.ReportsWindow_Vigencia}" Style="{StaticResource Label}" TextWrapping="Wrap"/>
+      <TextBlock Text="{x:Static texts:ScreenTexts.ReportsWindow_DataInicial}" Margin="0,0,0,4"/>
+      <DatePicker x:Name="FromFilter" Language="pt-BR" SelectedDateFormat="Short"/>
+      <TextBlock Text="{x:Static texts:ScreenTexts.ReportsWindow_DataFinal}" Margin="0,8,0,4"/>
+      <DatePicker x:Name="ToFilter" Language="pt-BR" SelectedDateFormat="Short"/>
+      <TextBlock Text="{x:Static texts:ScreenTexts.ReportsWindow_AjudaVigencia}" TextWrapping="Wrap" Margin="0,12,0,0" Foreground="{StaticResource MutedBrush}"/>
      </StackPanel></ScrollViewer>
     </DockPanel>
    </Border>
    <Border Grid.Column="2" Style="{StaticResource Card}"><Grid>
     <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-    <WrapPanel><Button x:Name="CsvButton" Content="{x:Static texts:ScreenTexts.ReportsWindow_ExportarCSVExcel}" Click="CsvClick" IsEnabled="False" Margin="0,0,8,8"/><Button x:Name="PdfButton" Content="{x:Static texts:ScreenTexts.ReportsWindow_ExportarPDF}" Click="PdfClick" IsEnabled="False" Margin="0,0,8,8"/></WrapPanel>
+    <WrapPanel><Button x:Name="XlsxButton" Content="{x:Static texts:ScreenTexts.ReportsWindow_ExportarXlsx}" Click="XlsxClick" IsEnabled="False" Margin="0,0,8,8"/><Button x:Name="PdfButton" Content="{x:Static texts:ScreenTexts.ReportsWindow_ExportarPDF}" Click="PdfClick" IsEnabled="False" Margin="0,0,8,8"/></WrapPanel>
     <StackPanel Grid.Row="1" Margin="0,4,0,12"><TextBlock x:Name="ResultTitle" FontSize="18" FontWeight="Bold" TextWrapping="Wrap"/><TextBlock x:Name="AppliedFilters" FontSize="11" TextWrapping="Wrap" Margin="0,6,0,0" Foreground="{StaticResource MutedBrush}" MaxHeight="90" ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}"/></StackPanel>
     <TextBlock Grid.Row="2" x:Name="MessageText" Text="{x:Static texts:ScreenTexts.ReportsWindow_CarregandoOpcoes}" TextWrapping="Wrap" Margin="0,0,0,10" Foreground="#9C5B00"/>
-    <DataGrid Grid.Row="3" x:Name="ResultsGrid" IsReadOnly="True" AutoGenerateColumns="True" AutoGeneratingColumn="ResultColumnGenerated" CanUserAddRows="False" CanUserDeleteRows="False" EnableRowVirtualization="True" EnableColumnVirtualization="True" HeadersVisibility="Column" GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#E4E9F0" BorderBrush="#E4E9F0" Background="White" RowBackground="White" AlternatingRowBackground="#F8FAFC" RowHeight="34" ColumnHeaderHeight="42" FrozenColumnCount="1">
-     <DataGrid.ColumnHeaderStyle><Style TargetType="DataGridColumnHeader"><Setter Property="Padding" Value="8,5"/><Setter Property="Background" Value="#F0F4F9"/><Setter Property="FontWeight" Value="SemiBold"/></Style></DataGrid.ColumnHeaderStyle>
+    <DataGrid Grid.Row="3" x:Name="ResultsGrid" IsReadOnly="True" AutoGenerateColumns="True" AutoGeneratingColumn="ResultColumnGenerated" CanUserAddRows="False" CanUserDeleteRows="False" EnableRowVirtualization="True" EnableColumnVirtualization="True" HeadersVisibility="Column" GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#E4E9F0" BorderBrush="#E4E9F0" Background="White" RowBackground="White" AlternatingRowBackground="#F8FAFC" RowHeight="34" ColumnHeaderHeight="58" FrozenColumnCount="1">
+     <DataGrid.ColumnHeaderStyle><Style TargetType="DataGridColumnHeader"><Setter Property="ContentTemplate"><Setter.Value><DataTemplate><TextBlock Text="{Binding}" TextWrapping="Wrap"/></DataTemplate></Setter.Value></Setter><Setter Property="Padding" Value="8,5"/><Setter Property="Background" Value="#F0F4F9"/><Setter Property="FontWeight" Value="SemiBold"/></Style></DataGrid.ColumnHeaderStyle>
     </DataGrid>
     <TextBlock Grid.Row="4" x:Name="TotalsText" TextWrapping="Wrap" Margin="0,14,0,0" FontWeight="SemiBold"/>
    </Grid></Border>
   </Grid>
  </Grid>
 </Window>
-

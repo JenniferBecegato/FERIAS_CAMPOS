@@ -1,4 +1,4 @@
-using FeriasCampos.Properties;
+﻿using FeriasCampos.Properties;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,6 +23,7 @@ public partial class MainWindow : Window
     private readonly ObservableCollection<PeriodoRow> _visiblePeriodRows = [];
     private int _currentPage = 1;
     private int PageSize = int.MaxValue;
+    private bool _updatingEmployeeFilter;
     private bool _updatingPeriodSelector;
     private bool _restoringPeriodSelection;
     private IReadOnlyList<FeriasAgendaItem> _agenda = [];
@@ -88,7 +89,35 @@ public partial class MainWindow : Window
             _selectedPeriodIds.Remove(employeeId);
         }
 
+        var selectedEmployeeId = EmployeeFilter.SelectedValue as int? ?? 0;
+        var employees = await _controller.ListarColaboradoresAsync();
+        _updatingEmployeeFilter = true;
+        try
+        {
+            EmployeeFilter.ItemsSource = new[] { new Colaborador { Id = 0, Nome = "Todos os colaboradores" } }
+                .Concat(employees).ToList();
+            EmployeeFilter.SelectedValue = employees.Any(employee => employee.Id == selectedEmployeeId)
+                ? selectedEmployeeId : 0;
+        }
+        finally { _updatingEmployeeFilter = false; }
+        FilterEmployeeRows();
+        _currentPage = 1;
+        ShowCurrentPage();
+
+        _agenda = await _controller.ListarAgendaAsync();
+        RenderAgenda();
+
+        if (PeriodsGrid.SelectedItem is null && PeriodsGrid.Items.Count > 0)
+        {
+            PeriodsGrid.SelectedIndex = 0;
+        }
+    }
+
+    private void FilterEmployeeRows()
+    {
+        var employeeId = EmployeeFilter.SelectedValue as int? ?? 0;
         _employeeRows = _periodRows
+            .Where(row => employeeId == 0 || row.ColaboradorId == employeeId)
             .GroupBy(row => row.ColaboradorId)
             .Select(group =>
             {
@@ -100,16 +129,15 @@ public partial class MainWindow : Window
             })
             .OrderBy(row => row.Colaborador)
             .ToList();
+    }
+
+    private void EmployeeFilterChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (_updatingEmployeeFilter || !IsLoaded) return;
+        FilterEmployeeRows();
         _currentPage = 1;
         ShowCurrentPage();
-
-        _agenda = await _controller.ListarAgendaAsync();
-        RenderAgenda();
-
-        if (PeriodsGrid.SelectedItem is null && PeriodsGrid.Items.Count > 0)
-        {
-            PeriodsGrid.SelectedIndex = 0;
-        }
+        if (PeriodsGrid.Items.Count > 0) PeriodsGrid.SelectedIndex = 0;
     }
 
     private void ShowCurrentPage()
@@ -124,6 +152,16 @@ public partial class MainWindow : Window
             _visiblePeriodRows.Add(row);
         }
         PeriodsGrid.ItemsSource = _visiblePeriodRows;
+        if (_visiblePeriodRows.Count == 0)
+        {
+            _selectedPeriod = null;
+            InitialsText.Text = EmployeeText.Text = ExpiryText.Text = RightText.Text = UsedText.Text =
+                SoldText.Text = DaysOffText.Text = AbsencesText.Text = BalanceText.Text = RemainingText.Text = string.Empty;
+            _updatingPeriodSelector = true;
+            try { PeriodSelector.ItemsSource = null; }
+            finally { _updatingPeriodSelector = false; }
+            HistoryList.ItemsSource = null;
+        }
 
         var first = _employeeRows.Count == 0 ? 0 : ((_currentPage - 1) * PageSize) + 1;
         var last = Math.Min(_currentPage * PageSize, _employeeRows.Count);
@@ -381,6 +419,7 @@ public partial class MainWindow : Window
         RightText.Text = string.Format(ScreenTexts.MainWindow_Dias, period.DireitoDias);
         UsedText.Text = string.Format(ScreenTexts.MainWindow_Dias, -period.Movimentacoes.Where(m => m.Tipo == TipoMovimentacao.Gozo).Sum(m => m.Dias));
         SoldText.Text = string.Format(ScreenTexts.MainWindow_Dias, period.Vendidos);
+        AbsencesText.Text = $"Faltas não justificadas: {period.FaltasNaoJustificadas} dias";
         DaysOffText.Text = string.Format(ScreenTexts.MainWindow_Dias, period.Folgas);
         BalanceText.Text = string.Format(ScreenTexts.MainWindow_Dias, period.Saldo);
         RemainingText.Text = string.Format(ScreenTexts.MainWindow_SaldoRestanteDias2, period.Saldo);
@@ -489,9 +528,9 @@ public partial class MainWindow : Window
             var resultado = await _controller.ImportarAsync(arquivo.FileName, (string)unidade.SelectedItem);
             await LoadDataAsync();
             var resumo = $"Importação concluída.\nColaboradores criados: {resultado.ColaboradoresCriados}\nPeríodos criados: {resultado.PeriodosCriados}\nPeríodos já existentes: {resultado.PeriodosExistentes}";
-            if (resultado.Avisos.Count > 0) resumo += "\n\n" + string.Join("\n", resultado.Avisos);
+            if (resultado.Avisos.Count > 0) resumo += "\n\nAvisos da importação:\n" + string.Join("\n", resultado.Avisos);
             IsEnabled = true;
-            ShowModuleNotice("Importação concluída", "importIcon", resumo);
+            ShowModuleNotice(resultado.Avisos.Count > 0 ? "Importação concluída com avisos" : "Importação concluída", "importIcon", resumo);
         }
         catch (Exception ex)
         {
@@ -507,9 +546,16 @@ public partial class MainWindow : Window
         var panel = new StackPanel { Margin = new Thickness(24) };
         var header = new StackPanel { Orientation = Orientation.Horizontal };
         header.Children.Add(new Image { Source = icon, Width = 30, Height = 30, Margin = new Thickness(0, 0, 10, 0) });
-        header.Children.Add(new TextBlock { Text = title, FontSize = 22, FontWeight = FontWeights.Bold, VerticalAlignment = VerticalAlignment.Center });
+        header.Children.Add(new TextBlock { Text = title, FontSize = 22, FontWeight = FontWeights.Bold, VerticalAlignment = VerticalAlignment.Center, TextWrapping = TextWrapping.Wrap, MaxWidth = 420 });
         panel.Children.Add(header);
-        panel.Children.Add(new TextBlock { Text = message, TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 18, 0, 20) });
+        panel.Children.Add(new ScrollViewer
+        {
+            MaxHeight = Math.Max(120, SystemParameters.WorkArea.Height - 240),
+            VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+            HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
+            Margin = new Thickness(0, 18, 0, 20),
+            Content = new TextBlock { Text = message, TextWrapping = TextWrapping.Wrap }
+        });
         var close = new Button { Content = ScreenTexts.MainWindow_Entendi, IsCancel = true, IsDefault = true, HorizontalAlignment = HorizontalAlignment.Right };
         panel.Children.Add(close);
         var dialog = new Window
