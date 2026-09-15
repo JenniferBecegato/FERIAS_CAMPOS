@@ -17,6 +17,7 @@ public partial class App : Application
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
+        DialogScreenBounds.Register();
 
         var dataDirectory = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
@@ -60,7 +61,7 @@ public partial class App : Application
         services.AddSingleton<IMovimentacaoService, MovimentacaoService>();
         services.AddSingleton<IRelatorioService, RelatorioService>();
         services.AddSingleton<IDocumentoService, DocumentoService>();
-        services.AddSingleton<IImportacaoPdfService, ImportacaoPdfBloqueadaService>();
+        services.AddSingleton<IImportacaoPdfService, ImportacaoPdfService>();
         services.AddTransient<DashboardController>();
         services.AddTransient<MainWindow>();
     }
@@ -70,7 +71,7 @@ public partial class App : Application
         var factory = services.GetRequiredService<IDbContextFactory<FeriasDbContext>>();
 
         using var database = factory.CreateDbContext();
-        var databaseCreated = database.Database.EnsureCreated();
+        database.Database.EnsureCreated();
         ColaboradorSchemaMaintenance.Atualizar(database);
         FeriadoSchemaMaintenance.Atualizar(database);
         var columns = database.Database.SqlQueryRaw<string>(
@@ -79,10 +80,6 @@ public partial class App : Application
         {
             database.Database.ExecuteSqlRaw(
                 "ALTER TABLE Periodos ADD COLUMN FaltasNaoJustificadas INTEGER NOT NULL DEFAULT 0");
-        }
-        if (databaseCreated)
-        {
-            DbSeeder.Seed(database);
         }
         var periodosLegados = database.Periodos.Include(p => p.Movimentacoes)
             .Where(p => p.Status != StatusPeriodo.EmAquisicao && p.Status != StatusPeriodo.Disponivel &&

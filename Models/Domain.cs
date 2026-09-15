@@ -64,22 +64,22 @@ public sealed class PeriodoAquisitivo
     public List<MovimentacaoSaldo> Movimentacoes { get; set; } = [];
 
     [NotMapped]
-    public int Agendados => -Movimentacoes
+    public decimal Agendados => -Movimentacoes
         .Where(movimento => movimento.Tipo == TipoMovimentacao.Agendamento)
         .Sum(movimento => movimento.Dias);
 
     [NotMapped]
-    public int Vendidos => -Movimentacoes
+    public decimal Vendidos => -Movimentacoes
         .Where(movimento => movimento.Tipo == TipoMovimentacao.Venda)
         .Sum(movimento => movimento.Dias);
 
     [NotMapped]
-    public int Folgas => -Movimentacoes
+    public decimal Folgas => -Movimentacoes
         .Where(movimento => movimento.Tipo == TipoMovimentacao.Folga)
         .Sum(movimento => movimento.Dias);
 
     [NotMapped]
-    public int Saldo => Movimentacoes.Sum(movimento => movimento.Dias);
+    public decimal Saldo => Movimentacoes.Sum(movimento => movimento.Dias);
 }
 
 public sealed class MovimentacaoSaldo
@@ -88,7 +88,7 @@ public sealed class MovimentacaoSaldo
     public int PeriodoAquisitivoId { get; set; }
     public PeriodoAquisitivo Periodo { get; set; } = null!;
     public TipoMovimentacao Tipo { get; set; }
-    public int Dias { get; set; }
+    public decimal Dias { get; set; }
     public DateTime DataHoraUtc { get; set; } = DateTime.UtcNow;
     public string Motivo { get; set; } = string.Empty;
     public string Identificacao { get; set; } = Environment.MachineName;
@@ -134,10 +134,10 @@ public sealed record PeriodoRow(
     string Periodo,
     string Vencimento,
     int SaldoInicial,
-    int Agendados,
-    int Vendidos,
-    int Folgas,
-    int Saldo,
+    decimal Agendados,
+    decimal Vendidos,
+    decimal Folgas,
+    decimal Saldo,
     string Status)
 {
     public string PeriodoResumido => Periodo.Replace('\n', ' ');

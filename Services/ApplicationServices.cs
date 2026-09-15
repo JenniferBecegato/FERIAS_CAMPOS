@@ -189,7 +189,7 @@ public sealed class ColaboradorService(
             errors.Add(ScreenTexts.EmployeesWindow_InformeONomeCompleto);
         }
 
-        if (OnlyDigits(employee.Cpf).Length != 11)
+        if (!string.IsNullOrWhiteSpace(employee.Cpf) && OnlyDigits(employee.Cpf).Length != 11)
         {
             errors.Add(ScreenTexts.EmployeesWindow_OCPFDevePossuir11Digitos);
         }
@@ -219,7 +219,7 @@ public sealed class ColaboradorService(
         ICollection<string> errors,
         int? excludedId = null)
     {
-        if (await database.Colaboradores.AnyAsync(employee => employee.Id != excludedId && employee.Cpf == cpf))
+        if (cpf.Length > 0 && await database.Colaboradores.AnyAsync(employee => employee.Id != excludedId && employee.Cpf == cpf))
         {
             errors.Add(ScreenTexts.EmployeesWindow_JaExisteUmColaboradorComEsteCPF);
         }
@@ -667,13 +667,4 @@ public sealed class DocumentoService : IDocumentoService
     {
         return Task.FromResult(destination);
     }
-}
-
-public sealed class ImportacaoPdfBloqueadaService : IImportacaoPdfService
-{
-    public bool Habilitada => false;
-
-    public string MotivoBloqueio =>
-        ScreenTexts.MainWindow_AImportacaoSeraHabilitadaAposOFornecimentoDo +
-        ScreenTexts.MainWindow_ExemplosValidacoesEPoliticaDeDuplicidadeDoPDF;
 }

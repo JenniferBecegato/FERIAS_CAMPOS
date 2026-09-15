@@ -64,6 +64,5 @@ public interface IDocumentoService
 
 public interface IImportacaoPdfService
 {
-    bool Habilitada { get; }
-    string MotivoBloqueio { get; }
+    Task<ResultadoImportacaoPdf> ImportarAsync(string arquivo, string unidade);
 }

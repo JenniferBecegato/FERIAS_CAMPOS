@@ -21,7 +21,7 @@ public static class RegraFaltasClt
         return Math.Min(Math.Max(0, direitoOriginal), direitoClt);
     }
 
-    public static int ObterAjusteAtual(PeriodoAquisitivo periodo) =>
+    public static decimal ObterAjusteAtual(PeriodoAquisitivo periodo) =>
         periodo.Movimentacoes
             .Where(item => item.Tipo == TipoMovimentacao.Ajuste &&
                            item.Motivo == MotivoAjuste)

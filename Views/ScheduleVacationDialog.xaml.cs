@@ -10,7 +10,7 @@ namespace FeriasCampos.Views;
 
 public partial class ScheduleVacationDialog : Window
 {
-    private int _saldoSemAjusteFaltas;
+    private decimal _saldoSemAjusteFaltas;
     private int _vagasDisponiveis;
     private readonly bool _bloquearInicioAntesRepousoSemanal;
     private readonly ObservableCollection<IntervaloItem> _existentes = [];
@@ -18,7 +18,7 @@ public partial class ScheduleVacationDialog : Window
     public IReadOnlyList<long> ExcluirAgendamentos => _excluirAgendamentos;
     private readonly bool _descontarPorFaltas;
     private readonly int _direitoOriginal;
-    private readonly int _vendidos;
+    private readonly decimal _vendidos;
     private readonly DateTime _vencimento;
     private readonly bool _hasAvailableDates;
     private readonly ObservableCollection<IntervaloItem> _novos = [];
@@ -117,9 +117,9 @@ public partial class ScheduleVacationDialog : Window
     private int DireitoAjustado => _descontarPorFaltas
         ? RegraFaltasClt.CalcularDireito(_direitoOriginal, FaltasNaoJustificadas)
         : _direitoOriginal;
-    private int SaldoDisponivel => Math.Max(0,
+    private decimal SaldoDisponivel => Math.Max(0,
         _saldoSemAjusteFaltas + DireitoAjustado - _direitoOriginal);
-    private int MaximoAbono => Math.Max(0, (DireitoAjustado / 3) - _vendidos);
+    private decimal MaximoAbono => Math.Max(0, (DireitoAjustado / 3) - _vendidos);
 
     private void CalendarChanged(object sender, SelectionChangedEventArgs e)
     {
@@ -321,7 +321,7 @@ public partial class ScheduleVacationDialog : Window
     private void RefreshSummary()
     {
         var used = _novos.Sum(item => item.Intervalo.Dias);
-        var remaining = (long)SaldoDisponivel - used - DiasAbono;
+        var remaining = SaldoDisponivel - used - DiasAbono;
         BalanceText.Text = string.Format(ScreenTexts.ScheduleVacationDialog_DiasRestantes, Math.Max(0, remaining));
         SlotsText.Text = string.Format(ScreenTexts.ScheduleVacationDialog_ParcelaSDisponivelIs, _vagasDisponiveis - _novos.Count);
         SummaryText.Text =
@@ -394,7 +394,7 @@ public partial class ScheduleVacationDialog : Window
     private void CancelClick(object sender, RoutedEventArgs e) => DialogResult = false;
     private void ConfirmClick(object sender, RoutedEventArgs e) => DialogResult = true;
 
-    private sealed record IntervaloItem(IntervaloFerias Intervalo, long Id = 0, int DiasSaldo = 0)
+    private sealed record IntervaloItem(IntervaloFerias Intervalo, long Id = 0, decimal DiasSaldo = 0)
     {
         public string Descricao =>
             string.Format(ScreenTexts.ScheduleVacationDialog_ADias, Intervalo.Inicio, Intervalo.Fim, Intervalo.Dias);

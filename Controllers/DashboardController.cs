@@ -64,8 +64,6 @@ public sealed class DashboardController(
         return agenda.ListarFeriadosAsync();
     }
 
-    public string EstadoImportacao()
-    {
-        return pdf.MotivoBloqueio;
-    }
+    public Task<ResultadoImportacaoPdf> ImportarAsync(string arquivo, string unidade)
+        => pdf.ImportarAsync(arquivo, unidade);
 }

@@ -55,7 +55,7 @@
     <value>CPF</value>
   </data>
   <data name="EmployeesWindow_CPF2" xml:space="preserve">
-    <value>CPF *</value>
+    <value>CPF (opcional)</value>
   </data>
   <data name="EmployeesWindow_DataDeAdmissao" xml:space="preserve">
     <value>Data de admissão *</value>
@@ -99,7 +99,7 @@ Todos os períodos de férias e movimentações vinculados também serão exclu�
     <value>Novo colaborador</value>
   </data>
   <data name="EmployeesWindow_OCPFDevePossuir11Digitos" xml:space="preserve">
-    <value>O CPF deve possuir 11 dígitos.</value>
+    <value>Quando informado, o CPF deve possuir 11 dígitos.</value>
   </data>
   <data name="EmployeesWindow_ODireitoDeveEstarEntre1E30" xml:space="preserve">
     <value>O direito deve estar entre 1 e 30 dias.</value>
@@ -161,9 +161,6 @@ Todos os períodos de férias e movimentações vinculados também serão exclu�
   <data name="MainWindow_AtualizacaoDoPainel" xml:space="preserve">
     <value>Atualização do painel</value>
   </data>
-  <data name="MainWindow_BuscarColaborador" xml:space="preserve">
-    <value>Buscar colaborador</value>
-  </data>
   <data name="MainWindow_Colaborador" xml:space="preserve">
     <value>Colaborador</value>
   </data>
@@ -221,9 +218,6 @@ Todos os períodos de férias e movimentações vinculados também serão exclu�
   </data>
   <data name="MainWindow_FeriasProgramadas" xml:space="preserve">
     <value>Férias programadas</value>
-  </data>
-  <data name="MainWindow_Filtros" xml:space="preserve">
-    <value>⚑  Filtros ⌄</value>
   </data>
   <data name="MainWindow_FolgasDescontadas" xml:space="preserve">
     <value>Folgas descontadas</value>
@@ -1405,4 +1399,8 @@ Todos os períodos de férias e movimentações vinculados também serão exclu�
   <data name="ScheduleVacationDialog_AjudaExclusao" xml:space="preserve"><value>Somente parcelas que ainda não começaram. A exclusão será salva ao confirmar as alterações.</value></data>
   <data name="ScheduleVacationDialog_ConfirmarAlteracoes" xml:space="preserve"><value>Confirmar alterações</value></data>
   <data name="ScheduleVacationDialog_ExclusaoNaoPermitida" xml:space="preserve"><value>Não foi possível excluir: a parcela não foi encontrada neste período ou já começou.</value></data>
+  <data name="MainWindow_SincronizarTabela" xml:space="preserve"><value>Sincronizar tabela</value></data>
+  <data name="MainWindow_Sincronizando" xml:space="preserve"><value>Sincronizando...</value></data>
+  <data name="MainWindow_ErroSincronizacao" xml:space="preserve"><value>Não foi possível sincronizar a tabela. Tente novamente.</value></data>
+  <data name="MainWindow_TodosColaboradores" xml:space="preserve"><value>Todos</value></data>
 </root>

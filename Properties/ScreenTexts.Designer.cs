@@ -4,6 +4,10 @@ namespace FeriasCampos.Properties;
 
 public class ScreenTexts
 {
+    public static string MainWindow_TodosColaboradores => ResourceManager.GetString(nameof(MainWindow_TodosColaboradores), Culture)!;
+    public static string MainWindow_SincronizarTabela => ResourceManager.GetString(nameof(MainWindow_SincronizarTabela), Culture)!;
+    public static string MainWindow_Sincronizando => ResourceManager.GetString(nameof(MainWindow_Sincronizando), Culture)!;
+    public static string MainWindow_ErroSincronizacao => ResourceManager.GetString(nameof(MainWindow_ErroSincronizacao), Culture)!;
     private static readonly System.Resources.ResourceManager resourceManager = new("FeriasCampos.Properties.ScreenTexts", typeof(ScreenTexts).Assembly);
     public static System.Resources.ResourceManager ResourceManager => resourceManager;
     public static System.Globalization.CultureInfo? Culture { get; set; }
@@ -59,7 +63,6 @@ public class ScreenTexts
     public static string MainWindow_AImportacaoSeraHabilitadaAposOFornecimentoDo => ResourceManager.GetString(nameof(MainWindow_AImportacaoSeraHabilitadaAposOFornecimentoDo), Culture)!;
     public static string MainWindow_Ate60Dias => ResourceManager.GetString(nameof(MainWindow_Ate60Dias), Culture)!;
     public static string MainWindow_AtualizacaoDoPainel => ResourceManager.GetString(nameof(MainWindow_AtualizacaoDoPainel), Culture)!;
-    public static string MainWindow_BuscarColaborador => ResourceManager.GetString(nameof(MainWindow_BuscarColaborador), Culture)!;
     public static string MainWindow_Colaborador => ResourceManager.GetString(nameof(MainWindow_Colaborador), Culture)!;
     public static string MainWindow_Colaboradores => ResourceManager.GetString(nameof(MainWindow_Colaboradores), Culture)!;
     public static string MainWindow_COMPETENCIA => ResourceManager.GetString(nameof(MainWindow_COMPETENCIA), Culture)!;
@@ -79,7 +82,6 @@ public class ScreenTexts
     public static string MainWindow_FeriasAgendadasDias => ResourceManager.GetString(nameof(MainWindow_FeriasAgendadasDias), Culture)!;
     public static string MainWindow_FeriasGozadas => ResourceManager.GetString(nameof(MainWindow_FeriasGozadas), Culture)!;
     public static string MainWindow_FeriasProgramadas => ResourceManager.GetString(nameof(MainWindow_FeriasProgramadas), Culture)!;
-    public static string MainWindow_Filtros => ResourceManager.GetString(nameof(MainWindow_Filtros), Culture)!;
     public static string MainWindow_FolgasDescontadas => ResourceManager.GetString(nameof(MainWindow_FolgasDescontadas), Culture)!;
     public static string MainWindow_FolgasDias => ResourceManager.GetString(nameof(MainWindow_FolgasDias), Culture)!;
     public static string MainWindow_HistoricoDeMovimentacoes => ResourceManager.GetString(nameof(MainWindow_HistoricoDeMovimentacoes), Culture)!;

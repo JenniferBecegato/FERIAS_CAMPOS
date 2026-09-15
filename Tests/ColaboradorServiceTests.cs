@@ -37,6 +37,8 @@ public sealed class ColaboradorServiceTests
         var period = await db.Periodos.SingleAsync(TestContext.Current.CancellationToken);
         Assert.Equal(original.Id, period.ColaboradorId);
         Assert.Equal(30, (await service.PeriodoAsync(period.Id))!.Saldo);
+        var dashboard = await service.DashboardAsync();
+        Assert.Equal(1, dashboard.Total);
         Assert.True((await service.CadastrarAsync(dados with { Cpf = "12345678902" })).Valido);
         Assert.Equal(2, (await service.ListarAsync()).Count);
     }

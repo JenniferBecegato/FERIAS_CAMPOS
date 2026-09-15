@@ -17,9 +17,10 @@ public static class ColaboradorSchemaMaintenance
             ["Setor"] = "ALTER TABLE Colaboradores DROP COLUMN Setor"
         };
         var obsolete = commands.Keys.Where(columns.Contains).ToList();
-        if (obsolete.Count == 0) return;
 
         using var transaction = database.Database.BeginTransaction();
+        database.Database.ExecuteSqlRaw("DROP INDEX IF EXISTS IX_Colaboradores_Cpf");
+        database.Database.ExecuteSqlRaw("CREATE UNIQUE INDEX IX_Colaboradores_Cpf ON Colaboradores(Cpf) WHERE Cpf <> ''");
         database.Database.ExecuteSqlRaw("DROP INDEX IF EXISTS IX_Colaboradores_Matricula");
         foreach (var column in obsolete)
             database.Database.ExecuteSqlRaw(commands[column]);

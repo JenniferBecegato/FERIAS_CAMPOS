@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Input;
 using System.Windows.Media;
 using FeriasCampos.Controllers;
 using FeriasCampos.Models;
@@ -23,7 +22,7 @@ public partial class MainWindow : Window
     private readonly Dictionary<int, int> _selectedPeriodIds = [];
     private readonly ObservableCollection<PeriodoRow> _visiblePeriodRows = [];
     private int _currentPage = 1;
-    private int PageSize = 10;
+    private int PageSize = int.MaxValue;
     private bool _updatingPeriodSelector;
     private bool _restoringPeriodSelection;
     private IReadOnlyList<FeriasAgendaItem> _agenda = [];
@@ -50,9 +49,32 @@ public partial class MainWindow : Window
         SizeChanged += (_, _) => ApplyResponsiveLayout();
     }
 
-    private async Task LoadDataAsync(string? search = null)
+    private async void SyncTableClick(object sender, RoutedEventArgs e)
     {
-        var dashboard = await _controller.CarregarAsync(search);
+        SyncTableButton.IsEnabled = false;
+        SyncTableButton.Content = ScreenTexts.MainWindow_Sincronizando;
+        try
+        {
+            var pagina = _currentPage;
+            await LoadDataAsync();
+            _currentPage = pagina;
+            ShowCurrentPage();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(this, ScreenTexts.MainWindow_ErroSincronizacao + "\n" + ex.Message,
+                ScreenTexts.MainWindow_SincronizarTabela, MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        finally
+        {
+            SyncTableButton.Content = ScreenTexts.MainWindow_SincronizarTabela;
+            SyncTableButton.IsEnabled = true;
+        }
+    }
+
+    private async Task LoadDataAsync()
+    {
+        var dashboard = await _controller.CarregarAsync();
 
         TotalText.Text = dashboard.Total.ToString();
         ScheduledText.Text = dashboard.Programadas.ToString();
@@ -120,9 +142,10 @@ public partial class MainWindow : Window
 
     private void PageSizeChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (sender is not ComboBox { SelectedItem: ComboBoxItem item } ||
-            !int.TryParse(item.Content?.ToString(), out var pageSize) ||
-            pageSize <= 0 || pageSize == PageSize)
+        if (sender is not ComboBox { SelectedItem: ComboBoxItem item }) return;
+        var pageSize = item.Tag?.ToString() == "all" ? int.MaxValue
+            : int.TryParse(item.Content?.ToString(), out var parsed) ? parsed : 0;
+        if (pageSize <= 0 || pageSize == PageSize)
         {
             return;
         }
@@ -441,20 +464,41 @@ public partial class MainWindow : Window
                 ScreenTexts.MainWindow_AgendamentoSalvoComAvisos);
         }
 
-        await LoadDataAsync(SearchBox.Text);
+        await LoadDataAsync();
     }
 
-    private async void SearchKeyUp(object sender, KeyEventArgs e)
+    private async void ImportClick(object sender, RoutedEventArgs e)
     {
-        if (e.Key == Key.Enter)
+        var arquivo = new Microsoft.Win32.OpenFileDialog { Filter = "Previsão de férias (*.pdf)|*.pdf", Title = "Importar previsão de férias" };
+        if (arquivo.ShowDialog(this) != true) return;
+        var unidade = new ComboBox { ItemsSource = new[] { "Washington Luiz", "Gurgel" }, Margin = new Thickness(0, 8, 0, 16) };
+        var importar = new Button { Content = "Importar", IsEnabled = false, HorizontalAlignment = HorizontalAlignment.Right };
+        var painel = new StackPanel { Margin = new Thickness(24) };
+        painel.Children.Add(new TextBlock { Text = "Unidade dos novos colaboradores", FontWeight = FontWeights.SemiBold });
+        painel.Children.Add(unidade);
+        painel.Children.Add(new TextBlock { Text = "Novos colaboradores terão CPF em branco e admissão estimada pelo início do período mais antigo do PDF. Períodos existentes serão preservados.", TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 0, 0, 16) });
+        painel.Children.Add(importar);
+        var dialog = new Window { Title = "Importar previsão de férias", Owner = this, Width = 500,
+            SizeToContent = SizeToContent.Height, WindowStartupLocation = WindowStartupLocation.CenterOwner, Content = painel, ResizeMode = ResizeMode.NoResize };
+        unidade.SelectionChanged += (_, _) => importar.IsEnabled = unidade.SelectedItem is string;
+        importar.Click += (_, _) => dialog.DialogResult = true;
+        if (dialog.ShowDialog() != true) return;
+        IsEnabled = false;
+        try
         {
-            await LoadDataAsync(SearchBox.Text);
+            var resultado = await _controller.ImportarAsync(arquivo.FileName, (string)unidade.SelectedItem);
+            await LoadDataAsync();
+            var resumo = $"Importação concluída.\nColaboradores criados: {resultado.ColaboradoresCriados}\nPeríodos criados: {resultado.PeriodosCriados}\nPeríodos já existentes: {resultado.PeriodosExistentes}";
+            if (resultado.Avisos.Count > 0) resumo += "\n\n" + string.Join("\n", resultado.Avisos);
+            IsEnabled = true;
+            ShowModuleNotice("Importação concluída", "importIcon", resumo);
         }
-    }
-
-    private void ImportClick(object sender, RoutedEventArgs e)
-    {
-        ShowModuleNotice(ScreenTexts.MainWindow_ImportarPDF, "importIcon", _controller.EstadoImportacao());
+        catch (Exception ex)
+        {
+            IsEnabled = true;
+            MessageBox.Show(this, "Não foi possível concluir a importação.\n" + ex.Message, "Importar PDF", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        finally { IsEnabled = true; }
     }
 
     private void ShowModuleNotice(string title, string iconKey, string message)
@@ -506,7 +550,7 @@ public partial class MainWindow : Window
             window.ShowDialog();
             if (window.Changed)
             {
-                await LoadDataAsync(SearchBox.Text);
+                await LoadDataAsync();
             }
 
             return;
@@ -558,7 +602,7 @@ public partial class MainWindow : Window
         {
             _restoringPeriodSelection = true;
             _selectedPeriodIds[period.ColaboradorId] = period.Id;
-            await LoadDataAsync(SearchBox.Text);
+            await LoadDataAsync();
             var index = _employeeRows.FindIndex(row => row.Id == period.Id);
             if (index >= 0)
             {
@@ -582,7 +626,7 @@ public partial class MainWindow : Window
 
     private void ApplyResponsiveLayout()
     {
-        var rootGrid = (Grid)Content;
+        var rootGrid = DashboardLayout;
         var navigationWidth = ActualWidth < 1280 ? 76 : 230;
         var detailsWidth = ActualWidth < 1280 ? 330 : 410;
 
